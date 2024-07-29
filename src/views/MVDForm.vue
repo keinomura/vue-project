@@ -8,6 +8,7 @@
       <v-select
         v-if="showPainArea"
         v-model="painArea"
+
         :items="painAreasOption"
         label="痛みの領域"
         multiple

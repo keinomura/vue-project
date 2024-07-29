@@ -34,6 +34,13 @@
                               label="入院経路" outlined>
                   </v-select>
                 </v-col>
+
+                <v-col cols="6">
+                  <v-radio-group v-model="inHospitalOnset" label="院内発症" inline>
+                    <v-radio label="あり" value="あり"></v-radio>
+                    <v-radio label="なし" value="なし"></v-radio>
+                  </v-radio-group>
+                </v-col>
                 <v-col cols="6">
                   <v-radio-group v-model="QQ" label="QQ" inline>
                     <v-radio label="あり" value="あり"></v-radio>
@@ -52,6 +59,7 @@
                     <v-radio label="なし" value="なし"></v-radio>
                   </v-radio-group>
                 </v-col>
+
                 <v-col v-if="otherHP=='あり'" cols="12">
                   <v-text-field v-model="referralHospital" label="紹介元" outlined></v-text-field>
                 </v-col>
@@ -131,6 +139,7 @@
     import { ref } from 'vue';
     import HFSForm from './HFSForm.vue';
     import TNForm from './TNForm.vue';
+    import StrokeForm from './StrokeForm.vue';
 
     const selectedDisease = ref('デフォルト');
     const diseases = ref(['デフォルト', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣']);
@@ -145,6 +154,7 @@
       '5 院内で出生',
       '6 その他',
     ]);
+    const inHospitalOnset = ref('なし');
     const QQ = ref('あり');
     const admissionType = ref('予定入院');
     const otherHP = ref('なし');
@@ -182,6 +192,8 @@
         return null;
       } else if (selectedDisease.value === '顔面痙攣') {
         return HFSForm;
+      } else if (selectedDisease.value === '脳梗塞') {
+        return StrokeForm;
       }
     }
 

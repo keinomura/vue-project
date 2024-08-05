@@ -15,11 +15,11 @@
                 </v-col>
 
                 <v-col cols="12">
-                  <v-text-field v-model="chiefcomplain" label="主訴" outlined></v-text-field>
+                  <v-text-field v-model="chiefComplain" label="主訴" outlined></v-text-field>
                 </v-col>
 
                 <v-col cols="12">
-                  <v-textarea v-model="presenthistory" label="現病歴" outlined></v-textarea>
+                  <v-textarea v-model="presentHistory" label="現病歴" outlined></v-textarea>
                 </v-col>
 
                 <!-- 疾患によって切り換えるcomponent -->
@@ -67,7 +67,7 @@
                   <label for="pastHistoryArea">既往歴</label>
                   <v-row id="pastHistoryArea" label="既往歴">
                     <v-select
-                      v-model="riskfactors"
+                      v-model="riskFactors"
                       :items="pastHistories"
                       hint="Pick past histories"
                       label="Select"
@@ -76,7 +76,7 @@
                     ></v-select>
                   </v-row>
                   <v-row>
-                    <v-textarea v-model="pasthistory" label="その他特記すべきことなし" outlined></v-textarea>
+                    <v-textarea v-model="pastHistory" label="その他特記すべきことなし" outlined></v-textarea>
                   </v-row>
                 </v-col>
 
@@ -145,9 +145,9 @@
 
     const selectedDisease = ref('デフォルト');
     const diseases = ref(['デフォルト', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣']);
-    const chiefcomplain = ref('');
-    const presenthistory = ref('現病歴');
-    const admissionRoute = ref(null);
+    const chiefComplain = ref('');
+    const presentHistory = ref('');
+    const admissionRoute = ref('2 直接入院、家庭からの入院');
     const routeOptions = ref([
       '1 院内の他科からの転科',
       '2 直接入院、家庭からの入院',
@@ -157,12 +157,12 @@
       '6 その他',
     ]);
     const inHospitalOnset = ref('なし');
-    const QQ = ref('あり');
+    const QQ = ref('なし');
     const admissionType = ref('予定入院');
     const otherHP = ref('なし');
     const referralHospital = ref('');
-    const riskfactors = ref([]);
-    const pasthistory = ref('その他特記すべきことなし');
+    const riskFactors = ref([]);
+    const pastHistory = ref('その他特記すべきことなし');
     const E = ref('4');
     const V = ref('5');
     const M = ref('6');
@@ -202,31 +202,29 @@
     }
 
     function createSummary() {
-      const vriskfactors = riskfactors.join(',');
-      const rkftt = " " + vriskfactors;
-      const chif = textReplaced("【主訴】", chiefcomplain);
-      const preshist = this.textReplaced("【現病歴】", this.presenthistory);
-      const pasthist = this.textReplaced("【既往歴,家族歴】" + rkftt + "\r", this.pasthistory);
-      const exm = this.textReplaced("【入院時現症】", this.exam);
+      const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
+      const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);
+      const presentHistoryText = textReplaced("【現病歴】", presentHistory.value);
+      const pastHistoryText = textReplaced("【既往歴,家族歴】" + riskFactorsText + pastHistory.value);
+      const exm = textReplaced("【入院時現症】", exam.value);
+      const QQt = "\rQQ" + QQ.value;
+      const otHP = "他院からの紹介:" + otherHP.value + " " + referralHospital.value;
+      const GCSgt = "\rGCS:" + GCS("GCS");
+      const GCSjt = GCS("JCS");
+      const premRSText = " 発症前mRS:" + premRS.value.value;
 
-      const QQt = "\rQQ" + this.QQ;
-      const otHP = "紹介:" + this.otherHP + " " + this.referralHospital;
-
-      const GCSgt = "\rGCS:" + this.GCS("GCS");
-      const GCSjt = this.GCS("JCS");
-      const premRS = " 発症前mRS:" + this.premRS.value;
-
-      this.summary = chif + preshist + pasthist + GCSgt + exm + "\r---------入院データ----------"  + QQt + this.admissionType + otHP + "\r" +GCSjt + premRS;
+      summary.value = chiefComplainText + presentHistoryText + pastHistoryText + exm + "\r---------入院データ----------"  + [QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',');
     }
 
-    function textReplaced(title, text) {
-      return title + text.replace(/\r?\n|\t/g, "\s");
+    function textReplaced(title, element) {
+      const replacedElement = (element)? element.replace(/\r?\n|\t/g, " "):'';
+      return title + replacedElement;
     }
 
     function GCS(type) {
-      const resultE = this.E;
-      const resultV = this.V;
-      const resultM = this.M;
+      const resultE = E.value;
+      const resultV = V.value;
+      const resultM = M.value;
       if (type === "GCS") {
         return `E:${resultE}V:${resultV}M:${resultM}  ${parseInt(resultE) + parseInt(resultM) + parseInt(resultV)}`;
       } else if (type === "JCS") {

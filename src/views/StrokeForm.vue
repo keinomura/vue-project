@@ -116,18 +116,29 @@
         <v-radio label="両側" value="両側"></v-radio>
       </v-radio-group>
 
-      <v-col cols="6" label="病変の大きさ" v-for="eachLesionSize in lesionSizeSelection">
-        <v-checkbox
-          :label="eachLesionSize"
-          :value="eachLesionSize"
-          v-model="lesionLocation"
-        >
-        </v-checkbox>
-      </v-col>
-
+      <v-row>
+        <v-col col="5" style="margin-left: 15px;">
+          <v-label>大きさ</v-label>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="3" label="病変の大きさ" v-for="eachLesionSize in lesionSizeSelection">
+          <v-checkbox
+            :label="eachLesionSize"
+            :value="eachLesionSize"
+            v-model="lesionLocation"
+          >
+          </v-checkbox>
+        </v-col>
+      </v-row>
 
 
       <!-- 病変部位をチェックボックスで入力 -->
+      <v-row>
+        <v-col col="5" style="margin-left: 15px;">
+          <v-label>部位</v-label>
+        </v-col>
+      </v-row>
       <v-col cols="12" label="病変部位">
         <v-checkbox-group v-model="lesionLocation" label="病変部位" class="d-flex flex-wrap">
           <template v-for="location in lesionLocationSelection">
@@ -138,19 +149,19 @@
 
 
       <!-- 脳出血の場合に外科治療の有無を選択 -->
-      <v-radio-group v-model="surgicalTreatment" label="外科治療の有無" inline>
+      <v-radio-group v-if="showOperativeTreatment" v-model="surgicalTreatment" label="外科治療の有無" inline>
         <v-radio label="あり" value="あり"></v-radio>
         <v-radio label="なし" value="なし"></v-radio>
       </v-radio-group>
 
       <!-- 脳梗塞の場合にtPA治療の有無を選択 -->
-      <v-radio-group v-model="tPATreatment" label="tPA治療の有無" inline>
+      <v-radio-group v-if="showtPATreatment" v-model="tPATreatment" label="tPA治療の有無" inline>
         <v-radio label="あり" value="あり"></v-radio>
         <v-radio label="なし" value="なし"></v-radio>
       </v-radio-group>
 
       <!-- 脳梗塞の場合に血管内治療の有無を選択 -->
-      <v-radio-group v-model="endovascularTreatment" label="血管内治療の有無" inline>
+      <v-radio-group v-if="showEndovascularTreatment" v-model="endovascularTreatment" label="血管内治療の有無" inline>
         <v-radio label="あり" value="あり"></v-radio>
         <v-radio label="なし" value="なし"></v-radio>
       </v-radio-group>
@@ -166,6 +177,9 @@
     strokeTypeSelection: Array,
     aspectShow: Boolean,
     lesionSizeSelection: Array,
+    showOperativeTreatment: Boolean,
+    showtPATreatment: Boolean,
+    showEndovascularTreatment: Boolean,
   });
 
   // Data

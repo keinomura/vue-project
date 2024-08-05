@@ -1,5 +1,12 @@
 <template>
-    <StrokeForm :strokeTypeSelection="strokeTypeSelection" :aspectShow="true" :lesionSizeSelection="lesionSizeSelection" />
+    <StrokeForm 
+    :strokeTypeSelection="strokeTypeSelection" 
+    :aspectShow="true" 
+    :lesionSizeSelection="lesionSizeSelection"
+    :showOperativeTreatment="false"
+    :showtPATreatment="true"
+    :showEndovascularTreatment="true"
+    />
   </template>
   
   <script setup>

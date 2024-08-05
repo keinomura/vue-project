@@ -139,8 +139,9 @@
     import { ref } from 'vue';
     import HFSForm from './HFSForm.vue';
     import TNForm from './TNForm.vue';
-    import StrokeForm from './StrokeForm.vue';
-import CIForm from './CIForm.vue';
+    import ICHForm from './ICHForm.vue';
+    import CIForm from './CIForm.vue';
+
 
     const selectedDisease = ref('デフォルト');
     const diseases = ref(['デフォルト', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣']);
@@ -195,6 +196,8 @@ import CIForm from './CIForm.vue';
         return HFSForm;
       } else if (selectedDisease.value === '脳梗塞') {
         return CIForm;
+      } else if (selectedDisease.value === '脳出血') {
+        return ICHForm;
       }
     }
 

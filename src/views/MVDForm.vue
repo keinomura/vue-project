@@ -199,7 +199,17 @@
         return '';
       }
 
-  };
+    };
+
+    const previousSurgeriesText = () => {
+      if (previousSurgeries.value.length === 0) {
+        return '';
+      } else {
+        return previousSurgeries.value.map((surgery) => {
+          return `${surgery.year}/${surgery.month}`;
+        }).join(',');
+      }
+    };
 
     const mvdSummary = {
       '病側': lesionSide.value,
@@ -207,7 +217,7 @@
       '手術日': scheduledSurgeryDate.value ? formatDate(scheduledSurgeryDate.value) : null,
       '今回手術は': recurrence.value,
       '発症年月': onsetYear.value  ? `${onsetYear.value}/${onsetMonth.value ? onsetMonth.value : ''}` : null,
-      '手術既往': previousSurgeries.value,
+      '手術既往': previousSurgeriesText(),
       '歯科治療': dentalTreatmentHistory.value,
       '術前治療薬': preSurgeryMedications.value,
       '備考': additionalNotes.value,

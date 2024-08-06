@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="background-color: greenyellow">
       <v-radio-group v-model="lesionSide" label="病側" inline>
         <v-radio label="左" value="左"></v-radio>
         <v-radio label="右" value="右"></v-radio>
@@ -34,7 +34,7 @@
       <v-row v-if="operation === 'あり'">
         <v-col cols="6">
           <span class="ma-2">今回手術予定日</span>
-          <v-date-picker v-model="scheduledSurgeryDate"></v-date-picker>
+          <v-date-picker v-model="scheduledSurgeryDate" style="background-color: greenyellow;"></v-date-picker>
         </v-col>
         <v-col cols="4">
           <span>発症から</span>{{ periodFromOnsetToSurgery }}
@@ -187,6 +187,29 @@
     }
   };
   
+  const getSummaryOfMVD = () => {
+    console.log('fire')
+    // const mvdSummary = {
+    //   '病側': lesionSide.value,
+    //   '部位': painArea.value,
+    //   '手術日': scheduledSurgeryDate.value,
+    //   '再発': recurrence.value,
+    //   '発症年': onsetYear.value,
+    //   '発症月': onsetMonth.value,
+    //   '手術既往': previousSurgeries.value,
+    //   '歯科治療': dentalTreatmentHistory.value,
+    //   '術前治療薬': preSurgeryMedications.value,
+    //   'その他': additionalNotes.value,
+    //   'ボトックス治療': botoxTreatment.value,
+    //   'ボトックス開始年': botoxYear.value,
+    //   'ボトックス開始月': botoxMonth.value,
+    // };
+    // return mvdSummary
+    //   .filter(([key, value]) => value !== undefined && value !== null && value !== '')
+    //   .map(([key, value]) => `${key}: ${value}`)
+    //   .join('\n');  
+  };
+
   watch(operation, (newVal) => {
     if (newVal === 'なし') {
       recurrence.value = '初発';
@@ -211,6 +234,11 @@
       calculatePeriodFromLastSurgery();
     }
   }, { deep: true });
+
+  // "defineExpose"を使用して、外部から参照できるプロパティを定義する
+  defineExpose({
+    getSummaryOfMVD,
+  });
   </script>
   
   <style scoped>

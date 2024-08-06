@@ -24,7 +24,7 @@
 
                 <!-- 疾患によって切り換えるcomponent -->
                 <v-col cols="12">
-                  <component :is="selectedDiseaseComponent()"></component>
+                  <component :is="selectedDiseaseComponent()" ref="child"></component>
                 </v-col>
 
                 <v-col cols="12" md="8">
@@ -137,11 +137,15 @@
 
   <script setup>
     import { ref } from 'vue';
+    import MVDForm from './MVDForm.vue';
+
     import HFSForm from './HFSForm.vue';
     import TNForm from './TNForm.vue';
     import ICHForm from './ICHForm.vue';
     import CIForm from './CIForm.vue';
 
+    const mvdChild = ref(null);
+    const child = ref(null);
 
     const selectedDisease = ref('デフォルト');
     const diseases = ref(['デフォルト', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣']);
@@ -188,10 +192,10 @@
     ]);
 
     function selectedDiseaseComponent() {
-      if (selectedDisease.value === '三叉神経痛') {
-        return TNForm;
-      } else if (selectedDisease.value === 'デフォルト'){
+      if (selectedDisease.value === 'デフォルト'){
         return null;
+      } else if (selectedDisease.value === '三叉神経痛') {
+        return TNForm;
       } else if (selectedDisease.value === '顔面痙攣') {
         return HFSForm;
       } else if (selectedDisease.value === '脳梗塞') {
@@ -202,18 +206,27 @@
     }
 
     function createSummary() {
-      const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
-      const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);
-      const presentHistoryText = textReplaced("【現病歴】", presentHistory.value);
-      const pastHistoryText = textReplaced("【既往歴,家族歴】" + riskFactorsText + pastHistory.value);
-      const exm = textReplaced("【入院時現症】", exam.value);
-      const QQt = "\rQQ" + QQ.value;
-      const otHP = "他院からの紹介:" + otherHP.value + " " + referralHospital.value;
-      const GCSgt = "\rGCS:" + GCS("GCS");
-      const GCSjt = GCS("JCS");
-      const premRSText = " 発症前mRS:" + premRS.value.value;
+      child.value.showText();
 
-      summary.value = chiefComplainText + presentHistoryText + pastHistoryText + exm + "\r---------入院データ----------"  + [QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',');
+    //   const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
+    //   const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);
+    //   const presentHistoryText = textReplaced("【現病歴】", presentHistory.value);
+    //   const pastHistoryText = textReplaced("【既往歴,家族歴】" + riskFactorsText + pastHistory.value);
+    //   const exm = textReplaced("【入院時現症】", exam.value);
+    //   const QQt = "\rQQ" + QQ.value;
+    //   const otHP = "他院からの紹介:" + otherHP.value + " " + referralHospital.value;
+    //   const GCSgt = "\rGCS:" + GCS("GCS");
+    //   const GCSjt = GCS("JCS");
+    //   const premRSText = " 発症前mRS:" + premRS.value.value;
+
+    //   summary.value = chiefComplainText + presentHistoryText + pastHistoryText + exm + "\r---------入院データ----------"  + [QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',');
+
+    //   const selectedComponent = selectedDiseaseComponent();
+    //     let diseaseSummaryText = '';
+    //     if (selectedComponent) {
+    //       diseaseSummaryText = selectedComponent.methods.getSummaryOfMVD();
+    //   }
+    //   console.log(diseaseSummaryText)
     }
 
     function textReplaced(title, element) {

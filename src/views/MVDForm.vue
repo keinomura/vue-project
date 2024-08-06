@@ -188,27 +188,48 @@
   };
   
   const getSummaryOfMVD = () => {
-    console.log('fire')
-    // const mvdSummary = {
-    //   '病側': lesionSide.value,
-    //   '部位': painArea.value,
-    //   '手術日': scheduledSurgeryDate.value,
-    //   '再発': recurrence.value,
-    //   '発症年': onsetYear.value,
-    //   '発症月': onsetMonth.value,
-    //   '手術既往': previousSurgeries.value,
-    //   '歯科治療': dentalTreatmentHistory.value,
-    //   '術前治療薬': preSurgeryMedications.value,
-    //   'その他': additionalNotes.value,
-    //   'ボトックス治療': botoxTreatment.value,
-    //   'ボトックス開始年': botoxYear.value,
-    //   'ボトックス開始月': botoxMonth.value,
-    // };
-    // return mvdSummary
-    //   .filter(([key, value]) => value !== undefined && value !== null && value !== '')
-    //   .map(([key, value]) => `${key}: ${value}`)
-    //   .join('\n');  
+    const formatDate = (date) => {
+      if (date !== undefined && date !== null && date !== '' && date.length !== 0) {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = ('0' + (d.getMonth() + 1)).slice(-2);
+        const day = ('0' + d.getDate()).slice(-2);
+        return `${year}/${month}/${day}`;
+      } else {
+        return '';
+      }
+
   };
+
+    const mvdSummary = {
+      '病側': lesionSide.value,
+      '部位': painArea.value,
+      '手術日': scheduledSurgeryDate.value ? formatDate(scheduledSurgeryDate.value) : null,
+      '今回手術は': recurrence.value,
+      '発症年月': onsetYear.value  ? `${onsetYear.value}/${onsetMonth.value ? onsetMonth.value : ''}` : null,
+      '手術既往': previousSurgeries.value,
+      '歯科治療': dentalTreatmentHistory.value,
+      '術前治療薬': preSurgeryMedications.value,
+      'その他': additionalNotes.value,
+      'ボトックス治療': botoxTreatment.value,
+      'ボトックス開始年': botoxYear.value,
+      'ボトックス開始月': botoxMonth.value,
+    };
+    // return mvdSummary
+    console.log(previousSurgeries.value)
+    const filteredMvdSummary = Object.fromEntries(
+      Object.entries(mvdSummary).filter(([key, value]) => value != null && value !== '' && value !== undefined && value.length !== 0)
+    );
+
+    const summaryText = Object.entries(filteredMvdSummary)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(',');
+
+  console.log(summaryText);
+// console.log(filteredMvdSummary);
+    // console.log(mvdSummary)
+    // console.log(mvdSummary.filter(([, value]) => value !== undefined && value !== null && value !== '').map(([, value]) => `${value}`).join('\n'));  
+    };
 
   watch(operation, (newVal) => {
     if (newVal === 'なし') {

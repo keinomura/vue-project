@@ -137,14 +137,12 @@
 
   <script setup>
     import { ref } from 'vue';
-    import MVDForm from './MVDForm.vue';
 
     import HFSForm from './HFSForm.vue';
     import TNForm from './TNForm.vue';
     import ICHForm from './ICHForm.vue';
     import CIForm from './CIForm.vue';
 
-    const mvdChild = ref(null);
     const child = ref(null);
 
     const selectedDisease = ref('デフォルト');
@@ -206,7 +204,7 @@
     }
 
     function createSummary() {
-      child.value.showText();
+      console.log(child.value.getSummaryTextFromGrandChild());
 
     //   const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
     //   const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);

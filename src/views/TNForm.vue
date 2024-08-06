@@ -7,15 +7,15 @@
   import MVDForm from './MVDForm.vue';
   const medications = ['テグレトール（カルバマゼピン）', 'ビムパット（ラコサミド）', 'パキシル', 'ロキソニン', 'ガバペン', 'アレビアチン'];
 
+  // 親コンポーネントから子コンポーネントのメソッドを呼び出す
   const mvdChild = ref(null);
 
-  const showText = () => {
-    console.log('Hello, World!');
-    mvdChild.value.getSummaryOfMVD()
+  const getSummaryTextFromGrandChild = () => {
+    return mvdChild.value.getSummaryOfMVD();
   }
 
   defineExpose({
-    showText
+    getSummaryTextFromGrandChild,
   });
 </script>
 

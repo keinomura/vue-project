@@ -235,10 +235,8 @@
     .map(([key, value]) => `${key}: ${value}`)
     .join(',');
 
-  console.log(summaryText);
-// console.log(filteredMvdSummary);
-    // console.log(mvdSummary)
-    // console.log(mvdSummary.filter(([, value]) => value !== undefined && value !== null && value !== '').map(([, value]) => `${value}`).join('\n'));  
+  // console.log(summaryText);
+  return summaryText;  
     };
 
   watch(operation, (newVal) => {

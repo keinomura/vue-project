@@ -204,27 +204,26 @@
     }
 
     function createSummary() {
-      console.log(child.value.getSummaryTextFromGrandChild());
+      const detailedDiseaseSummary = child.value.getSummaryTextFromGrandChild();
 
-    //   const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
-    //   const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);
-    //   const presentHistoryText = textReplaced("【現病歴】", presentHistory.value);
-    //   const pastHistoryText = textReplaced("【既往歴,家族歴】" + riskFactorsText + pastHistory.value);
-    //   const exm = textReplaced("【入院時現症】", exam.value);
-    //   const QQt = "\rQQ" + QQ.value;
-    //   const otHP = "他院からの紹介:" + otherHP.value + " " + referralHospital.value;
-    //   const GCSgt = "\rGCS:" + GCS("GCS");
-    //   const GCSjt = GCS("JCS");
-    //   const premRSText = " 発症前mRS:" + premRS.value.value;
+      const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
+      const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);
+      const presentHistoryText = textReplaced("【現病歴】", presentHistory.value);
+      const pastHistoryText = textReplaced("【既往歴,家族歴】" + riskFactorsText + pastHistory.value);
+      const exm = textReplaced("【入院時現症】", exam.value);
+      const QQt = "\rQQ" + QQ.value;
+      const otHP = "他院からの紹介:" + otherHP.value + " " + referralHospital.value;
+      const GCSgt = "\rGCS:" + GCS("GCS");
+      const GCSjt = GCS("JCS");
+      const premRSText = " 発症前mRS:" + premRS.value.value;
 
-    //   summary.value = chiefComplainText + presentHistoryText + pastHistoryText + exm + "\r---------入院データ----------"  + [QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',');
+      summary.value = chiefComplainText + presentHistoryText + pastHistoryText + exm + '\r'
+      + '{' + detailedDiseaseSummary + '}' + '\r'
+      + "\r---------入院データ----------"
+      + [QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',') ;
 
-    //   const selectedComponent = selectedDiseaseComponent();
-    //     let diseaseSummaryText = '';
-    //     if (selectedComponent) {
-    //       diseaseSummaryText = selectedComponent.methods.getSummaryOfMVD();
-    //   }
-    //   console.log(diseaseSummaryText)
+
+      console.log(summary.value)
     }
 
     function textReplaced(title, element) {

@@ -201,13 +201,23 @@
 
     };
 
-    const previousSurgeriesText = () => {
+    const getPreviousSurgeriesText = () => {
       if (previousSurgeries.value.length === 0) {
-        return '';
+      return '';
       } else {
-        return previousSurgeries.value.map((surgery) => {
-          return `${surgery.year}/${surgery.month}`;
-        }).join(',');
+      return previousSurgeries.value.map((surgery) => {
+        return `${surgery.year}/${surgery.month}`;
+      }).join(',');
+      }
+    };
+
+    const getPreSurgeryMedicationsText = () => {
+      if (preSurgeryMedications.value.length === 0) {
+      return '';
+      } else {
+      return preSurgeryMedications.value.map((medication) => {
+        return `${medication.name} ${medication.dosage}`;
+      }).join(',');
       }
     };
 
@@ -218,10 +228,10 @@
       '今回手術は': recurrence.value,
       '発症から手術まで': periodFromOnsetToSurgery.value,
       '発症年月': onsetYear.value  ? `${onsetYear.value}/${onsetMonth.value ? onsetMonth.value : ''}` : null,
-      '手術既往': previousSurgeriesText(),
+      '手術既往': getPreviousSurgeriesText(),
       '前回手術から今回手術まで': periodFromLastSurgery.value,
       '歯科治療': dentalTreatmentHistory.value,
-      '術前治療薬': preSurgeryMedications.value,
+      '術前治療薬': getPreSurgeryMedicationsText(),
       '備考': additionalNotes.value,
       'ボトックス治療': botoxTreatment.value,
       'ボトックス開始年': botoxYear.value,
@@ -238,7 +248,7 @@
     .join(',');
 
   // console.log(summaryText);
-  return summaryText;  
+  return summaryText; 
     };
 
   watch(operation, (newVal) => {

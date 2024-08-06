@@ -17,10 +17,10 @@
   
       <v-row>
         <v-col cols="4">
-          <v-select v-model="onsetYear" :items="years" label="痛みの発症年"></v-select>
+          <v-select v-model="onsetYear" :items="years" label="発症年"></v-select>
         </v-col>
         <v-col cols="4">
-          <v-select v-model="onsetMonth" :items="[''].concat(months)" label="痛みの発症時期 月"></v-select>
+          <v-select v-model="onsetMonth" :items="[''].concat(months)" label="発症時期 月"></v-select>
         </v-col>
       </v-row>
   

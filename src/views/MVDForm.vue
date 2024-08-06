@@ -210,7 +210,7 @@
       '手術既往': previousSurgeries.value,
       '歯科治療': dentalTreatmentHistory.value,
       '術前治療薬': preSurgeryMedications.value,
-      'その他': additionalNotes.value,
+      '備考': additionalNotes.value,
       'ボトックス治療': botoxTreatment.value,
       'ボトックス開始年': botoxYear.value,
       'ボトックス開始月': botoxMonth.value,

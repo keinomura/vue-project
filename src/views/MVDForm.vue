@@ -48,7 +48,7 @@
         </v-radio-group>
       </v-row>
   
-      <v-row v-if="recurrence === '再発'">
+      <v-row v-if="recurrence === '再発'"> // TODO: 初発の場合前回手術データpreviousSurgeriesを消す
         <v-col cols="12">
           <span>発症前回手術から</span>{{ periodFromLastSurgery }}
         </v-col>
@@ -80,7 +80,7 @@
         <v-radio label="無し" value="無し"></v-radio>
       </v-radio-group>
   
-      <v-row v-if="botoxTreatment === '有り'">
+      <v-row v-if="botoxTreatment === '有り'"> // TODO: 無しの場合ボトックス治療開始年月のデータを消す
         <v-col cols="4">
           <v-select v-model="botoxYear" :items="years" label="ボトックス治療開始年"></v-select>
         </v-col>
@@ -243,9 +243,10 @@
 
   watch(operation, (newVal) => {
     if (newVal === 'なし') {
-      recurrence.value = '初発';
+      recurrence.value = '';
       previousSurgeries.value = [];
       scheduledSurgeryDate.value = [];
+      preSurgeryMedications.value = [];
     }
   });
   
@@ -270,6 +271,33 @@
   defineExpose({
     getSummaryOfMVD,
   });
+
+  watch (operation, (newVal) => {
+    if (newVal === 'なし') {
+      scheduledSurgeryDate.value = null;
+      recurrence.value = '初発';
+      previousSurgeries.value = [];
+    }
+  });
+
+  watch(recurrence, (newVal) => {
+    if (newVal === '初発') {
+      previousSurgeries.value = [];
+    }
+  });
+
+  watch([scheduledSurgeryDate, onsetYear, onsetMonth], calculatePeriodFromOnsetToSurgery);
+
+  
+  watch(botoxTreatment, (newVal) => {
+    if (newVal === '無し') {
+      botoxYear.value = null;
+      botoxMonth.value = null;
+    }
+  });
+
+
+
   </script>
   
   <style scoped>

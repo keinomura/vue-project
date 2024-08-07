@@ -149,10 +149,7 @@
   const removeSurgery = (index) => {
     previousSurgeries.value.splice(index, 1);
   };
-  
-  const updatePreviousSurgeries = () => {
-      console.log('hit');
-  };
+
 
   const addMedication = () => {
     preSurgeryMedications.value.push({ name: '', dosage: '' });
@@ -255,8 +252,7 @@
       'ボトックス開始年月': botoxYear.value  ? `${botoxYear.value}/${botoxMonth.value ? botoxMonth.value : ''}` : null,
 
     };
-    // return mvdSummary
-    // console.log(previousSurgeries.value)
+
     const filteredMvdSummary = Object.fromEntries(
       Object.entries(mvdSummary).filter(([key, value]) => value != null && value !== '' && value !== undefined && value.length !== 0)
     );
@@ -265,7 +261,6 @@
     .map(([key, value]) => `${key}: ${value}`)
     .join(',');
 
-  // console.log(summaryText);
   return summaryText; 
     };
 
@@ -290,9 +285,6 @@
     if (previousSurgeries.value.length !== 0){
       calculatePeriodFromLastSurgery();
     }
-  });
-  watch(previousSurgeries, () => {
-    console.log(previousSurgeries.value);
   });
   
   watch(recurrence, (newVal) => {

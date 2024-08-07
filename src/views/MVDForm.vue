@@ -181,14 +181,29 @@
   };
   
   const calculatePeriodFromLastSurgery = () => {
-    if (scheduledSurgeryDate.value.length !== 0 && previousSurgeries.value[0].year > 1980) {
-      const lastSurgeryDate = new Date(previousSurgeries.value[0].year, previousSurgeries.value[0].month ? previousSurgeries.value[0].month - 1 : 0);
+    //previousSurgeries.valueの最後の手術日と今回の手術日の差を計算
+    // previousSurgeries.valueの中は手術日が必ずしも降順になっていない。並び替えて最も新しい手術日を取得する
+    // previousSurgeries.valueを直接並び替えると、Vueがリアクティブに反応して入力中に順番が入れ替わってしまうので入力ミスが起きる。新しい配列を作成して代入する
+    const sortedPreviousSurgeries = [...previousSurgeries.value].sort((a, b) => {
+      if (a.year > b.year) {
+        return -1;
+      } else if (a.year < b.year) {
+        return 1;
+      } else {
+        return a.month > b.month ? -1 : 1;
+      }
+    });
+    console.log(sortedPreviousSurgeries);
+
+    if (scheduledSurgeryDate.value.length !== 0 && sortedPreviousSurgeries[0].year > 1980) {
+      const lastSurgeryDate = new Date(sortedPreviousSurgeries[0].year, sortedPreviousSurgeries[0].month ? sortedPreviousSurgeries[0].month - 1 : 0);
       const surgeryDate = new Date(scheduledSurgeryDate.value);
       const { diffYears, diffMonths } = calculatePeriodBetweenDates(lastSurgeryDate, surgeryDate);
       periodFromLastSurgery.value = `${diffYears}年${diffMonths}ヶ月`;
     } else {
       periodFromLastSurgery.value = '';
     }
+
   };
   
   const getSummaryOfMVD = () => {

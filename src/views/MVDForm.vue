@@ -71,16 +71,16 @@
       </v-row>
   
       <v-radio-group v-if="showDentalHistory" v-model="dentalTreatmentHistory" label="痛みについての歯科治療歴" inline>
-        <v-radio label="有り" value="有り"></v-radio>
-        <v-radio label="無し" value="無し"></v-radio>
+        <v-radio label="あり" value="あり"></v-radio>
+        <v-radio label="なし" value="なし"></v-radio>
       </v-radio-group>
   
       <v-radio-group v-if="showBotoxTreatment" v-model="botoxTreatment" label="ボトックス治療の有無" inline>
-        <v-radio label="有り" value="有り"></v-radio>
-        <v-radio label="無し" value="無し"></v-radio>
+        <v-radio label="あり" value="あり"></v-radio>
+        <v-radio label="なし" value="なし"></v-radio>
       </v-radio-group>
   
-      <v-row v-if="botoxTreatment === '有り'"> 
+      <v-row v-if="botoxTreatment === 'あり'"> 
         <v-col cols="4">
           <v-select v-model="botoxYear" :items="years" label="ボトックス治療開始年"></v-select>
         </v-col>
@@ -193,7 +193,6 @@
         return a.month > b.month ? -1 : 1;
       }
     });
-    console.log(sortedPreviousSurgeries);
 
     if (scheduledSurgeryDate.value.length !== 0 && sortedPreviousSurgeries[0].year > 1980) {
       const lastSurgeryDate = new Date(sortedPreviousSurgeries[0].year, sortedPreviousSurgeries[0].month ? sortedPreviousSurgeries[0].month - 1 : 0);
@@ -305,7 +304,7 @@
   });
 
   watch(botoxTreatment, (newVal) => {
-    if (newVal === '無し') {
+    if (newVal === 'なし') {
       botoxYear.value = null;
       botoxMonth.value = null;
     }

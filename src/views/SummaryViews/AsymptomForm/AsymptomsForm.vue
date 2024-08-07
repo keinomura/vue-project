@@ -1,29 +1,87 @@
 <template>
-    <div style="background-color: greenyellow">
-      <v-radio-group v-model="lesionSide" label="病側" inline>
-        <v-radio label="左" value="左"></v-radio>
-        <v-radio label="右" value="右"></v-radio>
-      </v-radio-group>
-  
-      <v-select
-        v-if="showPainArea"
-        v-model="painArea"
+    <div style="background-color: lightblue">
+      //病側 左右両方 Checkbox
+      <v-checkbox v-model="lesionSide" label="左" value="左"></v-checkbox>
+      <v-checkbox v-model="lesionSide" label="右" value="右"></v-checkbox>
+      <v-checkbox v-model="lesionSide" label="両側" value="両側"></v-checkbox>
 
-        :items="painAreasOption"
-        label="痛みの領域"
-        multiple
-        inline
-      ></v-select>
-  
-      <v-row>
-        <v-col cols="4">
-          <v-select v-model="onsetYear" :items="years" label="発症年"></v-select>
-        </v-col>
-        <v-col cols="4">
-          <v-select v-model="onsetMonth" :items="[''].concat(months)" label="発症時期 月"></v-select>
-        </v-col>
-      </v-row>
-  
+      <div v-if="disName === 'ICS'">
+        <div v-if="lesionSide.includes('右')||lesionSide.includes('両側')">
+          <!--右側病変-->
+          <v-col>
+            <span>右側病変</span>
+          </v-col>
+          <!--症候性、無症候性 radiobutton-->
+          <v-radio-group v-model="symptomaticRight" label="症候性" inline>
+            <v-radio label="症候性" value="症候性"></v-radio>
+            <v-radio label="無症候性" value="無症候性"></v-radio>
+          </v-radio-group>
+          <!--CAS:プラーク性状 テキスト入力-->
+          <v-text-field v-model="plaqueCharacterRight" label="プラーク性状"></v-text-field>
+          <!--CAS:NASCET %数値入力-->
+          <v-text-field v-model="nascetRight" label="NASCET %"></v-text-field>
+          <!--CAS:Echo エコー所見テキスト入力-->
+          <v-text-field v-model="echoFindingsRight" label="Echo エコー所見"></v-text-field>
+          <!--CAS:Vmax-->
+          <v-text-field v-model="vmaxRight" label="Vmax"></v-text-field>
+          <!--CAS:潰瘍性病変 有無-->
+          <v-radio-group v-model="ulcerativeLesionRight" label="潰瘍性病変" inline>
+            <v-radio label="あり" value="あり"></v-radio>
+            <v-radio label="なし" value="なし"></v-radio>
+          </v-radio-group>
+        </div>
+
+        <div v-if="lesionSide.includes('左')||lesionSide.includes('両側')">
+          <!--左側病変-->
+          <v-col>
+            <span>左側病変</span>
+          </v-col>
+          <!--症候性、無症候性 radiobutton-->
+          <v-radio-group v-model="symptomaticLeft" label="症候性" inline>
+            <v-radio label="症候性" value="症候性"></v-radio>
+            <v-radio label="無症候性" value="無症候性"></v-radio>
+          </v-radio-group>
+          <!--CAS:プラーク性状 テキスト入力-->
+          <v-text-field v-model="plaqueCharacterLeft" label="プラーク性状"></v-text-field>
+          <!--CAS:NASCET %数値入力-->
+          <v-text-field v-model="nascetLeft" label="NASCET %"></v-text-field>
+          <!--CAS:Echo エコー所見テキスト入力-->
+          <v-text-field v-model="echoFindingsLeft" label="Echo エコー所見"></v-text-field>
+          <!--CAS:Vmax-->
+          <v-text-field v-model="vmaxLeft" label="Vmax"></v-text-field>
+          <!--CAS:潰瘍性病変 有無-->
+          <v-radio-group v-model="ulcerativeLesionLeft" label="潰瘍性病変" inline>
+            <v-radio label="あり" value="あり"></v-radio>
+            <v-radio label="なし" value="なし"></v-radio>
+          </v-radio-group>
+        </div>
+      </div>
+
+      //Coil
+      <div v-if="disName === 'Aneurysm'">
+        //Coil:右病変
+        <div v-if="lesionSide === '右'||lesionSide === '両側'">
+          //Aneurysm部位を v-selectで選択 変数aneurysmLocationOptionsから選択肢を取得 aneurysmLocation:[]に格納。labelは"部位"
+          <v-select v-model="aneurysmLocationRight" :items="aneurysmLocationOptions" label="部位"></v-select>
+          //選択肢にその他が含まれている場合はフリー入力
+          <v-text-field v-if="aneurysmLocationRight === 'その他'" v-model="aneurysmLocationRightText" label="複数個ある場合は','で区切って"></v-text-field>
+        </div>
+        //Coil:左病変
+        <div v-if="lesionSide === '左'||lesionSide === '両側'">
+          //Aneurysm部位を v-selectで選択 変数aneurysmLocationOptionsから選択肢を取得 aneurysmLocation:[]に格納。labelは"部位"
+          <v-select v-model="aneurysmLocationLeft" :items="aneurysmLocationOptions" label="部位"></v-select>
+          //選択肢にその他が含まれている場合はフリー入力
+          <v-text-field v-if="aneurysmLocationLeft === 'その他'" v-model="aneurysmLocationLeftText" label="複数個ある場合は','で区切って"></v-text-field>
+        </div>
+        //Coil:今回治療病変 変数aneurysmLocationRight,aneurysmLocationLeftに含まれている選択肢の部位を一覧にする。かつCheckboxで選択できるようにする
+          <v-select v-model="treatedAneurysmLocation" :items="treatedAneurysmLocationOptions" label="今回治療病変" multiple></v-select>
+        //Coil:病変大きさ テキスト入力--
+          <v-text-field v-model="aneurysmSize" label="病変大きさ"></v-text-field>
+      </div>
+      //備考 テキストボックス
+      <v-textarea v-model="additionalNotes" label="備考"></v-textarea>
+      //手術有無
+      //手術日
       <v-row>
         <v-radio-group v-model="operation" label="今回手術" inline>
           <v-radio label="あり" value="あり"></v-radio>
@@ -35,9 +93,6 @@
         <v-col cols="6">
           <span class="ma-2">今回手術予定日</span>
           <v-date-picker v-model="scheduledSurgeryDate" style="background-color: greenyellow;"></v-date-picker>
-        </v-col>
-        <v-col cols="4">
-          <span>発症から</span>{{ periodFromOnsetToSurgery }}
         </v-col>
       </v-row>
   
@@ -69,44 +124,6 @@
           <v-btn @click="addSurgery" class="ma-2">手術を追加</v-btn>
         </v-col>
       </v-row>
-  
-      <v-radio-group v-if="showDentalHistory" v-model="dentalTreatmentHistory" label="痛みについての歯科治療歴" inline>
-        <v-radio label="あり" value="あり"></v-radio>
-        <v-radio label="なし" value="なし"></v-radio>
-      </v-radio-group>
-  
-      <v-radio-group v-if="showBotoxTreatment" v-model="botoxTreatment" label="ボトックス治療の有無" inline>
-        <v-radio label="あり" value="あり"></v-radio>
-        <v-radio label="なし" value="なし"></v-radio>
-      </v-radio-group>
-  
-      <v-row v-if="botoxTreatment === 'あり'"> 
-        <v-col cols="4">
-          <v-select v-model="botoxYear" :items="years" label="ボトックス治療開始年"></v-select>
-        </v-col>
-        <v-col cols="4">
-          <v-select v-model="botoxMonth" :items="[''].concat(months)" label="ボトックス治療開始月"></v-select>
-        </v-col>
-      </v-row>
-  
-      <div v-if="operation === 'あり'">
-        <span>手術直前内服量</span>
-        <div v-for="(medication, index) in preSurgeryMedications" :key="index">
-          <v-row>
-            <v-col cols="6">
-              <v-select v-model="medication.name" :items="medications" label="薬剤名"></v-select>
-            </v-col>
-            <v-col cols="3">
-              <v-text-field v-model="medication.dosage" label="1日量"></v-text-field>
-            </v-col>
-            <v-col cols="2">
-              <v-btn @click="removeMedication(index)">削除</v-btn>
-            </v-col>
-          </v-row>
-        </div>
-        <v-btn @click="addMedication" class="ma-2">薬剤を追加</v-btn>
-        <v-textarea v-model="additionalNotes" label="追加のメモ"></v-textarea>
-      </div>
     </div>
   </template>
   
@@ -115,30 +132,51 @@
   
   // Props
   const props = defineProps({
-    medications: Array,
-    showPainArea: Boolean,
-    showDentalHistory: Boolean,
-    showBotoxTreatment: Boolean,
+    disName: String,
   });
   
-  const lesionSide = ref('左');
+
+  // Data
+  const lesionSide = ref([]);
+  const symptomaticRight = ref('');
+  const symptomaticLeft = ref('');
+  const plaqueCharacterRight = ref('');
+  const plaqueCharacterLeft = ref('');
+  const nascetRight = ref('');
+  const nascetLeft = ref('');
+  const echoFindingsRight = ref('');
+  const echoFindingsLeft = ref('');
+  const vmaxRight = ref('');
+  const vmaxLeft = ref('');
+  const ulcerativeLesionRight = ref('');
+  const ulcerativeLesionLeft = ref('');
+  const aneurysmLocationRight = ref('');
+  const aneurysmLocationLeft = ref('');
+  const treatedAneurysmLocationOptions = ref([]);
+  const treatedAneurysmLocation = ref([]);
+  const aneurysmSize = ref('');
+  const additionalNotes = ref('');
+  const scheduledSurgeryDate = ref([]);
+  const recurrence = ref('初発');
+  const previousSurgeries = ref(recurrence.value === '再発' ? [{ year: '', month: '' }] : []);
+  const periodFromLastSurgery = ref('');
+
   const painArea = ref([]);
   const painAreasOption = ref(['V1', 'V2', 'V3']);
   const operation = ref('あり');
   const periodFromOnsetToSurgery = ref('');
-  const recurrence = ref('初発');
   const onsetYear = ref(null);
   const onsetMonth = ref(null);
-  const previousSurgeries = ref(recurrence.value === '再発' ? [{ year: '', month: '' }] : []);
-  const scheduledSurgeryDate = ref([]);
-  const periodFromLastSurgery = ref('');
   const dentalTreatmentHistory = ref('');
   const preSurgeryMedications = ref([]);
-  const additionalNotes = ref('');
   const botoxTreatment = ref('');
   const botoxYear = ref(null);
   const botoxMonth = ref(null);
   
+  //options
+  const aneurysmLocationOptions = ref(['IC-Pcom', 'IC-Ant.chor.A','IC-bif','MCA:M1', 'MCA:M1-2','ACom', 'A1-2', 'BA-Tip', 'BA-SCA', 'VA-PICA', 'VA', 'その他']);
+
+
   const years = ref(Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i));
   const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
   

@@ -48,17 +48,17 @@
         </v-radio-group>
       </v-row>
   
-      <v-row v-if="recurrence === '再発'"> // TODO: 初発の場合前回手術データpreviousSurgeriesを消す
+      <v-row v-if="recurrence === '再発'"> 
         <v-col cols="12">
-          <span>発症前回手術から</span>{{ periodFromLastSurgery }}
+          <span>発症前回手術から</span>{{ periodFromLastSurgery }} // TODO: 表示されないエラー
         </v-col>
         <v-col cols="8">
           <v-row v-for="(surgery, index) in previousSurgeries" :key="index">
             <v-col cols="4">
-              <v-select v-model="surgery.year" :items="years" label="前回手術年"></v-select>
+              <v-select v-model="surgery.year" :items="years" label="前回手術年" @update:modelValue="calculatePeriodFromLastSurgery"></v-select>
             </v-col>
             <v-col cols="4">
-              <v-select v-model="surgery.month" :items="[''].concat(months)" label="前回手術月"></v-select>
+              <v-select v-model="surgery.month" :items="[''].concat(months)" label="前回手術月" @update:modelValue="calculatePeriodFromLastSurgery"></v-select>
             </v-col>
             <v-col cols="1">
               <v-btn @click="removeSurgery(index)">削除</v-btn>
@@ -80,7 +80,7 @@
         <v-radio label="無し" value="無し"></v-radio>
       </v-radio-group>
   
-      <v-row v-if="botoxTreatment === '有り'"> // TODO: 無しの場合ボトックス治療開始年月のデータを消す
+      <v-row v-if="botoxTreatment === '有り'"> 
         <v-col cols="4">
           <v-select v-model="botoxYear" :items="years" label="ボトックス治療開始年"></v-select>
         </v-col>
@@ -150,6 +150,10 @@
     previousSurgeries.value.splice(index, 1);
   };
   
+  const updatePreviousSurgeries = () => {
+      console.log('hit');
+  };
+
   const addMedication = () => {
     preSurgeryMedications.value.push({ name: '', dosage: '' });
   };
@@ -234,11 +238,11 @@
       '術前治療薬': getPreSurgeryMedicationsText(),
       '備考': additionalNotes.value,
       'ボトックス治療': botoxTreatment.value,
-      'ボトックス開始年': botoxYear.value,
-      'ボトックス開始月': botoxMonth.value,
+      'ボトックス開始年月': botoxYear.value  ? `${botoxYear.value}/${botoxMonth.value ? botoxMonth.value : ''}` : null,
+
     };
     // return mvdSummary
-    console.log(previousSurgeries.value)
+    // console.log(previousSurgeries.value)
     const filteredMvdSummary = Object.fromEntries(
       Object.entries(mvdSummary).filter(([key, value]) => value != null && value !== '' && value !== undefined && value.length !== 0)
     );
@@ -251,32 +255,6 @@
   return summaryText; 
     };
 
-  watch(operation, (newVal) => {
-    if (newVal === 'なし') {
-      recurrence.value = '';
-      previousSurgeries.value = [];
-      scheduledSurgeryDate.value = [];
-      preSurgeryMedications.value = [];
-    }
-  });
-  
-  watch(recurrence, (newVal) => {
-    if (newVal === '再発' && previousSurgeries.value.length === 0) {
-      addSurgery();
-    } else if (newVal === '初発') {
-      previousSurgeries.value = [];
-    }
-  });
-  
-  watch([scheduledSurgeryDate, onsetYear, onsetMonth], calculatePeriodFromOnsetToSurgery);
-  
-  watch(previousSurgeries, (newSurgeries) => {
-    newSurgeries.sort((b, a) => a.year - b.year || a.month - b.month);
-    if (scheduledSurgeryDate.value.length !== 0) {
-      calculatePeriodFromLastSurgery();
-    }
-  }, { deep: true });
-
   // "defineExpose"を使用して、外部から参照できるプロパティを定義する
   defineExpose({
     getSummaryOfMVD,
@@ -284,21 +262,33 @@
 
   watch (operation, (newVal) => {
     if (newVal === 'なし') {
-      scheduledSurgeryDate.value = null;
-      recurrence.value = '初発';
+      scheduledSurgeryDate.value = [];
+      recurrence.value = '';
       previousSurgeries.value = [];
+      preSurgeryMedications.value = [];
     }
   });
 
+  watch(onsetYear, calculatePeriodFromOnsetToSurgery);
+  watch(onsetMonth, calculatePeriodFromOnsetToSurgery);
+  watch(scheduledSurgeryDate, () => {
+    calculatePeriodFromOnsetToSurgery();
+    if (previousSurgeries.value.length !== 0){
+      calculatePeriodFromLastSurgery();
+    }
+  });
+  watch(previousSurgeries, () => {
+    console.log(previousSurgeries.value);
+  });
+  
   watch(recurrence, (newVal) => {
     if (newVal === '初発') {
       previousSurgeries.value = [];
+    } else if (newVal === '再発') {
+      previousSurgeries.value = [{ year: '', month: '' }];
     }
   });
 
-  watch([scheduledSurgeryDate, onsetYear, onsetMonth], calculatePeriodFromOnsetToSurgery);
-
-  
   watch(botoxTreatment, (newVal) => {
     if (newVal === '無し') {
       botoxYear.value = null;
@@ -306,10 +296,8 @@
     }
   });
 
-
-
   </script>
-  
+
   <style scoped>
   /* Add your styles here */
   </style>

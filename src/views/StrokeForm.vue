@@ -166,6 +166,7 @@
 
 <script setup>
   // import { l } from 'vite/dist/node/types.d-aGj9QkWt';
+  import { defineProps } from 'vue';
   import { ref, watch } from 'vue';
 
   // Props: 読み込み時に配列で定義する
@@ -207,6 +208,63 @@
   const antiplateletTypeSelection = ref(['アスピリン', 'クロピドグレル', 'シロスタゾール', 'プラスグレル', 'その他']);
   const riskFactorsSelection = ref(['高血圧', '高脂血症', '糖尿病', '心房細動', '脳血管障害の既往', '未破裂動脈瘤', '虚血性心疾患', 'その他']);
   const lesionLocationSelection = ref(['テント上穿通枝', 'テント上皮質枝', 'テント下', 'テント上下', '責任病変不明']);
+
+  // Methods
+  const getSummaryOfStroke = () => {
+    // 作成したサマリーを返す
+    // 入力されていない項目は削除する
+    // 日付はyyyy/mm/ddで表示する関数
+    const formatDate = (date) => {
+      if (date !== undefined && date !== null && date !== '' && date.length !== 0) {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = ('0' + (d.getMonth() + 1)).slice(-2);
+        const day = ('0' + d.getDate()).slice(-2);
+        return `${year}/${month}/${day}`;
+      } else {
+        return '';
+      }
+    };
+
+    const strokeSummary = {
+      '病型': strokeType.value,
+      '病型詳細': strokeTypeElse.value,
+      '病側': lesionSide.value,
+      '発症時刻': formatDate(strokeOnsetTime.value),
+      '入院時刻': admissionTime.value,
+      '抗血小板薬': antiplateletType.value,
+      '抗凝固薬': anticoagulantType.value,
+      '危険因子': riskFactors.value,
+      '画像所見': mriFindings.value,
+      'aspectScore': aspectScore.value,
+      '今回は': firstOrRecurrent.value,
+      '備考': additionalNotes.value,
+      'NIHSS': NIHSS.value,
+      '前回発症': previousStrokeYear.value,
+      '病変大きさ': lesionSize.value,
+      '病変部位': lesionLocation.value,
+      '手術': surgicalTreatment.value,
+      'tPA': tPATreatment.value,
+      '血管内治療': endovascularTreatment.value,
+    };
+
+    const filteredStrokeSummary = Object.fromEntries(
+      Object.entries(strokeSummary).filter(([key, value]) => value != null && value !== '' && value !== undefined && value.length !== 0)
+    );
+
+    const summaryText = Object.entries(filteredStrokeSummary)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(',');
+
+    return summaryText
+  }
+
+  // defineExpose
+  defineExpose({
+    getSummaryOfStroke,
+  });
+
+  // Watchers
 
   watch(() => strokeType.value, (value) => {
     if (!value.includes('その他')) {

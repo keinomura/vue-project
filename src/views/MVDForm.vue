@@ -213,7 +213,6 @@
       } else {
         return '';
       }
-
     };
 
     const getPreviousSurgeriesText = () => {

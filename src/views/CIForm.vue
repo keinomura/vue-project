@@ -1,15 +1,15 @@
 <template>
-    <StrokeForm 
+    <StrokeForm
     ref="strokeChild"
-    :strokeTypeSelection="strokeTypeSelection" 
-    :aspectShow="true" 
+    :strokeTypeSelection="strokeTypeSelection"
+    :aspectShow="true"
     :lesionSizeSelection="lesionSizeSelection"
     :showOperativeTreatment="false"
     :showtPATreatment="true"
     :showEndovascularTreatment="true"
     />
 </template>
-  
+
 <script setup>
   import StrokeForm from './StrokeForm.vue';
   const strokeTypeSelection = ['アテローム血栓性', '心原性塞栓', 'ラクナ', 'その他'];

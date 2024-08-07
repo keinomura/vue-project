@@ -142,11 +142,13 @@
     import TNForm from './MVDViews/TNForm.vue';
     import ICHForm from './StrokeViews/ICHForm.vue';
     import CIForm from './StrokeViews/CIForm.vue';
+    import ICSForm from './AsymptomForm/ICSForm.vue';
+    // import AneurysmForm from './AsymptomForm/AneurysmForm.vue';
 
     const child = ref(null);
 
     const selectedDisease = ref('デフォルト');
-    const diseases = ref(['デフォルト', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣']);
+    const diseases = ref(['デフォルト', 'ICS', '動脈瘤', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣']);
     const chiefComplain = ref('');
     const presentHistory = ref('');
     const admissionRoute = ref('2 直接入院、家庭からの入院');
@@ -204,6 +206,10 @@
         return CIForm;
       } else if (selectedDisease.value === '脳出血') {
         return ICHForm;
+      } else if (selectedDisease.value === 'ICS') {
+        return ICSForm;
+      } else if (selectedDisease.value === '動脈瘤') {
+        return AneurysmForm;
       }
     }
 

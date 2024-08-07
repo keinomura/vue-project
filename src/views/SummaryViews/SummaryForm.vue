@@ -66,14 +66,14 @@
                 <v-col cols="12">
                   <label for="pastHistoryArea">既往歴</label>
                   <v-row id="pastHistoryArea" label="既往歴">
-                    <v-select
+                    <v-checkbox
+                      v-for="pastHistory in pastHistories"
                       v-model="riskFactors"
-                      :items="pastHistories"
-                      hint="Pick past histories"
-                      label="Select"
+                      :label="pastHistory"
+                      :value="pastHistory"
                       multiple
                       persistent-hint
-                    ></v-select>
+                    ></v-checkbox>
                   </v-row>
                   <v-row>
                     <v-textarea v-model="pastHistory" label="その他特記すべきことなし" outlined></v-textarea>
@@ -138,10 +138,10 @@
   <script setup>
     import { ref } from 'vue';
 
-    import HFSForm from './HFSForm.vue';
-    import TNForm from './TNForm.vue';
-    import ICHForm from './ICHForm.vue';
-    import CIForm from './CIForm.vue';
+    import HFSForm from './MVDViews/HFSForm.vue';
+    import TNForm from './MVDViews/TNForm.vue';
+    import ICHForm from './StrokeViews/ICHForm.vue';
+    import CIForm from './StrokeViews/CIForm.vue';
 
     const child = ref(null);
 
@@ -183,10 +183,14 @@
       '高血圧',
       '糖尿病',
       '狭心症',
-      '不整脈',
+      '心房細動',
+      '虚血性心疾患',
+      'その他不整脈',
+      '脳卒中の既往',
+      '未破裂脳動脈瘤',
       '喫煙',
       '飲酒',
-      '家族歴'
+      '家族歴',
     ]);
 
     function selectedDiseaseComponent() {

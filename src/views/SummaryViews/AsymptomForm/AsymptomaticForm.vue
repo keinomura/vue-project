@@ -1,12 +1,14 @@
 <template>
     <div style="background-color: lightblue">
-      //病側 左右両方 Checkbox
-      <v-checkbox v-model="lesionSide" label="左" value="左"></v-checkbox>
-      <v-checkbox v-model="lesionSide" label="右" value="右"></v-checkbox>
-      <v-checkbox v-model="lesionSide" label="両側" value="両側"></v-checkbox>
-
+      <v-row>
+        <v-col cols="1">
+          <span>病側</span>
+        </v-col>
+        <v-checkbox v-model="lesionSide" label="右" value="右"></v-checkbox>
+        <v-checkbox v-model="lesionSide" label="左" value="左"></v-checkbox>
+      </v-row>
       <div v-if="disName === 'ICS'">
-        <div v-if="lesionSide.includes('右')||lesionSide.includes('両側')">
+        <div v-if="lesionSide.includes('右')">
           <!--右側病変-->
           <v-col>
             <span>右側病変</span>
@@ -16,19 +18,28 @@
             <v-radio label="症候性" value="症候性"></v-radio>
             <v-radio label="無症候性" value="無症候性"></v-radio>
           </v-radio-group>
+
+          <v-row>
+            <v-col cols="4">
+              <!--CAS:NASCET %数値入力-->
+              <v-text-field v-model="nascetRight" label="NASCET %"></v-text-field>
+            </v-col>
+            <v-col cols="4">
+              <!--CAS:Vmax-->
+              <v-text-field v-model="vmaxRight" label="Vmax"></v-text-field>
+            </v-col>
+            <v-col cols="4">
+              <!--CAS:潰瘍性病変 有無-->
+              <v-radio-group v-model="ulcerativeLesionRight" label="潰瘍性病変" inline>
+                <v-radio label="あり" value="あり"></v-radio>
+                <v-radio label="なし" value="なし"></v-radio>
+              </v-radio-group>
+            </v-col>
+          </v-row>
           <!--CAS:プラーク性状 テキスト入力-->
           <v-text-field v-model="plaqueCharacterRight" label="プラーク性状"></v-text-field>
-          <!--CAS:NASCET %数値入力-->
-          <v-text-field v-model="nascetRight" label="NASCET %"></v-text-field>
           <!--CAS:Echo エコー所見テキスト入力-->
-          <v-text-field v-model="echoFindingsRight" label="Echo エコー所見"></v-text-field>
-          <!--CAS:Vmax-->
-          <v-text-field v-model="vmaxRight" label="Vmax"></v-text-field>
-          <!--CAS:潰瘍性病変 有無-->
-          <v-radio-group v-model="ulcerativeLesionRight" label="潰瘍性病変" inline>
-            <v-radio label="あり" value="あり"></v-radio>
-            <v-radio label="なし" value="なし"></v-radio>
-          </v-radio-group>
+          <v-textarea v-model="echoFindingsRight" label="Echo エコー所見"></v-textarea>
         </div>
 
         <div v-if="lesionSide.includes('左')||lesionSide.includes('両側')">
@@ -41,23 +52,31 @@
             <v-radio label="症候性" value="症候性"></v-radio>
             <v-radio label="無症候性" value="無症候性"></v-radio>
           </v-radio-group>
+
+          <v-row>
+            <v-col cols="4">
+              <!--CAS:NASCET %数値入力-->
+              <v-text-field v-model="nascetLeft" label="NASCET %"></v-text-field>
+            </v-col>
+            <v-col cols="4">
+              <!--CAS:Vmax-->
+              <v-text-field v-model="vmaxLeft" label="Vmax"></v-text-field>
+            </v-col>
+            <v-col cols="4">
+              <!--CAS:潰瘍性病変 有無-->
+              <v-radio-group v-model="ulcerativeLesionLeft" label="潰瘍性病変" inline>
+                <v-radio label="あり" value="あり"></v-radio>
+                <v-radio label="なし" value="なし"></v-radio>
+              </v-radio-group>
+            </v-col>
+          </v-row>
           <!--CAS:プラーク性状 テキスト入力-->
           <v-text-field v-model="plaqueCharacterLeft" label="プラーク性状"></v-text-field>
-          <!--CAS:NASCET %数値入力-->
-          <v-text-field v-model="nascetLeft" label="NASCET %"></v-text-field>
           <!--CAS:Echo エコー所見テキスト入力-->
-          <v-text-field v-model="echoFindingsLeft" label="Echo エコー所見"></v-text-field>
-          <!--CAS:Vmax-->
-          <v-text-field v-model="vmaxLeft" label="Vmax"></v-text-field>
-          <!--CAS:潰瘍性病変 有無-->
-          <v-radio-group v-model="ulcerativeLesionLeft" label="潰瘍性病変" inline>
-            <v-radio label="あり" value="あり"></v-radio>
-            <v-radio label="なし" value="なし"></v-radio>
-          </v-radio-group>
+          <v-textarea v-model="echoFindingsLeft" label="Echo エコー所見"></v-textarea>
         </div>
       </div>
 
-      //Coil
       <div v-if="disName === 'Aneurysm'">
         //Coil:右病変
         <div v-if="lesionSide === '右'||lesionSide === '両側'">
@@ -78,21 +97,28 @@
         //Coil:病変大きさ テキスト入力--
           <v-text-field v-model="aneurysmSize" label="病変大きさ"></v-text-field>
       </div>
-      //備考 テキストボックス
-      <v-textarea v-model="additionalNotes" label="備考"></v-textarea>
-      //手術有無
-      //手術日
+
+      <v-textarea v-model="additionalNotes" label="その他備考"></v-textarea>
+
       <v-row>
         <v-radio-group v-model="operation" label="今回手術" inline>
           <v-radio label="あり" value="あり"></v-radio>
           <v-radio label="なし" value="なし"></v-radio>
         </v-radio-group>
       </v-row>
-  
+      <div v-if="operation === 'あり' && lesionSide.includes('右') && lesionSide.includes('左')">
+        <v-row>
+          <v-col cols="12">
+            <span>今回治療側</span>
+          </v-col>{{ treatedICSLocation }}
+          <v-checkbox v-model="treatedICSLocation" label="右" value="右"></v-checkbox>
+          <v-checkbox v-model="treatedICSLocation" label="左" value="左"></v-checkbox>
+        </v-row>
+      </div>
       <v-row v-if="operation === 'あり'">
         <v-col cols="6">
           <span class="ma-2">今回手術予定日</span>
-          <v-date-picker v-model="scheduledSurgeryDate" style="background-color: greenyellow;"></v-date-picker>
+          <v-date-picker v-model="scheduledSurgeryDate" style="background-color: lightblue;"></v-date-picker>
         </v-col>
       </v-row>
   
@@ -105,7 +131,7 @@
   
       <v-row v-if="recurrence === '再発'"> 
         <v-col cols="12">
-          <span>発症前回手術から</span>{{ periodFromLastSurgery }} // TODO: 表示されないエラー
+          <span>発症前回手術から</span>{{ periodFromLastSurgery }}
         </v-col>
         <v-col cols="8">
           <v-row v-for="(surgery, index) in previousSurgeries" :key="index">
@@ -137,9 +163,17 @@
   
 
   // Data
-  const lesionSide = ref([]);
+  const lesionSide = ref(['右']);
   const symptomaticRight = ref('');
   const symptomaticLeft = ref('');
+  const additionalNotes = ref('');
+  const scheduledSurgeryDate = ref([]);
+  const recurrence = ref('初発');
+  const previousSurgeries = ref(recurrence.value === '再発' ? [{ year: '', month: '' }] : []);
+  const periodFromLastSurgery = ref('');
+  const operation = ref('あり');
+
+  // CAS variables
   const plaqueCharacterRight = ref('');
   const plaqueCharacterLeft = ref('');
   const nascetRight = ref('');
@@ -150,32 +184,19 @@
   const vmaxLeft = ref('');
   const ulcerativeLesionRight = ref('');
   const ulcerativeLesionLeft = ref('');
+  const treatedICSLocation = ref([]);
+
+  //aneurysm variables
   const aneurysmLocationRight = ref('');
   const aneurysmLocationLeft = ref('');
   const treatedAneurysmLocationOptions = ref([]);
   const treatedAneurysmLocation = ref([]);
   const aneurysmSize = ref('');
-  const additionalNotes = ref('');
-  const scheduledSurgeryDate = ref([]);
-  const recurrence = ref('初発');
-  const previousSurgeries = ref(recurrence.value === '再発' ? [{ year: '', month: '' }] : []);
-  const periodFromLastSurgery = ref('');
+  const aneurysmLocationRightText = ref('');
+  const aneurysmLocationLeftText = ref('');
 
-  const painArea = ref([]);
-  const painAreasOption = ref(['V1', 'V2', 'V3']);
-  const operation = ref('あり');
-  const periodFromOnsetToSurgery = ref('');
-  const onsetYear = ref(null);
-  const onsetMonth = ref(null);
-  const dentalTreatmentHistory = ref('');
-  const preSurgeryMedications = ref([]);
-  const botoxTreatment = ref('');
-  const botoxYear = ref(null);
-  const botoxMonth = ref(null);
-  
   //options
   const aneurysmLocationOptions = ref(['IC-Pcom', 'IC-Ant.chor.A','IC-bif','MCA:M1', 'MCA:M1-2','ACom', 'A1-2', 'BA-Tip', 'BA-SCA', 'VA-PICA', 'VA', 'その他']);
-
 
   const years = ref(Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i));
   const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
@@ -187,32 +208,12 @@
   const removeSurgery = (index) => {
     previousSurgeries.value.splice(index, 1);
   };
-
-
-  const addMedication = () => {
-    preSurgeryMedications.value.push({ name: '', dosage: '' });
-  };
-  
-  const removeMedication = (index) => {
-    preSurgeryMedications.value.splice(index, 1);
-  };
   
   const calculatePeriodBetweenDates = (date1, date2) => {
     const diffTime = Math.abs(date2 - date1);
     const diffYears = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365));
     const diffMonths = Math.floor((diffTime % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
     return { diffYears, diffMonths };
-  };
-  
-  const calculatePeriodFromOnsetToSurgery = () => {
-    if (scheduledSurgeryDate.value.length !== 0 && onsetYear.value) {
-      const onsetDate = new Date(onsetYear.value, onsetMonth.value ? onsetMonth.value - 1 : 0);
-      const surgeryDate = new Date(scheduledSurgeryDate.value);
-      const { diffYears, diffMonths } = calculatePeriodBetweenDates(onsetDate, surgeryDate);
-      periodFromOnsetToSurgery.value = `${diffYears}年${onsetMonth.value ? diffMonths + 'ヶ月' : ''}`;
-    } else {
-      periodFromOnsetToSurgery.value = '';
-    }
   };
   
   const calculatePeriodFromLastSurgery = () => {
@@ -240,7 +241,7 @@
 
   };
   
-  const getSummaryOfMVD = () => {
+  const getSummaryOfAsymptoms = () => {
     const formatDate = (date) => {
       if (date !== undefined && date !== null && date !== '' && date.length !== 0) {
         const d = new Date(date);
@@ -263,47 +264,56 @@
       }
     };
 
-    const getPreSurgeryMedicationsText = () => {
-      if (preSurgeryMedications.value.length === 0) {
-      return '';
-      } else {
-      return preSurgeryMedications.value.map((medication) => {
-        return `${medication.name} ${medication.dosage}`;
-      }).join(',');
+    const AsymptomaticSummary = {
+      '今回治療病変': treatedICSLocation.value.join(','),
+      // '今回治療病変': treatedAneurysmLocation.value.join(','),
+      '病変大きさ': aneurysmSize.value,
+      'その他備考': additionalNotes.value,
+      '手術': operation.value,
+      '手術予定日': formatDate(scheduledSurgeryDate.value),
+      '': recurrence.value,
+      '発症前回手術から': periodFromLastSurgery.value,
+      '前回手術': getPreviousSurgeriesText(),
+    };
+    console.log(AsymptomaticSummary);
+    // 右側と左側の所見をまとめる関数
+      const getSideSummary = (side, symptomatic, plaqueCharacter, nascet, vmax, ulcerativeLesion, echoFindings, aneurysmLocation) => {
+      return `ICS${side}病変: ${symptomatic}, プラーク性状: ${plaqueCharacter}, NASCET %: ${nascet}, Vmax: ${vmax}, 潰瘍性病変: ${ulcerativeLesion}, Echo所見: ${echoFindings}, 病変部位: ${aneurysmLocation}`;
+    };
+
+    // サマリーテキストの計算
+    const ICSSummaryText = () => {
+      const rightSummary = getSideSummary('右側', symptomaticRight.value, plaqueCharacterRight.value, nascetRight.value, vmaxRight.value, ulcerativeLesionRight.value, echoFindingsRight.value, aneurysmLocationRight.value);
+      const leftSummary = getSideSummary('左側', symptomaticLeft.value, plaqueCharacterLeft.value, nascetLeft.value, vmaxLeft.value, ulcerativeLesionLeft.value, echoFindingsLeft.value, aneurysmLocationLeft.value);
+      let summary = '';
+      if (lesionSide.value.includes('右')) {
+        summary = rightSummary;
       }
+      if (lesionSide.value.includes('左')) {
+        summary += (summary ? '\n' : '') + leftSummary;
+      }
+      return summary;
     };
 
-    const mvdSummary = {
-      '病側': lesionSide.value,
-      '部位': painArea.value,
-      '手術日': scheduledSurgeryDate.value ? formatDate(scheduledSurgeryDate.value) : null,
-      '今回手術は': recurrence.value,
-      '発症から手術まで': periodFromOnsetToSurgery.value,
-      '発症年月': onsetYear.value  ? `${onsetYear.value}/${onsetMonth.value ? onsetMonth.value : ''}` : null,
-      '手術既往': getPreviousSurgeriesText(),
-      '前回手術から今回手術まで': periodFromLastSurgery.value,
-      '歯科治療': dentalTreatmentHistory.value,
-      '術前治療薬': getPreSurgeryMedicationsText(),
-      '備考': additionalNotes.value,
-      'ボトックス治療': botoxTreatment.value,
-      'ボトックス開始年月': botoxYear.value  ? `${botoxYear.value}/${botoxMonth.value ? botoxMonth.value : ''}` : null,
-
-    };
-
-    const filteredMvdSummary = Object.fromEntries(
-      Object.entries(mvdSummary).filter(([key, value]) => value != null && value !== '' && value !== undefined && value.length !== 0)
+    const filteredAsymptomaticSummary = Object.fromEntries(
+      Object.entries(AsymptomaticSummary).filter(([key, value]) => value != null && value !== '' && value !== undefined && value.length !== 0)
     );
 
-    const summaryText = Object.entries(filteredMvdSummary)
+    const summaryText = Object.entries(filteredAsymptomaticSummary)
     .map(([key, value]) => `${key}: ${value}`)
     .join(',');
 
-  return summaryText; 
+  return (props.disName=== 'ICS')? ICSSummaryText() + summaryText: summaryText; 
     };
 
   // "defineExpose"を使用して、外部から参照できるプロパティを定義する
   defineExpose({
-    getSummaryOfMVD,
+    getSummaryOfAsymptoms,
+  });
+
+  // Watch for changes in props.disName and update disName2
+  watch(() => props.disName, (newVal) => {
+    disName2.value = newVal;
   });
 
   watch (operation, (newVal) => {
@@ -311,16 +321,6 @@
       scheduledSurgeryDate.value = [];
       recurrence.value = '';
       previousSurgeries.value = [];
-      preSurgeryMedications.value = [];
-    }
-  });
-
-  watch(onsetYear, calculatePeriodFromOnsetToSurgery);
-  watch(onsetMonth, calculatePeriodFromOnsetToSurgery);
-  watch(scheduledSurgeryDate, () => {
-    calculatePeriodFromOnsetToSurgery();
-    if (previousSurgeries.value.length !== 0){
-      calculatePeriodFromLastSurgery();
     }
   });
   
@@ -332,12 +332,6 @@
     }
   });
 
-  watch(botoxTreatment, (newVal) => {
-    if (newVal === 'なし') {
-      botoxYear.value = null;
-      botoxMonth.value = null;
-    }
-  });
 
   </script>
 

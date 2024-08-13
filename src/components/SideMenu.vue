@@ -6,8 +6,7 @@
       </ul>
       <h3>退院サマリ</h3>
       <ul>
-        <li><a href="#" @click.prevent="menuClicked('/stroke')">脳梗塞</a></li>
-        <li><a href="#" @click.prevent="menuClicked('/stroke')">脳出血</a></li>
+        <li><a href="#" @click.prevent="menuClicked('/summaryAtDischarge')">退院サマリ</a></li>
       </ul>
       <h3>手術名</h3>
       <ul>

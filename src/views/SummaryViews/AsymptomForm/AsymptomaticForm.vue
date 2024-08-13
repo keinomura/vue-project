@@ -302,7 +302,7 @@
 
     const AsymptomaticSummary = {
       '今回治療病変': treatedICSLocation.value.join(','),
-      // '今回治療病変': treatedAneurysmLocation.value.join(','),
+      '今回治療病変': treatedAneurysmLocation.value.join(','),
       '病変大きさ': aneurysmSize.value,
       'その他備考': additionalNotes.value,
       '手術': operation.value,
@@ -313,12 +313,12 @@
     };
 
     // Summary of ICS
-    // 右側と左側の所見をまとめる関数
+    // 1. 右側と左側の所見をまとめる関数
       const getSideSummary = (side, symptomatic, plaqueCharacter, nascet, vmax, ulcerativeLesion, echoFindings, aneurysmLocation) => {
       return `ICS${side}病変: ${symptomatic}, プラーク性状: ${plaqueCharacter}, NASCET %: ${nascet}, Vmax: ${vmax}, 潰瘍性病変: ${ulcerativeLesion}, Echo所見: ${echoFindings}, 病変部位: ${aneurysmLocation}`;
     };
 
-    // サマリーテキストの計算
+    // 2. サマリーテキストの計算
     const ICSSummaryText = () => {
       const rightSummary = getSideSummary('右側', symptomaticRight.value, plaqueCharacterRight.value, nascetRight.value, vmaxRight.value, ulcerativeLesionRight.value, echoFindingsRight.value, aneurysmLocationRight.value);
       const leftSummary = getSideSummary('左側', symptomaticLeft.value, plaqueCharacterLeft.value, nascetLeft.value, vmaxLeft.value, ulcerativeLesionLeft.value, echoFindingsLeft.value, aneurysmLocationLeft.value);
@@ -332,6 +332,13 @@
       return summary;
     };
 
+
+    // Summary of Aneurysm
+    const aneurysmSummaryText = () => {
+        return '動脈瘤病変部位' + aneurysmLocationLists.value.join(',')
+    }
+
+
     // 項目が空のものを除外
     const filteredAsymptomaticSummary = Object.fromEntries(
       Object.entries(AsymptomaticSummary).filter(([key, value]) => value != null && value !== '' && value !== undefined && value.length !== 0)
@@ -341,7 +348,8 @@
     .map(([key, value]) => `${key}: ${value}`)
     .join(',');
 
-    return (props.disName=== 'ICS')? ICSSummaryText() + summaryText: summaryText; 
+    return (props.disName=== 'ICS')? ICSSummaryText() + summaryText: 
+            (props.disName === 'Aneurysm')? aneurysmSummaryText() + summaryText: summaryText; 
   };
 
   // "defineExpose"を使用して、外部から参照できるプロパティを定義する

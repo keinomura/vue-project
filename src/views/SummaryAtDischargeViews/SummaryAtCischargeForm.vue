@@ -15,6 +15,7 @@
                 <v-col cols="12">
                   <component :is="selectedDiseaseComponent()" ref="child"></component>
                 </v-col>
+                
                 <v-col cols="12">
                   <v-textarea v-model="additionalComment" label="入院経過補足" outlined></v-textarea>
                 </v-col>

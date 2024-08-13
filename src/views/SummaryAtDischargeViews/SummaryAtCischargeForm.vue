@@ -15,7 +15,7 @@
                 <v-col cols="12">
                   <component :is="selectedDiseaseComponent()" ref="child"></component>
                 </v-col>
-                
+
                 <v-col cols="12">
                   <v-textarea v-model="additionalComment" label="入院経過補足" outlined></v-textarea>
                 </v-col>
@@ -194,28 +194,6 @@
       return title + replacedElement;
     }
 
-    function GCS(type) {
-      const resultE = E.value;
-      const resultV = V.value;
-      const resultM = M.value;
-      if (type === "GCS") {
-        return `E:${resultE}V:${resultV}M:${resultM}  ${parseInt(resultE) + parseInt(resultM) + parseInt(resultV)}`;
-      } else if (type === "JCS") {
-        let jCSvalue = "";
-        if (resultE === "4") {
-          const jCSIArray = ["I-3", "I-3", "I-2", "I-2", "I-0"];
-          jCSvalue = jCSIArray[resultV - 1];
-        } else if (resultE === "3") {
-          jCSvalue = "II-10";
-        } else if (resultE === "2") {
-          jCSvalue = "II-30";
-        } else if (resultE === "1") {
-          const jCSIIIArray = ["III-300", "III-200", "III-200", "III-200", "III-100", "III-100"];
-          jCSvalue = jCSIIIArray[resultM - 1];
-        }
-        return " JCS: " + jCSvalue;
-      }
-    }
   </script>
 
   <style scoped>

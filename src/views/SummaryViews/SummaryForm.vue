@@ -6,12 +6,10 @@
 
             <v-form ref="form" class="no-horizontal-scroll">
               <v-row class="ma-2">
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="selectedDisease"
-                    :items="diseases"
-                    label="疾患を選択してください"
-                  ></v-select>
+                <v-col cols="12">
+                  <v-radio-group v-model="selectedDisease" label="疾患を選択してください" inline>
+                    <v-radio v-for="disease in diseases" :key="disease" :label="disease" :value="disease"></v-radio>
+                  </v-radio-group>
                 </v-col>
 
                 <v-col cols="12">

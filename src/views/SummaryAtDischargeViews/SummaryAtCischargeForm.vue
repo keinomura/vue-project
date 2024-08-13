@@ -15,7 +15,9 @@
                 <v-col cols="12">
                   <component :is="selectedDiseaseComponent()" ref="child"></component>
                 </v-col>
-
+                <v-col cols="12">
+                  <v-textarea v-model="additionalComment" label="入院経過補足" outlined></v-textarea>
+                </v-col>
                 <v-col cols="12">
                   <v-radio-group v-model="complication" label="合併症" inline>
                     <v-radio label="あり" value="あり"></v-radio>
@@ -25,11 +27,9 @@
                 <v-col cols="12">
                   <v-textarea v-if="complication === 'あり'" v-model="complicationText" label="合併症" outlined></v-textarea>
                 </v-col>
-                <v-col cols="12">
-                  <v-textarea v-model="additionalComment" label="備考" outlined></v-textarea>
-                </v-col>
+
                 <v-col cols="12" md="8">
-                  <v-select v-model="postRS"
+                  <v-select v-model="postmRS"
                               :items="mRSOptions"
                               item-title="text"
                               item-value="value"
@@ -84,6 +84,7 @@
     // import ICSForm from './AsymptomForm/ICSForm.vue';
     // import AneurysmForm from './AsymptomForm/AneurysmForm.vue';
 
+    // variables
     const child = ref(null);
 
     const selectedDisease = ref('デフォルト');
@@ -104,7 +105,7 @@
     ]);
 
     const referralHospital = ref('');
-    const postRS = ref('');
+    const postmRS = ref('mRS 0:正常');
     const summary = ref('');
     const mRSOptions = ref([
       { text: 'mRS 0:正常', value: '0' },
@@ -116,7 +117,7 @@
       { text: 'mRS 6:死亡', value: '6' }
     ]);
 
-    const outcome = ref('');
+    const outcome = ref('2');
     const outcomeOptions = ref([
       { text: '1 治癒', value: '1' }, //F
       { text: '2 軽快', value: '2' }, //R
@@ -138,6 +139,7 @@
       { text: 'U 未知', value: 'U' }
     ]);
 
+    // methods
     function selectedDiseaseComponent() {
       if (selectedDisease.value === 'デフォルト'){
         return null;
@@ -157,26 +159,33 @@
     }
 
     function createSummary() {
-      const detailedDiseaseSummary = child.value.getSummaryTextFromGrandChild();
+      // const detailedDiseaseSummary = child.value.getSummaryTextFromGrandChild();
 
-      const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
-      const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);
-      const presentHistoryText = textReplaced("【現病歴】", presentHistory.value);
-      const pastHistoryText = textReplaced("【既往歴,家族歴】" + riskFactorsText + pastHistory.value);
-      const exm = textReplaced("【入院時現症】", exam.value);
-      const QQt = "\rQQ" + QQ.value;
-      const otHP = "他院からの紹介:" + otherHP.value + " " + referralHospital.value;
-      const GCSgt = "\rGCS:" + GCS("GCS");
-      const GCSjt = GCS("JCS");
-      const premRSText = " 発症前mRS:" + premRS.value.value;
+      // outcomeの値に対応するtextを取得するcomputedプロパティ
+      const outcomeText = (outcomeValue) => {
+        const option = outcomeOptions.value.find(opt => opt.value === outcomeValue);
+        return option ? option.text : '';
+      };
 
-      summary.value = chiefComplainText + presentHistoryText + pastHistoryText + exm + '\r'
-      + '{' + detailedDiseaseSummary + '}' + '\r'
-      + "\r---------入院データ----------"
-      + [QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',') ;
+      const SummaryElements = {
+        // '経過': additionalComment.value +'\r\n',
+        '合併症': complicationText.value,
+        '退院時mRS': postmRS.value,
+        '退院経路': dischargeRoute.value,
+        '退院先': referralHospital.value,
+        '転帰': outcomeText(outcome.value),
+      };
 
 
-      console.log(summary.value)
+      //SummaryElementsで空白な要素をを削除する。
+      const summaryText = Object.entries(SummaryElements)
+        .filter(([key, value]) => value && value.length !== 0 && value !== '\r\n')
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ');
+
+      console.log(summaryText)
+      const commentText = (additionalComment.value)? additionalComment.value + '\r\n': '';
+      return summary.value = '【入院経過】\r\n' + commentText + '----------------- \r\n' + summaryText;
     }
 
     function textReplaced(title, element) {

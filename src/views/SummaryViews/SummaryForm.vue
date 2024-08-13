@@ -143,7 +143,7 @@
     import ICHForm from './StrokeViews/ICHForm.vue';
     import CIForm from './StrokeViews/CIForm.vue';
     import ICSForm from './AsymptomForm/ICSForm.vue';
-    // import AneurysmForm from './AsymptomForm/AneurysmForm.vue';
+    import AneurysmForm from './AsymptomForm/AneurysmForm.vue';
 
     const child = ref(null);
 

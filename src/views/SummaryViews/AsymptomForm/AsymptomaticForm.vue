@@ -7,13 +7,13 @@
         <v-checkbox v-model="lesionSide" label="右" value="右"></v-checkbox>
         <v-checkbox v-model="lesionSide" label="左" value="左"></v-checkbox>
       </v-row>
+
+<!-- ICS -->
       <div v-if="disName === 'ICS'">
         <div v-if="lesionSide.includes('右')">
-          <!--右側病変-->
           <v-col>
             <span>右側病変</span>
           </v-col>
-          <!--症候性、無症候性 radiobutton-->
           <v-radio-group v-model="symptomaticRight" label="症候性" inline>
             <v-radio label="症候性" value="症候性"></v-radio>
             <v-radio label="無症候性" value="無症候性"></v-radio>
@@ -21,80 +21,113 @@
 
           <v-row>
             <v-col cols="4">
-              <!--CAS:NASCET %数値入力-->
               <v-text-field v-model="nascetRight" label="NASCET %"></v-text-field>
             </v-col>
             <v-col cols="4">
-              <!--CAS:Vmax-->
               <v-text-field v-model="vmaxRight" label="Vmax"></v-text-field>
             </v-col>
             <v-col cols="4">
-              <!--CAS:潰瘍性病変 有無-->
               <v-radio-group v-model="ulcerativeLesionRight" label="潰瘍性病変" inline>
                 <v-radio label="あり" value="あり"></v-radio>
                 <v-radio label="なし" value="なし"></v-radio>
               </v-radio-group>
             </v-col>
           </v-row>
-          <!--CAS:プラーク性状 テキスト入力-->
           <v-text-field v-model="plaqueCharacterRight" label="プラーク性状"></v-text-field>
-          <!--CAS:Echo エコー所見テキスト入力-->
           <v-textarea v-model="echoFindingsRight" label="Echo エコー所見"></v-textarea>
         </div>
 
-        <div v-if="lesionSide.includes('左')||lesionSide.includes('両側')">
-          <!--左側病変-->
+        <div v-if="lesionSide.includes('左')">
           <v-col>
             <span>左側病変</span>
           </v-col>
-          <!--症候性、無症候性 radiobutton-->
           <v-radio-group v-model="symptomaticLeft" label="症候性" inline>
             <v-radio label="症候性" value="症候性"></v-radio>
             <v-radio label="無症候性" value="無症候性"></v-radio>
           </v-radio-group>
-
           <v-row>
             <v-col cols="4">
-              <!--CAS:NASCET %数値入力-->
               <v-text-field v-model="nascetLeft" label="NASCET %"></v-text-field>
             </v-col>
             <v-col cols="4">
-              <!--CAS:Vmax-->
               <v-text-field v-model="vmaxLeft" label="Vmax"></v-text-field>
             </v-col>
             <v-col cols="4">
-              <!--CAS:潰瘍性病変 有無-->
               <v-radio-group v-model="ulcerativeLesionLeft" label="潰瘍性病変" inline>
                 <v-radio label="あり" value="あり"></v-radio>
                 <v-radio label="なし" value="なし"></v-radio>
               </v-radio-group>
             </v-col>
           </v-row>
-          <!--CAS:プラーク性状 テキスト入力-->
           <v-text-field v-model="plaqueCharacterLeft" label="プラーク性状"></v-text-field>
-          <!--CAS:Echo エコー所見テキスト入力-->
           <v-textarea v-model="echoFindingsLeft" label="Echo エコー所見"></v-textarea>
         </div>
       </div>
 
+<!-- Aneurysm -->
+      <!-- lesion side {{ lesionSide }} -->
       <div v-if="disName === 'Aneurysm'">
-        //Coil:右病変
-        <div v-if="lesionSide === '右'||lesionSide === '両側'">
-          //Aneurysm部位を v-selectで選択 変数aneurysmLocationOptionsから選択肢を取得 aneurysmLocation:[]に格納。labelは"部位"
-          <v-select v-model="aneurysmLocationRight" :items="aneurysmLocationOptions" label="部位"></v-select>
-          //選択肢にその他が含まれている場合はフリー入力
-          <v-text-field v-if="aneurysmLocationRight === 'その他'" v-model="aneurysmLocationRightText" label="複数個ある場合は','で区切って"></v-text-field>
+        <div v-if="lesionSide.includes('右')">
+          <v-col>
+            <span>右側病変</span>
+          </v-col>
+          <v-row>
+            <v-checkbox
+              v-for="(item, index) in aneurysmLocationOptions"
+              :key="index"
+              :label="item"
+              :value="item"
+              v-model="aneurysmLocationRight" 
+              :items="aneurysmLocationOptions" 
+              label="部位"
+              multiple
+              inline
+              ></v-checkbox>
+          </v-row>
+          <v-text-field
+            v-if="aneurysmLocationRight.includes('その他')" 
+            v-model="aneurysmLocationRightText" 
+            label="その他　複数個ある場合は','で区切って"></v-text-field>
         </div>
-        //Coil:左病変
-        <div v-if="lesionSide === '左'||lesionSide === '両側'">
-          //Aneurysm部位を v-selectで選択 変数aneurysmLocationOptionsから選択肢を取得 aneurysmLocation:[]に格納。labelは"部位"
-          <v-select v-model="aneurysmLocationLeft" :items="aneurysmLocationOptions" label="部位"></v-select>
-          //選択肢にその他が含まれている場合はフリー入力
-          <v-text-field v-if="aneurysmLocationLeft === 'その他'" v-model="aneurysmLocationLeftText" label="複数個ある場合は','で区切って"></v-text-field>
+        <div v-if="lesionSide.includes('左')">
+          <v-col>
+            <span>左側病変</span>
+          </v-col>
+          <v-row>
+            <v-checkbox
+              v-for="(item, index) in aneurysmLocationOptions"
+              :key="index"
+              :label="item"
+              :value="item"
+              v-model="aneurysmLocationLeft" 
+              :items="aneurysmLocationOptions" 
+              label="部位"
+              multiple
+              inline
+              ></v-checkbox>
+          </v-row>
+          <v-text-field 
+            v-if="aneurysmLocationLeft.includes('その他')" 
+            v-model="aneurysmLocationLeftText" 
+            label="その他 複数個ある場合は','で区切って"></v-text-field>
         </div>
-        //Coil:今回治療病変 変数aneurysmLocationRight,aneurysmLocationLeftに含まれている選択肢の部位を一覧にする。かつCheckboxで選択できるようにする
-          <v-select v-model="treatedAneurysmLocation" :items="treatedAneurysmLocationOptions" label="今回治療病変" multiple></v-select>
-        //Coil:病変大きさ テキスト入力--
+
+        <v-col  v-if="aneurysmLocationLists.length !== 0">
+            <span>今回治療場所</span>
+          </v-col>
+        <v-row>
+          <v-checkbox
+            v-for="(item, index) in aneurysmLocationLists"
+            :key="index"
+            :label="item"
+            :value="item"
+            v-model="treatedAneurysmLocation"
+            :items="aneurysmLocationLists"
+            label="今回治療病変"
+            multiple
+            inline
+          ></v-checkbox>
+        </v-row>
           <v-text-field v-model="aneurysmSize" label="病変大きさ"></v-text-field>
       </div>
 
@@ -110,7 +143,7 @@
         <v-row>
           <v-col cols="12">
             <span>今回治療側</span>
-          </v-col>{{ treatedICSLocation }}
+          </v-col>
           <v-checkbox v-model="treatedICSLocation" label="右" value="右"></v-checkbox>
           <v-checkbox v-model="treatedICSLocation" label="左" value="左"></v-checkbox>
         </v-row>
@@ -187,20 +220,24 @@
   const treatedICSLocation = ref([]);
 
   //aneurysm variables
-  const aneurysmLocationRight = ref('');
-  const aneurysmLocationLeft = ref('');
-  const treatedAneurysmLocationOptions = ref([]);
+  const aneurysmLocationRight = ref([]);
+  const aneurysmLocationLeft = ref([]);
   const treatedAneurysmLocation = ref([]);
   const aneurysmSize = ref('');
   const aneurysmLocationRightText = ref('');
   const aneurysmLocationLeftText = ref('');
+  const aneurysmLocationLists = ref([]);
+  const aneurysmLocationRightLists = ref([]);
+  const aneurysmLocationLeftLists = ref([]);
+
 
   //options
   const aneurysmLocationOptions = ref(['IC-Pcom', 'IC-Ant.chor.A','IC-bif','MCA:M1', 'MCA:M1-2','ACom', 'A1-2', 'BA-Tip', 'BA-SCA', 'VA-PICA', 'VA', 'その他']);
 
   const years = ref(Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i));
   const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
-  
+
+  // Methods
   const addSurgery = () => {
     previousSurgeries.value.push({ year: '', month: '' });
   };
@@ -238,7 +275,6 @@
     } else {
       periodFromLastSurgery.value = '';
     }
-
   };
   
   const getSummaryOfAsymptoms = () => {
@@ -275,7 +311,8 @@
       '発症前回手術から': periodFromLastSurgery.value,
       '前回手術': getPreviousSurgeriesText(),
     };
-    console.log(AsymptomaticSummary);
+
+    // Summary of ICS
     // 右側と左側の所見をまとめる関数
       const getSideSummary = (side, symptomatic, plaqueCharacter, nascet, vmax, ulcerativeLesion, echoFindings, aneurysmLocation) => {
       return `ICS${side}病変: ${symptomatic}, プラーク性状: ${plaqueCharacter}, NASCET %: ${nascet}, Vmax: ${vmax}, 潰瘍性病変: ${ulcerativeLesion}, Echo所見: ${echoFindings}, 病変部位: ${aneurysmLocation}`;
@@ -295,6 +332,7 @@
       return summary;
     };
 
+    // 項目が空のものを除外
     const filteredAsymptomaticSummary = Object.fromEntries(
       Object.entries(AsymptomaticSummary).filter(([key, value]) => value != null && value !== '' && value !== undefined && value.length !== 0)
     );
@@ -303,17 +341,40 @@
     .map(([key, value]) => `${key}: ${value}`)
     .join(',');
 
-  return (props.disName=== 'ICS')? ICSSummaryText() + summaryText: summaryText; 
-    };
+    return (props.disName=== 'ICS')? ICSSummaryText() + summaryText: summaryText; 
+  };
 
   // "defineExpose"を使用して、外部から参照できるプロパティを定義する
   defineExpose({
     getSummaryOfAsymptoms,
   });
 
-  // Watch for changes in props.disName and update disName2
-  watch(() => props.disName, (newVal) => {
-    disName2.value = newVal;
+  // Watchers
+  // Aneurysm
+   // その他の入力値が変更されたら、リストにする。
+  watch(aneurysmLocationRightText, (newVal) => {
+    aneurysmLocationRightLists.value = newVal.split(',');
+  });
+  watch(aneurysmLocationLeftText, (newVal) => {
+    aneurysmLocationLeftLists.value = newVal.split(',');
+  });
+
+  watch ([aneurysmLocationRight, aneurysmLocationLeft, aneurysmLocationRightLists, aneurysmLocationLeftLists], () => {
+    console.log('change!!')
+    // aneurysmLocationRight, aneurysmLocationRightListsをconcatする。
+    const rightLocationList = aneurysmLocationRight.value.filter(location => location !== 'その他').concat(aneurysmLocationRightLists.value);
+    // concatしたリストについて、各項目にRt.をつける。
+    const rightLocationLists = rightLocationList.map((location) => {
+      return 'Rt. ' + location;
+    });
+    // aneurysmLocationLeft, aneurysmLocationLeftListsをconcatする。
+    const leftLocationList = aneurysmLocationLeft.value.filter(location => location !== 'その他').concat(aneurysmLocationLeftLists.value);
+    // concatしたリストについて、各項目にLt.をつける。
+    const leftLocationLists = leftLocationList.map((location) => {
+      return 'Lt. ' + location;
+    });
+    // 右側と左側のリストをconcatする。
+    aneurysmLocationLists.value = rightLocationLists.concat(leftLocationLists);
   });
 
   watch (operation, (newVal) => {

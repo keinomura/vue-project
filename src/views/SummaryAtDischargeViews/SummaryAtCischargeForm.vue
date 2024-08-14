@@ -77,6 +77,8 @@
 
   <script setup>
     import { ref } from 'vue';
+    import TNAtForm from './MVDAtDViews/TNAtForm.vue';
+    import HFSAtForm from './MVDAtDViews/HFSAtForm.vue';
 
     // import HFSForm from './MVDViews/HFSForm.vue';
     // import TNForm from './MVDViews/TNForm.vue';
@@ -144,10 +146,10 @@
     function selectedDiseaseComponent() {
       if (selectedDisease.value === 'デフォルト'){
         return null;
-      // } else if (selectedDisease.value === '三叉神経痛') {
-      //   return TNForm;
-      // } else if (selectedDisease.value === '顔面痙攣') {
-      //   return HFSForm;
+      } else if (selectedDisease.value === '三叉神経痛') {
+        return TNAtForm;
+      } else if (selectedDisease.value === '顔面痙攣') {
+        return HFSAtForm;
       // } else if (selectedDisease.value === '脳梗塞') {
       //   return CIForm;
       // } else if (selectedDisease.value === '脳出血') {
@@ -160,7 +162,11 @@
     }
 
     function createSummary() {
-      // const detailedDiseaseSummary = child.value.getSummaryTextFromGrandChild();
+      
+      const detailedDiseaseSummary = (selectedDisease.value === 'デフォルト')? '':child.value.getSummaryAtDischargeTextFromGrandChild();
+
+
+
 
       // outcomeの値に対応するtextを取得するcomputedプロパティ
       const outcomeText = (outcomeValue) => {
@@ -186,7 +192,7 @@
 
       console.log(summaryText)
       const commentText = (additionalComment.value)? additionalComment.value + '\r\n': '';
-      return summary.value = '【入院経過】\r\n' + commentText + '----------------- \r\n' + summaryText;
+      return summary.value = '【入院経過】\r\n' + commentText + detailedDiseaseSummary  + '' + summaryText;
     }
 
     function textReplaced(title, element) {

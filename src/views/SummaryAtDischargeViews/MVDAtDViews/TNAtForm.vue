@@ -1,21 +1,21 @@
 <template>
-  <MVDForm ref="mvdChild" :medications="medications" :showPainArea="true" :showDentalHistory="true" />
+  <MVDAtDForm ref="mvdChild" :disName="disName"/>
 </template>
 
 <script setup>
   import { ref, defineExpose } from 'vue';
-  import MVDForm from './MVDForm.vue';
-  const medications = ['テグレトール（カルバマゼピン）', 'ビムパット（ラコサミド）', 'パキシル', 'ロキソニン', 'ガバペン', 'アレビアチン'];
+  import MVDAtDForm from './MVDAtDForm.vue';
 
   // 親コンポーネントから子コンポーネントのメソッドを呼び出す
   const mvdChild = ref(null);
+  const disName = 'TN';
 
-  const getSummaryTextFromGrandChild = () => {
-    return mvdChild.value.getSummaryOfMVD();
+  const getSummaryAtDischargeTextFromGrandChild = () => {
+    return mvdChild.value.getSummaryAtDischargeOfMVD();
   }
 
   defineExpose({
-    getSummaryTextFromGrandChild,
+    getSummaryAtDischargeTextFromGrandChild,
   });
 </script>
 

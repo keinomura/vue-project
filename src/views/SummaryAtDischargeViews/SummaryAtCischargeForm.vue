@@ -77,8 +77,10 @@
 
   <script setup>
     import { ref } from 'vue';
-    import TNAtForm from './MVDAtDViews/TNAtForm.vue';
-    import HFSAtForm from './MVDAtDViews/HFSAtForm.vue';
+    import TNAtDForm from './MVDAtDViews/TNAtDForm.vue';
+    import HFSAtDForm from './MVDAtDViews/HFSAtDForm.vue';
+    import CIAtDForm from './StrokeAtDViews/CIAtDForm.vue';
+    import ICHAtDForm from './StrokeAtDViews/ICHAtDForm.vue';
 
     // import HFSForm from './MVDViews/HFSForm.vue';
     // import TNForm from './MVDViews/TNForm.vue';
@@ -147,9 +149,14 @@
       if (selectedDisease.value === 'デフォルト'){
         return null;
       } else if (selectedDisease.value === '三叉神経痛') {
-        return TNAtForm;
+        return TNAtDForm;
       } else if (selectedDisease.value === '顔面痙攣') {
-        return HFSAtForm;
+        return HFSAtDForm;
+      } else if (selectedDisease.value === '脳梗塞') {
+        return CIAtDForm;
+      } else if (selectedDisease.value === '脳出血') {
+        return ICHAtDForm;
+  
       // } else if (selectedDisease.value === '脳梗塞') {
       //   return CIForm;
       // } else if (selectedDisease.value === '脳出血') {

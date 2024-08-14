@@ -5,15 +5,16 @@
         <v-radio label="右" value="右"></v-radio>
       </v-radio-group>
   
-      <v-select
+      <v-checkbox
         v-if="disName === 'TN'"
+        v-for="option in painAreasOption"
+        :key="option.value"
         v-model="painArea"
-
-        :items="painAreasOption"
-        label="痛みの領域"
+        :label="option.text"
+        :value="option.value"
         multiple
-        inline
-      ></v-select>
+        class="d-inline-block"
+        ></v-checkbox>
       <v-row>
 
       </v-row>
@@ -112,9 +113,9 @@
         <v-radio label="なし" value="なし"></v-radio>
       </v-radio-group>
 
-      <div v-if="medicationAtDischarge === 'あり'">
+      <v-container v-if="medicationAtDischarge === 'あり'">
         <span>退院時内服量</span>
-        <div v-for="(medication, index) in postSurgeryMedications" :key="index">
+        <v-container v-for="(medication, index) in postSurgeryMedications" :key="index">
           <v-row>
             <v-col cols="6">
               <v-select v-model="medication.name" :items="medications" label="薬剤名"></v-select>
@@ -126,10 +127,15 @@
               <v-btn @click="removeMedication(index)">削除</v-btn>
             </v-col>
           </v-row>
-        </div>
+          <v-radio-group v-model="medicationChange" label="術前と比較して" inline>
+            <v-radio label="増加" value="増加"></v-radio>
+            <v-radio label="不変" value="不変"></v-radio>
+            <v-radio label="減少" value="減少"></v-radio>
+          </v-radio-group>
+        </v-container>
         <v-btn @click="addMedication" class="ma-2">薬剤を追加</v-btn>
         <v-textarea v-model="additionalNotes" label="追加のメモ"></v-textarea>
-      </div>
+      </v-container>
       <v-radio-group v-model="followUp" label="退院後フォローアップ" inline>
         <v-radio label="自院フォロー" value="自院フォロー"></v-radio>
         <v-radio label="紹介元病院フォロー" value="紹介元病院フォロー"></v-radio>
@@ -149,7 +155,12 @@
   
   const lesionSide = ref('左');
   const painArea = ref([]);
-  const painAreasOption = ref(['V1', 'V2', 'V3']);
+  const painAreasOption = ref([
+      { text: 'V1', value: 'V1' },
+      { text: 'V2', value: 'V2' },
+      { text: 'V3', value: 'V3' },
+    ],
+  );
 
   const operationType = ref([]);
   const operationTypeOptions = ref([
@@ -168,6 +179,7 @@
   const medicationsForHFS = ref(['リボトリール', 'ビムパット', 'テグレトール', 'セルシン']);
   const medicationsForTN = ref(['テグレトール（カルバマゼピン）', 'ビムパット（ラコサミド）', 'パキシル', 'ロキソニン', 'ガバペン', 'アレビアチン']);
   const medications = (props.disName ==='TN')? medicationsForTN : medicationsForHFS;
+  const medicationChange = ref('');
 
   const mastoidAirCellOpening = ref('なし');
   const preservationOfPetrosalVein = ref('全部保存');
@@ -212,7 +224,7 @@
   const getSummaryAtDischargeOfMVD = () => {
     const getPostSurgeryMedicationsText = () => {
       if (postSurgeryMedications.value.length === 0) {
-      return '';
+      return 'なし';
       } else {
       return postSurgeryMedications.value.map((medication) => {
         return `${medication.name} ${medication.dosage}`;
@@ -238,6 +250,7 @@
       discharge: {
         '退院時VAS': postOperationPain.value,
         '退院時内服': getPostSurgeryMedicationsText(),
+        '術前と比較して': medicationChange.value,
         '退院後': followUp.value,
       },
     };
@@ -282,7 +295,14 @@
     if (!selectedOffendingVessels.value.includes('その他')) {
       offendingVesselText.value = '';
     }
+  });
 
+  watch(medicationAtDischarge, () => {
+    if (medicationAtDischarge.value === 'なし') {
+      postSurgeryMedications.value = [];
+      medicationChange.value = '';
+      additionalNotes.value = '';
+    }
   });
 
 

@@ -1,7 +1,7 @@
 <template>
     <MVDAtDForm
       ref="mvdChild"
-      :disName="TN" 
+      :disName="disName" 
     />
   </template>
   
@@ -11,9 +11,10 @@
 
     // 親コンポーネントから子コンポーネントのメソッドを呼び出す
     const mvdChild = ref(null);
+    const disName = 'HFS';
 
     const getSummaryAtDischargeTextFromGrandChild = () => {
-      return mvdChild.value.getSummaryATDischargeOfMVD();
+      return mvdChild.value.getSummaryAtDischargeOfMVD();
     }
 
     defineExpose({

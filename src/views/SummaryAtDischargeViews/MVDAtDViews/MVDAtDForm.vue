@@ -39,7 +39,7 @@
           <v-radio label="あり" value="あり"></v-radio>
           <v-radio label="なし" value="なし"></v-radio>
         </v-radio-group>
-        <v-radio-group v-model="preservationOfPetrosalVein" label="錐体静脈の温存" inline>
+        <v-radio-group v-if="disName === 'TN'" v-model="preservationOfPetrosalVein" label="錐体静脈の温存" inline>
           <v-radio label="全部保存" value="全部保存"></v-radio>
           <v-radio label="一部切断" value="一部切断"></v-radio>
         </v-radio-group>
@@ -98,12 +98,24 @@
           </v-radio-group>
         </v-col>
       </v-row>
+      <v-row>
+        <v-radio-group v-if="disName === 'HFS'" v-model="preOperationTinnitus" label="術前耳鳴り" inline>
+          <v-radio label="あり" value="あり"></v-radio>
+          <v-radio label="なし" value="なし"></v-radio>
+        </v-radio-group>
+        <v-radio-group v-if="preOperationTinnitus === 'あり'" v-model="postOperationTinnitus" label="術後耳鳴り" inline>
+          <v-radio v-for="option in ['軽快', '消失', '不変', '増悪']" :key="option" :label="option" :value="option"></v-radio>
+        </v-radio-group>
+      </v-row>
 
         <v-divider>退院時</v-divider>
         <v-row>
         <v-col cols="12">
-          <v-radio-group v-model="postOperationPain" label="退院時痛み VAS" inline>
-            <v-radio v-for="option in postOperationPainOptions" :key="option" :label="option" :value="option"></v-radio>
+          <v-radio-group v-if="disName === 'TN'" v-model="postOperationPain" label="退院時痛み VAS" inline>
+            <v-radio v-for="option in postOperationVAS" :key="option" :label="option" :value="option"></v-radio>
+          </v-radio-group>
+          <v-radio-group v-if="disName === 'HFS'" v-model="postOperationSymptom" label="退院時症状 VAS" inline>
+            <v-radio v-for="option in postOperationVAS" :key="option" :label="option" :value="option"></v-radio>
           </v-radio-group>
         </v-col>
       </v-row>
@@ -172,8 +184,9 @@
 
   const postOperationCourse = ref('直後から消失');
   const postOperationPain = ref('0');
+  const postOperationSymptom = ref('0');
 
-  const postOperationPainOptions = ref(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
+  const postOperationVAS = ref(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
   const medicationAtDischarge = ref('なし');
 
   const medicationsForHFS = ref(['リボトリール', 'ビムパット', 'テグレトール', 'セルシン']);
@@ -204,6 +217,9 @@
   const offendingVesselTextList = ref([]);
   const treatedVessels = ref([]);
   const mostResponsibleVessel = ref([]);
+
+  const preOperationTinnitus = ref('なし');
+  const postOperationTinnitus = ref('');
 
   const followUp = ref('自院フォロー');
 
@@ -238,7 +254,7 @@
         '痛みの領域': painArea.value,
         '手術手技': operationType.value,
         'mastoid air cellの開放': mastoidAirCellOpening.value,
-        '錐体静脈': preservationOfPetrosalVein.value,
+        '錐体静脈': (props.disName === 'TN')? preservationOfPetrosalVein.value:'',
         'VA移動': transpositionOfVA.value,
         '関与血管': treatedVessels.value,
         '責任血管': mostResponsibleVessel.value,
@@ -246,9 +262,12 @@
       post: {
         '術後経過': postOperationCourse.value,
         '追加のメモ': additionalNotes.value,
+        '耳鳴 術前': preOperationTinnitus.value,
+        '術後': postOperationTinnitus.value,
       },
       discharge: {
         '退院時VAS': postOperationPain.value,
+        '退院時VAS': postOperationSymptom.value,
         '退院時内服': getPostSurgeryMedicationsText(),
         '術前と比較して': medicationChange.value,
         '退院後': followUp.value,
@@ -305,7 +324,11 @@
     }
   });
 
-
+  watch(preOperationTinnitus, () => {
+    if (preOperationTinnitus.value === 'なし') {
+      postOperationTinnitus.value = '';
+    }
+  });
   </script>
 
   <style scoped>

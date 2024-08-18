@@ -1,30 +1,32 @@
 <template>
     <v-container fluid>
-      <v-row >
+      <v-row>
         <v-col cols="12" md="6">
           <h2 class="mb-4">入院サマリ</h2>
 
-            <v-form ref="form" class="no-horizontal-scroll">
+            <v-container ref="form" class="no-horizontal-scroll">
               <v-row class="ma-2">
                 <v-col cols="12">
                   <v-radio-group v-model="selectedDisease" label="疾患を選択してください" inline>
                     <v-radio v-for="disease in diseases" :key="disease" :label="disease" :value="disease"></v-radio>
                   </v-radio-group>
                 </v-col>
-
+              </v-row>
+              <v-row>
                 <v-col cols="12">
                   <v-text-field v-model="chiefComplain" label="主訴" outlined></v-text-field>
                 </v-col>
-
+              </v-row>
+              <v-row>
                 <v-col cols="12">
                   <v-textarea v-model="presentHistory" label="現病歴" outlined></v-textarea>
                 </v-col>
-
+              </v-row>
                 <!-- 疾患によって切り換えるcomponent -->
-                <v-col cols="12">
-                  <component :is="selectedDiseaseComponent()" ref="child"></component>
-                </v-col>
-
+              <v-col cols="12">
+                <component :is="selectedDiseaseComponent()" ref="child"></component>
+              </v-col>
+              <v-row>
                 <v-col cols="12" md="8">
                   <v-select v-model="admissionRoute"
                               :items="routeOptions"
@@ -32,7 +34,8 @@
                               label="入院経路" outlined>
                   </v-select>
                 </v-col>
-
+              </v-row>
+              <v-row>
                 <v-col cols="6">
                   <v-radio-group v-model="inHospitalOnset" label="院内発症" inline>
                     <v-radio label="あり" value="あり"></v-radio>
@@ -45,6 +48,8 @@
                     <v-radio label="なし" value="なし"></v-radio>
                   </v-radio-group>
                 </v-col>
+              </v-row>
+              <v-row>
                 <v-col cols="6">
                   <v-radio-group v-model="admissionType" label="予定入院/緊急入院" inline>
                     <v-radio label="予定入院" value="予定入院"></v-radio>
@@ -57,12 +62,15 @@
                     <v-radio label="なし" value="なし"></v-radio>
                   </v-radio-group>
                 </v-col>
-
+              </v-row>
+              <v-row>
                 <v-col v-if="otherHP=='あり'" cols="12">
                   <v-text-field v-model="referralHospital" label="紹介元" outlined></v-text-field>
                 </v-col>
+              </v-row>
+              <v-row>
+                <v-divider>既往歴</v-divider>
                 <v-col cols="12">
-                  <label for="pastHistoryArea">既往歴</label>
                   <v-row id="pastHistoryArea" label="既往歴">
                     <v-checkbox
                       v-for="pastHistory in pastHistories"
@@ -77,7 +85,7 @@
                     <v-textarea v-model="pastHistory" label="その他特記すべきことなし" outlined></v-textarea>
                   </v-row>
                 </v-col>
-
+                <v-divider>入院時評価</v-divider>
                 <v-col cols="12">
                   <v-radio-group v-model="E"  inline>
                     E
@@ -116,18 +124,18 @@
                 </v-col>
 
               </v-row>
-            </v-form>
-            <div class="d-flex justify-center pa-2">
+            </v-container>
+            <v-container class="d-flex justify-center pa-2">
               <v-btn color="primary" @click="createSummary">作成</v-btn>
-            </div>
+            </v-container>
           </v-col>
         <v-col cols="12" md="6"  >
-          <v-card>
-            <v-card-title>入院時サマリー</v-card-title>
-            <v-card-text>
-              <v-textarea v-model="summary" outlined rows="30"></v-textarea>
-            </v-card-text>
-          </v-card>
+        <v-card>
+          <v-card-title>入院時サマリー</v-card-title>
+          <v-card-text>
+            <v-textarea v-model="summary" outlined rows="30"></v-textarea>
+          </v-card-text>
+        </v-card>
         </v-col>
       </v-row>
     </v-container>

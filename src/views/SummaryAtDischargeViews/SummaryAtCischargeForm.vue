@@ -1,65 +1,65 @@
 <template>
     <v-container fluid>
-      <v-row >
+      <v-row>
         <!-- 左側入力スペース -->
-        <v-col cols="12" md="6"> 
+        <v-col cols="12" md="6">
           <h2 class="mb-4">退院サマリ</h2>
-            <v-form ref="form" class="no-horizontal-scroll">
-                <v-col cols="12">
-                  <v-radio-group v-model="selectedDisease" label="疾患を選択してください" inline>
-                    <v-radio v-for="disease in diseases" :key="disease" :label="disease" :value="disease"></v-radio>
-                  </v-radio-group>
-                </v-col>
+          <v-container ref="form" class="no-horizontal-scroll">
+              <v-col cols="12">
+                <v-radio-group v-model="selectedDisease" label="疾患を選択してください" inline>
+                  <v-radio v-for="disease in diseases" :key="disease" :label="disease" :value="disease"></v-radio>
+                </v-radio-group>
+              </v-col>
 
-                <!-- 疾患によって切り換えるcomponent -->
-                <v-col cols="12">
-                  <component :is="selectedDiseaseComponent()" ref="child"></component>
-                </v-col>
+              <!-- 疾患によって切り換えるcomponent -->
+              <v-col cols="12">
+                <component :is="selectedDiseaseComponent()" ref="child" :disNameSelected="chooseDisName"></component>
+              </v-col>
 
-                <v-col cols="12">
-                  <v-textarea v-model="additionalComment" label="入院経過補足" outlined></v-textarea>
-                </v-col>
-                <v-col cols="12">
-                  <v-radio-group v-model="complication" label="合併症" inline>
-                    <v-radio label="あり" value="あり"></v-radio>
-                    <v-radio label="なし" value="なし"></v-radio>
-                  </v-radio-group>
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea v-if="complication === 'あり'" v-model="complicationText" label="合併症" outlined></v-textarea>
-                </v-col>
+              <v-col cols="12">
+                <v-textarea v-model="additionalComment" label="入院経過補足" outlined></v-textarea>
+              </v-col>
+              <v-col cols="12">
+                <v-radio-group v-model="complication" label="合併症" inline>
+                  <v-radio label="あり" value="あり"></v-radio>
+                  <v-radio label="なし" value="なし"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <v-col cols="12">
+                <v-textarea v-if="complication === 'あり'" v-model="complicationText" label="合併症" outlined></v-textarea>
+              </v-col>
 
-                <v-col cols="12" md="8">
-                  <v-select v-model="postmRS"
-                              :items="mRSOptions"
-                              item-title="text"
-                              item-value="value"
-                              return-object
-                              label="退院時 mRS" outlined>
-                  </v-select>
-                </v-col>
-                <v-col cols="12" md="8">
-                  <v-select v-model="dischargeRoute"
-                              :items="dischargeRouteOptions"
-                              item-title="text"
-                              item-value="value"
-                              label="退院経路"
-                              outlined
-                              >
-                  </v-select>
-                </v-col>
-                <v-col cols="12" md="8">
-                  <v-text-field v-if="dischargeRoute === '1' || dischargeRoute === '3' || dischargeRoute === '4' || dischargeRoute === '5' || dischargeRoute === '7'" v-model="referralHospital" label="退院先" outlined></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-radio-group v-model="outcome" label="転帰" inline>
-                    <v-radio v-for="outcome in outcomeOptions" :key="outcome" :label="outcome.text" :value="outcome.value"></v-radio>
-                  </v-radio-group>
-                </v-col>
-            </v-form>
-            <div class="d-flex justify-center pa-2">
-              <v-btn color="primary" @click="createSummary">作成</v-btn>
-            </div>
+              <v-col cols="12" md="8">
+                <v-select v-model="postmRS"
+                            :items="mRSOptions"
+                            item-title="text"
+                            item-value="value"
+                            return-object
+                            label="退院時 mRS" outlined>
+                </v-select>
+              </v-col>
+              <v-col cols="12" md="8">
+                <v-select v-model="dischargeRoute"
+                            :items="dischargeRouteOptions"
+                            item-title="text"
+                            item-value="value"
+                            label="退院経路"
+                            outlined
+                            >
+                </v-select>
+              </v-col>
+              <v-col cols="12" md="8">
+                <v-text-field v-if="dischargeRoute === '1' || dischargeRoute === '3' || dischargeRoute === '4' || dischargeRoute === '5' || dischargeRoute === '7'" v-model="referralHospital" label="退院先" outlined></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-radio-group v-model="outcome" label="転帰" inline>
+                  <v-radio v-for="outcome in outcomeOptions" :key="outcome" :label="outcome.text" :value="outcome.value"></v-radio>
+                </v-radio-group>
+              </v-col>
+          </v-container>
+          <v-container class="d-flex justify-center pa-2">
+            <v-btn color="primary" @click="createSummary">作成</v-btn>
+          </v-container>
         </v-col>
         <!-- 右側サマリ表示スペース -->
         <v-col cols="12" md="6"  >
@@ -76,21 +76,20 @@
   </template>
 
   <script setup>
-    import { ref } from 'vue';
+    import { ref, defineExpose, watch } from 'vue';
     import TNAtDForm from './MVDAtDViews/TNAtDForm.vue';
     import HFSAtDForm from './MVDAtDViews/HFSAtDForm.vue';
-    import CIAtDForm from './StrokeAtDViews/CIAtDForm.vue';
-    import ICHAtDForm from './StrokeAtDViews/ICHAtDForm.vue';
+    import SelectionTypeOfStrokeAtDForm from './StrokeAtDViews/SelectionTypeOfStrokeAtDForm.vue';
 
     // import HFSForm from './MVDViews/HFSForm.vue';
     // import TNForm from './MVDViews/TNForm.vue';
-    // import ICHForm from './StrokeViews/ICHForm.vue';
-    // import CIForm from './StrokeViews/CIForm.vue';
     // import ICSForm from './AsymptomForm/ICSForm.vue';
     // import AneurysmForm from './AsymptomForm/AneurysmForm.vue';
 
     // variables
     const child = ref(null);
+    const disName = ref('');
+    const chooseDisName = ref('');
 
     const selectedDisease = ref('デフォルト');
     const diseases = ref(['デフォルト', 'ICS', '動脈瘤', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣']);
@@ -98,7 +97,7 @@
     const complicationText = ref('');
     const additionalComment = ref('');
 
-    const dischargeRoute = ref('2 家庭');
+    const dischargeRoute = ref({ text: '2 家庭', value: '2' });
     const dischargeRouteOptions = ref([
       { text: '1 院内他科', value: '1' },
       { text: '2 家庭', value: '2' },
@@ -110,7 +109,7 @@
     ]);
 
     const referralHospital = ref('');
-    const postmRS = ref('mRS 0:正常');
+    const postmRS = ref({ text: 'mRS 0:正常', value: '0' });
     const summary = ref('');
     const mRSOptions = ref([
       { text: 'mRS 0:正常', value: '0' },
@@ -152,21 +151,31 @@
         return TNAtDForm;
       } else if (selectedDisease.value === '顔面痙攣') {
         return HFSAtDForm;
-      } else if (selectedDisease.value === '脳梗塞') {
-        return CIAtDForm;
-      } else if (selectedDisease.value === '脳出血') {
-        return ICHAtDForm;
-  
-      // } else if (selectedDisease.value === '脳梗塞') {
-      //   return CIForm;
+      } else if (selectedDisease.value === '脳梗塞' || selectedDisease.value === '脳出血') {
+        return SelectionTypeOfStrokeAtDForm;
       // } else if (selectedDisease.value === '脳出血') {
-      //   return ICHForm;
-      // } else if (selectedDisease.value === 'ICS') {
-      //   return ICSForm;
-      // } else if (selectedDisease.value === '動脈瘤') {
-      //   return AneurysmForm;
+      //   return CIAtDForm;
+       } else {
+        return null;
        }
-    }
+    };
+
+    function chooseDisNameF() {
+      if (selectedDisease.value === 'デフォルト'){
+        return null;
+      } else if (selectedDisease.value === '三叉神経痛') {
+        return '';
+      } else if (selectedDisease.value === '顔面痙攣') {
+        return '';
+      } else if (selectedDisease.value === '脳梗塞') {
+        chooseDisName.value = 'CI';
+        return 'CI';
+      } else if (selectedDisease.value === '脳出血') {
+        chooseDisName.value = 'ICH';
+        return 'ICH';
+       } else {
+        return null;;
+    }};
 
     function createSummary() {
       
@@ -184,9 +193,9 @@
       const SummaryElements = {
         // '経過': additionalComment.value +'\r\n',
         '合併症': complicationText.value,
-        '退院時mRS': postmRS.value,
-        '退院経路': dischargeRoute.value,
-        '退院先': referralHospital.value,
+        '退院時mRS': postmRS.value.text,
+        '退院経路': dischargeRoute.value.text,
+        '退院先': referralHospital.value.text,
         '転帰': outcomeText(outcome.value),
       };
 
@@ -199,7 +208,7 @@
 
       console.log(summaryText)
       const commentText = (additionalComment.value)? additionalComment.value + '\r\n': '';
-      return summary.value = '【入院経過】\r\n' + commentText + detailedDiseaseSummary  + '' + summaryText;
+      return summary.value = '【入院経過】\r\n' + commentText + detailedDiseaseSummary  + '\r' + summaryText;
     }
 
     function textReplaced(title, element) {
@@ -207,6 +216,14 @@
       return title + replacedElement;
     }
 
+    defineExpose({
+      chooseDisName,
+    });
+
+
+    watch(selectedDisease, () => {
+      chooseDisNameF();
+    });
   </script>
 
   <style scoped>

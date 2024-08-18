@@ -1,18 +1,31 @@
 <template>
-    <StrokeForm 
-    :strokeTypeSelection="strokeTypeSelection" 
-    :aspectShow="false" 
-    :lesionSizeSelection="lesionSizeSelection"
-    :showOperativeTreatment="true"
-    :showtPATreatment="false"
-    :showEndovascularTreatment="false"
+    <StrokeAtDForm 
+    ref="strokeAtDChild"
+    :strokeTypeCIOrICH="strokeTypeCIOrICH" 
     />
-  </template>
+</template>
   
   <script setup>
-  import StrokeForm from './StrokeForm.vue';
-  const strokeTypeSelection = ['皮質下', '視床', '被殻', '脳幹', '小脳', 'その他'];
-  const lesionSizeSelection = ['2cm未満（小）', '2-6cm（中）', '6cm以上（大）', '不明'];
+  import { ref, defineExpose,defineProps } from 'vue';
+    // Props: 読み込み時に配列で定義する
+  const props = defineProps({
+    disName: String,
+  });
+
+  import StrokeAtDForm from './StrokeAtDForm.vue';
+  const strokeTypeCIOrICH = 'ICH';
+
+  console.log(disName) 
+  // 親コンポーネントから子コンポーネントのメソッドを呼び出す
+  const strokeAtDChild = ref(null);
+
+  const getSummaryAtDischargeTextFromGrandChild = () => {
+    return strokeAtDChild.value.getSummaryAtDischargeOfStroke();
+  }
+
+  defineExpose({
+    getSummaryAtDischargeTextFromGrandChild,
+  });
   </script>
 
   <style scoped>

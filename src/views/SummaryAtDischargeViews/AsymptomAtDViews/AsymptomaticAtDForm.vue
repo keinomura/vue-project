@@ -1,189 +1,39 @@
 <template>
-    <div style="background-color: lightblue">
-      <v-row>
-        <v-col cols="1">
-          <span>病側</span>
-        </v-col>
-        <v-checkbox v-model="lesionSide" label="右" value="右"></v-checkbox>
-        <v-checkbox v-model="lesionSide" label="左" value="左"></v-checkbox>
-      </v-row>
+  <v-container style="background-color: lightblue">
+    <v-row>
+      <v-radio-group v-model="admissionPurpose" label="今回入院目的" inline>
+        <v-radio label="精査" value="精査"></v-radio>
+        <v-radio label="治療" value="治療"></v-radio>
+        <v-radio label="その他" value="その他"></v-radio>
+      </v-radio-group>
+    </v-row>
 
-<!-- ICS -->
-      <div v-if="disName === 'ICS'">
-        <div v-if="lesionSide.includes('右')">
-          <v-col>
-            <span>右側病変</span>
-          </v-col>
-          <v-radio-group v-model="symptomaticRight" label="症候性" inline>
-            <v-radio label="症候性" value="症候性"></v-radio>
-            <v-radio label="無症候性" value="無症候性"></v-radio>
-          </v-radio-group>
+<!-- 精査 -->
+  <v-container v-if="admissionPurpose === '精査'">
+    <v-textarea v-model="examinationFindings" label="検査所見"></v-textarea>
 
-          <v-row>
-            <v-col cols="4">
-              <v-text-field v-model="nascetRight" label="NASCET %"></v-text-field>
-            </v-col>
-            <v-col cols="4">
-              <v-text-field v-model="vmaxRight" label="Vmax"></v-text-field>
-            </v-col>
-            <v-col cols="4">
-              <v-radio-group v-model="ulcerativeLesionRight" label="潰瘍性病変" inline>
-                <v-radio label="あり" value="あり"></v-radio>
-                <v-radio label="なし" value="なし"></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
-          <v-text-field v-model="plaqueCharacterRight" label="プラーク性状"></v-text-field>
-          <v-textarea v-model="echoFindingsRight" label="Echo エコー所見"></v-textarea>
-        </div>
+    <v-radio-group v-model="treatmentPlan" label="今後の治療方針" inline>
+      <v-radio label="手術適応あり" value="手術適応あり"></v-radio>
 
-        <div v-if="lesionSide.includes('左')">
-          <v-col>
-            <span>左側病変</span>
-          </v-col>
-          <v-radio-group v-model="symptomaticLeft" label="症候性" inline>
-            <v-radio label="症候性" value="症候性"></v-radio>
-            <v-radio label="無症候性" value="無症候性"></v-radio>
-          </v-radio-group>
-          <v-row>
-            <v-col cols="4">
-              <v-text-field v-model="nascetLeft" label="NASCET %"></v-text-field>
-            </v-col>
-            <v-col cols="4">
-              <v-text-field v-model="vmaxLeft" label="Vmax"></v-text-field>
-            </v-col>
-            <v-col cols="4">
-              <v-radio-group v-model="ulcerativeLesionLeft" label="潰瘍性病変" inline>
-                <v-radio label="あり" value="あり"></v-radio>
-                <v-radio label="なし" value="なし"></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
-          <v-text-field v-model="plaqueCharacterLeft" label="プラーク性状"></v-text-field>
-          <v-textarea v-model="echoFindingsLeft" label="Echo エコー所見"></v-textarea>
-        </div>
-      </div>
+      <v-radio label="経過観察 定期フォローアップ" value="経過観察 定期フォローアップ"></v-radio>
+      <v-radio label="他院フォローアップ" value="他院フォローアップ"></v-radio>
+      <v-radio label="要コンサルト" value="要コンサルト"></v-radio>
+      <v-radio label="その他" value="その他"></v-radio>
+    </v-radio-group>
+    <v-row v-if="treatmentPlan === '手術適応あり'">
+      <v-checkbox v-model="surgicalIndications" label="手術適応" value="手術適応"></v-checkbox>
+      <v-checkbox v-model="surgicalIndications" label="血管内治療適応" value="血管内治療適応"></v-checkbox>
+    </v-row>
+    <v-text-field v-if="treatmentPlan === 'その他'" v-model="treatmentPlanText" label="その他"></v-text-field>
+  </v-container>
 
-<!-- Aneurysm -->
-      <!-- lesion side {{ lesionSide }} -->
-      <div v-if="disName === 'Aneurysm'">
-        <div v-if="lesionSide.includes('右')">
-          <v-col>
-            <span>右側病変</span>
-          </v-col>
-          <v-row>
-            <v-checkbox
-              v-for="(item, index) in aneurysmLocationOptions"
-              :key="index"
-              :label="item"
-              :value="item"
-              v-model="aneurysmLocationRight" 
-              :items="aneurysmLocationOptions" 
-              label="部位"
-              multiple
-              inline
-              ></v-checkbox>
-          </v-row>
-          <v-text-field
-            v-if="aneurysmLocationRight.includes('その他')" 
-            v-model="aneurysmLocationRightText" 
-            label="その他　複数個ある場合は','で区切って"></v-text-field>
-        </div>
-        <div v-if="lesionSide.includes('左')">
-          <v-col>
-            <span>左側病変</span>
-          </v-col>
-          <v-row>
-            <v-checkbox
-              v-for="(item, index) in aneurysmLocationOptions"
-              :key="index"
-              :label="item"
-              :value="item"
-              v-model="aneurysmLocationLeft" 
-              :items="aneurysmLocationOptions" 
-              label="部位"
-              multiple
-              inline
-              ></v-checkbox>
-          </v-row>
-          <v-text-field 
-            v-if="aneurysmLocationLeft.includes('その他')" 
-            v-model="aneurysmLocationLeftText" 
-            label="その他 複数個ある場合は','で区切って"></v-text-field>
-        </div>
+<!-- 治療 -->
+  <v-container v-if="admissionPurpose === '治療'">
+    <v-textarea v-model="treatmentFindings" label="治療所見" ></v-textarea>
+  </v-container>
+  </v-container>
 
-        <v-col  v-if="aneurysmLocationLists.length !== 0">
-            <span>今回治療場所</span>
-          </v-col>
-        <v-row>
-          <v-checkbox
-            v-for="(item, index) in aneurysmLocationLists"
-            :key="index"
-            :label="item"
-            :value="item"
-            v-model="treatedAneurysmLocation"
-            :items="aneurysmLocationLists"
-            label="今回治療病変"
-            multiple
-            inline
-          ></v-checkbox>
-        </v-row>
-          <v-text-field v-model="aneurysmSize" label="病変大きさ"></v-text-field>
-      </div>
 
-      <v-textarea v-model="additionalNotes" label="その他備考"></v-textarea>
-
-      <v-row>
-        <v-radio-group v-model="operation" label="今回手術" inline>
-          <v-radio label="あり" value="あり"></v-radio>
-          <v-radio label="なし" value="なし"></v-radio>
-        </v-radio-group>
-      </v-row>
-      <div v-if="operation === 'あり' && lesionSide.includes('右') && lesionSide.includes('左')">
-        <v-row>
-          <v-col cols="12">
-            <span>今回治療側</span>
-          </v-col>
-          <v-checkbox v-model="treatedICSLocation" label="右" value="右"></v-checkbox>
-          <v-checkbox v-model="treatedICSLocation" label="左" value="左"></v-checkbox>
-        </v-row>
-      </div>
-      <v-row v-if="operation === 'あり'">
-        <v-col cols="6">
-          <span class="ma-2">今回手術予定日</span>
-          <v-date-picker v-model="scheduledSurgeryDate" style="background-color: lightblue;"></v-date-picker>
-        </v-col>
-      </v-row>
-  
-      <v-row cols="12" v-if="operation === 'あり'">
-        <v-radio-group v-model="recurrence" label="今回手術は" inline>
-          <v-radio label="初発" value="初発"></v-radio>
-          <v-radio label="再発" value="再発"></v-radio>
-        </v-radio-group>
-      </v-row>
-  
-      <v-row v-if="recurrence === '再発'"> 
-        <v-col cols="12">
-          <span>発症前回手術から</span>{{ periodFromLastSurgery }}
-        </v-col>
-        <v-col cols="8">
-          <v-row v-for="(surgery, index) in previousSurgeries" :key="index">
-            <v-col cols="4">
-              <v-select v-model="surgery.year" :items="years" label="前回手術年" @update:modelValue="calculatePeriodFromLastSurgery"></v-select>
-            </v-col>
-            <v-col cols="4">
-              <v-select v-model="surgery.month" :items="[''].concat(months)" label="前回手術月" @update:modelValue="calculatePeriodFromLastSurgery"></v-select>
-            </v-col>
-            <v-col cols="1">
-              <v-btn @click="removeSurgery(index)">削除</v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-        <v-col cols="8">
-          <v-btn @click="addSurgery" class="ma-2">手術を追加</v-btn>
-        </v-col>
-      </v-row>
-    </div>
   </template>
   
   <script setup>
@@ -191,11 +41,30 @@
   
   // Props
   const props = defineProps({
-    disName: String,
+    diseaseName: String,
   });
   
 
   // Data
+  const admissionPurpose = ref('精査');
+  const examinationFindings = ref('');
+  const treatmentFindings =  ref('');
+
+  watch(admissionPurpose.value, (newVal) => {
+    if (newVal === '治療') {
+      treatmentFindings.value = '予定通り、手術施行。経過良好にて退院となった。';
+      examinationFindings.value = '';
+    } else if (newVal === '精査') {
+      treatmentFindings.value = '';
+    }
+  }, {immediate: true});
+
+  const treatmentPlan = ref('手術適応あり');
+  const surgicalIndications = ref([]);
+  const treatmentPlanText = ref('');
+
+
+
   const lesionSide = ref(['右']);
   const symptomaticRight = ref('');
   const symptomaticLeft = ref('');
@@ -348,8 +217,8 @@
     .map(([key, value]) => `${key}: ${value}`)
     .join(',');
 
-    return (props.disName=== 'ICS')? ICSSummaryText() + summaryText: 
-            (props.disName === 'Aneurysm')? aneurysmSummaryText() + summaryText: summaryText; 
+    return (props.diseaseName=== 'ICS')? ICSSummaryText() + summaryText: 
+            (props.diseaseName === 'Aneurysm')? aneurysmSummaryText() + summaryText: summaryText; 
   };
 
   // "defineExpose"を使用して、外部から参照できるプロパティを定義する

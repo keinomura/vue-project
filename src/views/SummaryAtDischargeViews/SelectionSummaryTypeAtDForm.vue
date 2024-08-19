@@ -46,7 +46,7 @@
     } else if (newVal === 'CI' || newVal === 'ICH') {
       currentFormComponent.value = StrokeAtDForm;
     } else if (newVal === 'ICS' || newVal === 'Aneurysm') {
-      currentFormComponent.value = StrokeAtDForm;
+      currentFormComponent.value = AsymptomaticForm;
     } else {
       currentFormComponent.value = null;
     }

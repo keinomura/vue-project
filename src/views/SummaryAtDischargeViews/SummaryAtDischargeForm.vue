@@ -77,16 +77,7 @@
 
   <script setup>
     import { ref, defineExpose, watch } from 'vue';
-    // import TNAtDForm from './MVDAtDViews/TNAtDForm.vue';
-    // import HFSAtDForm from './MVDAtDViews/HFSAtDForm.vue';
-    // import SelectionTypeOfStrokeAtDForm from './StrokeAtDViews/SelectionTypeOfStrokeAtDForm.vue';
-    // import SelectionTypeOfMVDAtDForm from './MVDAtDViews/SelectionTypeOfMVDAtDForm.vue';
     import SelectionSummaryType from './SelectionSummaryTypeAtDForm.vue';
-
-    // import HFSForm from './MVDViews/HFSForm.vue';
-    // import TNForm from './MVDViews/TNForm.vue';
-    // import ICSForm from './AsymptomForm/ICSForm.vue';
-    // import AneurysmForm from './AsymptomForm/AneurysmForm.vue';
 
     // variables
     const child = ref(null);

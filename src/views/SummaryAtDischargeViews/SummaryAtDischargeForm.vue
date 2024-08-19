@@ -149,37 +149,23 @@
     function selectedDiseaseComponent() {
       if (selectedDisease.value === 'デフォルト'){
         return null;
-      } else if (selectedDisease.value === '三叉神経痛') {
-        return SelectionTypeOfMVDAtDForm;
-      } else if (selectedDisease.value === '顔面痙攣') {
-        return SelectionSummaryType;
-      } else if (selectedDisease.value === '脳梗塞' || selectedDisease.value === '脳出血') {
-        return SelectionSummaryType;
-      // } else if (selectedDisease.value === '脳出血') {
-      //   return CIAtDForm;
        } else {
-        return null;
+        return SelectionSummaryType;
        }
     };
 
     function chooseDisNameF() {
-      if (selectedDisease.value === 'デフォルト'){
-        return null;
-      } else if (selectedDisease.value === '三叉神経痛') {
-        chooseDisName.value = 'TN';
-        return 'TN';
-      } else if (selectedDisease.value === '顔面痙攣') {
-        chooseDisName.value = 'HFS';
-        return 'HFS';
-      } else if (selectedDisease.value === '脳梗塞') {
-        chooseDisName.value = 'CI';
-        return 'CI';
-      } else if (selectedDisease.value === '脳出血') {
-        chooseDisName.value = 'ICH';
-        return 'ICH';
-       } else {
-        return null;;
-    }};
+      const diseaseMapping = {
+        'デフォルト': null,
+        '三叉神経痛': 'TN',
+        '顔面痙攣': 'HFS',
+        '脳梗塞': 'CI',
+        '脳出血': 'ICH'
+      };
+      chooseDisName.value = diseaseMapping[selectedDisease.value] || null;
+      return chooseDisName.value;
+    };
+
 
     function createSummary() {
       

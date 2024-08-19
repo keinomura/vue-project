@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import SummaryForm from '../views/SummaryViews/SummaryForm.vue';
-import SummaryAtDischargeForm from '../views/SummaryAtDischargeViews/SummaryAtCischargeForm.vue';
+import SummaryAtDischargeForm from '../views/SummaryAtDischargeViews/SummaryAtDischargeForm.vue';
 import SurgeryForm from '../views/SurgeryForm.vue';
 
 const routes = [

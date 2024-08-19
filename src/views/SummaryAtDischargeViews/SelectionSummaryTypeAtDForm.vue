@@ -8,36 +8,45 @@
 
 <script setup>
   import { ref, defineExpose, defineProps, watch } from 'vue';
-  import MVDAtDForm from './MVDAtDForm.vue'
+  import MVDAtDForm from './MVDAtDViews/MVDAtDForm.vue'
+  import StrokeAtDForm from './StrokeAtDViews/StrokeAtDForm.vue'
 
   // Props: 読み込み時に配列で定義する
   const props = defineProps({
     disNameSelected: String,
   });
 
-  // const currentDisName = props.disNameSelected;
-  let diseaseName = ref(props.disNameSelected);  //
-  // props.disNameSelected;
-
   // 親コンポーネントから子コンポーネントのメソッドを呼び出す
   const formChild = ref(null);
 
+  //　親コンポーネントからみて孫コンポーネントのメソッドを呼び出す
   const getSummaryAtDischargeTextFromGrandChild = () => {
-    return (props.disNameSelected === ('TN' || 'HFS')) ? formChild.value.getSummaryAtDischargeOfMVD():
-            (props.disNameSelected === ('CI'|| 'ICH')) ? formChild.value.getSummaryAtDischargeOfStroke():
-            '';
-  }
-
-  watch(props.disNameSelected, (disName) => {
-    diseaseName = disName;
-  }, { immediate: true });
+    if (props.disNameSelected === 'TN' || props.disNameSelected === 'HFS') {
+      return formChild.value.getSummaryAtDischargeOfMVD();
+    } else if (props.disNameSelected === 'CI' || props.disNameSelected === 'ICH') {
+      return formChild.value.getSummaryAtDischargeOfStroke();
+    } else {
+      return '';
+    }
+  };
 
   defineExpose({
     getSummaryAtDischargeTextFromGrandChild,
   });
 
   // diseaseNameSelected の値に基づいてコンポーネントを切り替える
-  const currentFormComponent = ref((props.disNameSelected === ('TN'||'HFS')) ? MVDAtDForm : '');
+  const currentFormComponent = ref(null);
+
+  watch(() => props.disNameSelected, (newVal) => {
+    if (newVal === 'TN' || newVal === 'HFS') {
+      currentFormComponent.value = MVDAtDForm;
+    } else if (newVal === 'CI' || newVal === 'ICH') {
+      currentFormComponent.value = StrokeAtDForm;
+    } else {
+      currentFormComponent.value = null;
+    }
+  }, { immediate: true });
+
 
 </script>
 

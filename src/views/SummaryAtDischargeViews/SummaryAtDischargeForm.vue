@@ -81,6 +81,7 @@
     import HFSAtDForm from './MVDAtDViews/HFSAtDForm.vue';
     import SelectionTypeOfStrokeAtDForm from './StrokeAtDViews/SelectionTypeOfStrokeAtDForm.vue';
     import SelectionTypeOfMVDAtDForm from './MVDAtDViews/SelectionTypeOfMVDAtDForm.vue';
+    import SelectionSummaryType from './SelectionSummaryTypeAtDForm.vue';
 
     // import HFSForm from './MVDViews/HFSForm.vue';
     // import TNForm from './MVDViews/TNForm.vue';
@@ -151,9 +152,9 @@
       } else if (selectedDisease.value === '三叉神経痛') {
         return SelectionTypeOfMVDAtDForm;
       } else if (selectedDisease.value === '顔面痙攣') {
-        return SelectionTypeOfMVDAtDForm;
+        return SelectionSummaryType;
       } else if (selectedDisease.value === '脳梗塞' || selectedDisease.value === '脳出血') {
-        return SelectionTypeOfStrokeAtDForm;
+        return SelectionSummaryType;
       // } else if (selectedDisease.value === '脳出血') {
       //   return CIAtDForm;
        } else {

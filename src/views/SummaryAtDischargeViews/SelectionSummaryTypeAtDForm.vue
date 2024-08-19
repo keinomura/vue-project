@@ -10,6 +10,7 @@
   import { ref, defineExpose, defineProps, watch } from 'vue';
   import MVDAtDForm from './MVDAtDViews/MVDAtDForm.vue'
   import StrokeAtDForm from './StrokeAtDViews/StrokeAtDForm.vue'
+  import AsymptomaticForm from './AsymptomAtDViews/AsymptomaticAtDForm.vue'
 
   // Props: 読み込み時に配列で定義する
   const props = defineProps({
@@ -25,6 +26,8 @@
       return formChild.value.getSummaryAtDischargeOfMVD();
     } else if (props.disNameSelected === 'CI' || props.disNameSelected === 'ICH') {
       return formChild.value.getSummaryAtDischargeOfStroke();
+    } else if (props.disNameSelected === 'ICS' || props.disNameSelected === 'Aneurysm') {
+      return formChild.value.getSummaryAtDischargeOfAsymptomatic();
     } else {
       return '';
     }
@@ -41,6 +44,8 @@
     if (newVal === 'TN' || newVal === 'HFS') {
       currentFormComponent.value = MVDAtDForm;
     } else if (newVal === 'CI' || newVal === 'ICH') {
+      currentFormComponent.value = StrokeAtDForm;
+    } else if (newVal === 'ICS' || newVal === 'Aneurysm') {
       currentFormComponent.value = StrokeAtDForm;
     } else {
       currentFormComponent.value = null;

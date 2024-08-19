@@ -77,10 +77,10 @@
 
   <script setup>
     import { ref, defineExpose, watch } from 'vue';
-    import TNAtDForm from './MVDAtDViews/TNAtDForm.vue';
-    import HFSAtDForm from './MVDAtDViews/HFSAtDForm.vue';
-    import SelectionTypeOfStrokeAtDForm from './StrokeAtDViews/SelectionTypeOfStrokeAtDForm.vue';
-    import SelectionTypeOfMVDAtDForm from './MVDAtDViews/SelectionTypeOfMVDAtDForm.vue';
+    // import TNAtDForm from './MVDAtDViews/TNAtDForm.vue';
+    // import HFSAtDForm from './MVDAtDViews/HFSAtDForm.vue';
+    // import SelectionTypeOfStrokeAtDForm from './StrokeAtDViews/SelectionTypeOfStrokeAtDForm.vue';
+    // import SelectionTypeOfMVDAtDForm from './MVDAtDViews/SelectionTypeOfMVDAtDForm.vue';
     import SelectionSummaryType from './SelectionSummaryTypeAtDForm.vue';
 
     // import HFSForm from './MVDViews/HFSForm.vue';
@@ -94,7 +94,7 @@
     const chooseDisName = ref('');
 
     const selectedDisease = ref('デフォルト');
-    const diseases = ref(['デフォルト', 'ICS', '動脈瘤', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣']);
+    const diseases = ref(['デフォルト', 'ICS', '動脈瘤', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣', '慢性硬膜下血腫']);
     const complication = ref('なし');
     const complicationText = ref('');
     const additionalComment = ref('');
@@ -160,7 +160,10 @@
         '三叉神経痛': 'TN',
         '顔面痙攣': 'HFS',
         '脳梗塞': 'CI',
-        '脳出血': 'ICH'
+        '脳出血': 'ICH',
+        'ICS': 'ICS',
+        '動脈瘤': 'Aneurysm',
+        '慢性硬膜下血腫': 'CSDH',
       };
       chooseDisName.value = diseaseMapping[selectedDisease.value] || null;
       return chooseDisName.value;

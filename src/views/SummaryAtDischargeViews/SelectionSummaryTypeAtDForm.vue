@@ -11,6 +11,7 @@
   import MVDAtDForm from './MVDAtDViews/MVDAtDForm.vue'
   import StrokeAtDForm from './StrokeAtDViews/StrokeAtDForm.vue'
   import AsymptomaticForm from './AsymptomAtDViews/AsymptomaticAtDForm.vue'
+  import OthersForm from './OthersAtDViews/OthersAtDForm.vue'
 
   // Props: 読み込み時に配列で定義する
   const props = defineProps({
@@ -22,14 +23,16 @@
 
   //　親コンポーネントからみて孫コンポーネントのメソッドを呼び出す
   const getSummaryAtDischargeTextFromGrandChild = () => {
-    if (props.disNameSelected === 'TN' || props.disNameSelected === 'HFS') {
+    if (props.disNameSelected === 'デフォルト') {
+      return '';
+    } else if (props.disNameSelected === 'TN' || props.disNameSelected === 'HFS') {
       return formChild.value.getSummaryAtDischargeOfMVD();
     } else if (props.disNameSelected === 'CI' || props.disNameSelected === 'ICH') {
       return formChild.value.getSummaryAtDischargeOfStroke();
     } else if (props.disNameSelected === 'ICS' || props.disNameSelected === 'Aneurysm') {
-      return formChild.value.getSummaryAtDischargeOfAsymptomatic();
+      return formChild.value.getSummaryAtDischargeOfAsymptom();
     } else {
-      return '';
+      return formChild.value.getSummaryAtDischargeOfOthers();
     }
   };
 
@@ -47,6 +50,8 @@
       currentFormComponent.value = StrokeAtDForm;
     } else if (newVal === 'ICS' || newVal === 'Aneurysm') {
       currentFormComponent.value = AsymptomaticForm;
+    } else if (newVal === 'CSDH' || newVal === 'observation') {
+      currentFormComponent.value = OthersForm;
     } else {
       currentFormComponent.value = null;
     }

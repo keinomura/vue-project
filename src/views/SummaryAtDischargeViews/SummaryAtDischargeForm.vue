@@ -94,7 +94,7 @@
     const chooseDisName = ref('');
 
     const selectedDisease = ref('デフォルト');
-    const diseases = ref(['デフォルト', 'ICS', '動脈瘤', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣', '慢性硬膜下血腫']);
+    const diseases = ref(['デフォルト', 'ICS', '動脈瘤', '脳梗塞', '脳出血', '三叉神経痛', '顔面痙攣', '慢性硬膜下血腫', '経過観察']);
     const complication = ref('なし');
     const complicationText = ref('');
     const additionalComment = ref('');
@@ -164,6 +164,7 @@
         'ICS': 'ICS',
         '動脈瘤': 'Aneurysm',
         '慢性硬膜下血腫': 'CSDH',
+        '経過観察': 'observation',
       };
       chooseDisName.value = diseaseMapping[selectedDisease.value] || null;
       return chooseDisName.value;

@@ -18,7 +18,7 @@
       v-model="strokeTypeElse" label="その他病型"></v-text-field>
 
     <v-divider>入院中治療</v-divider>
-    <v-container v-if="strokeTypeCIOrICH === 'CI'">
+    <v-container v-if="diseaseName === 'CI'">
       <v-row>
         <v-col
           cols
@@ -59,7 +59,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-container v-if="strokeTypeCIOrICH === 'ICH'">
+    <v-container v-if="diseaseName === 'ICH'">
       <v-radio-group v-model="operativeTreatment" label="外科治療の有無" inline>
         <v-radio label="あり" value="あり"></v-radio>
         <v-radio label="なし" value="なし"></v-radio>
@@ -227,16 +227,16 @@
 
   // Props: 読み込み時に配列で定義する
   const props = defineProps({
-    strokeTypeCIOrICH: String,
+    diseaseName: String,
   });
   // Data
   const isCI = ref(false);
-  watch(() => props.strokeTypeCIOrICH, (value) => {
+  watch(() => props.diseaseName, (value) => {
     isCI.value = (value === 'CI');
   }, { immediate: true });
-  // (props.strokeTypeCIOrICH === 'ICH')? ref(true): ref(false);
+  // (props.diseaseName === 'ICH')? ref(true): ref(false);
   const strokeType = ref([]);
-  console.log(props.strokeTypeCIOrICH)
+  console.log(props.diseaseName)
   // const strokeTypeSelection = ref([]);
 
   const strokeTypeElse = ref('');

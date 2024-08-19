@@ -80,6 +80,7 @@
     import TNAtDForm from './MVDAtDViews/TNAtDForm.vue';
     import HFSAtDForm from './MVDAtDViews/HFSAtDForm.vue';
     import SelectionTypeOfStrokeAtDForm from './StrokeAtDViews/SelectionTypeOfStrokeAtDForm.vue';
+    import SelectionTypeOfMVDAtDForm from './MVDAtDViews/SelectionTypeOfMVDAtDForm.vue';
 
     // import HFSForm from './MVDViews/HFSForm.vue';
     // import TNForm from './MVDViews/TNForm.vue';
@@ -148,9 +149,9 @@
       if (selectedDisease.value === 'デフォルト'){
         return null;
       } else if (selectedDisease.value === '三叉神経痛') {
-        return TNAtDForm;
+        return SelectionTypeOfMVDAtDForm;
       } else if (selectedDisease.value === '顔面痙攣') {
-        return HFSAtDForm;
+        return SelectionTypeOfMVDAtDForm;
       } else if (selectedDisease.value === '脳梗塞' || selectedDisease.value === '脳出血') {
         return SelectionTypeOfStrokeAtDForm;
       // } else if (selectedDisease.value === '脳出血') {
@@ -164,9 +165,11 @@
       if (selectedDisease.value === 'デフォルト'){
         return null;
       } else if (selectedDisease.value === '三叉神経痛') {
-        return '';
+        chooseDisName.value = 'TN';
+        return 'TN';
       } else if (selectedDisease.value === '顔面痙攣') {
-        return '';
+        chooseDisName.value = 'HFS';
+        return 'HFS';
       } else if (selectedDisease.value === '脳梗塞') {
         chooseDisName.value = 'CI';
         return 'CI';

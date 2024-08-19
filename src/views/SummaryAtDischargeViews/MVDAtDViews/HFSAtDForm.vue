@@ -1,6 +1,6 @@
 <template>
     <MVDAtDForm
-      ref="mvdChild"
+      ref="formChild"
       :disName="disName" 
     />
   </template>
@@ -10,11 +10,11 @@
     import MVDAtDForm from './MVDAtDForm.vue';
 
     // 親コンポーネントから子コンポーネントのメソッドを呼び出す
-    const mvdChild = ref(null);
+    const formChild = ref(null);
     const disName = 'HFS';
 
     const getSummaryAtDischargeTextFromGrandChild = () => {
-      return mvdChild.value.getSummaryAtDischargeOfMVD();
+      return formChild.value.getSummaryAtDischargeOfMVD();
     }
 
     defineExpose({

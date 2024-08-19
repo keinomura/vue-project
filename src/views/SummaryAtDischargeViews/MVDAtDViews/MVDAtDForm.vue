@@ -6,7 +6,7 @@
       </v-radio-group>
   
       <v-checkbox
-        v-if="disName === 'TN'"
+        v-if="diseaseName === 'TN'"
         v-for="option in painAreasOption"
         :key="option.value"
         v-model="painArea"
@@ -39,7 +39,7 @@
           <v-radio label="あり" value="あり"></v-radio>
           <v-radio label="なし" value="なし"></v-radio>
         </v-radio-group>
-        <v-radio-group v-if="disName === 'TN'" v-model="preservationOfPetrosalVein" label="錐体静脈の温存" inline>
+        <v-radio-group v-if="diseaseName === 'TN'" v-model="preservationOfPetrosalVein" label="錐体静脈の温存" inline>
           <v-radio label="全部保存" value="全部保存"></v-radio>
           <v-radio label="一部切断" value="一部切断"></v-radio>
         </v-radio-group>
@@ -99,7 +99,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-radio-group v-if="disName === 'HFS'" v-model="preOperationTinnitus" label="術前耳鳴り" inline>
+        <v-radio-group v-if="diseaseName === 'HFS'" v-model="preOperationTinnitus" label="術前耳鳴り" inline>
           <v-radio label="あり" value="あり"></v-radio>
           <v-radio label="なし" value="なし"></v-radio>
         </v-radio-group>
@@ -111,10 +111,10 @@
         <v-divider>退院時</v-divider>
         <v-row>
         <v-col cols="12">
-          <v-radio-group v-if="disName === 'TN'" v-model="postOperationPain" label="退院時痛み VAS" inline>
+          <v-radio-group v-if="diseaseName === 'TN'" v-model="postOperationPain" label="退院時痛み VAS" inline>
             <v-radio v-for="option in postOperationVAS" :key="option" :label="option" :value="option"></v-radio>
           </v-radio-group>
-          <v-radio-group v-if="disName === 'HFS'" v-model="postOperationSymptom" label="退院時症状 VAS" inline>
+          <v-radio-group v-if="diseaseName === 'HFS'" v-model="postOperationSymptom" label="退院時症状 VAS" inline>
             <v-radio v-for="option in postOperationVAS" :key="option" :label="option" :value="option"></v-radio>
           </v-radio-group>
         </v-col>
@@ -162,7 +162,7 @@
   
   // Props
   const props = defineProps({
-    disName: String,
+    diseaseName: String,
   });
   
   const lesionSide = ref('左');
@@ -191,7 +191,7 @@
 
   const medicationsForHFS = ref(['リボトリール', 'ビムパット', 'テグレトール', 'セルシン']);
   const medicationsForTN = ref(['テグレトール（カルバマゼピン）', 'ビムパット（ラコサミド）', 'パキシル', 'ロキソニン', 'ガバペン', 'アレビアチン']);
-  const medications = (props.disName ==='TN')? medicationsForTN : medicationsForHFS;
+  const medications = (props.diseaseName ==='TN')? medicationsForTN : medicationsForHFS;
   const medicationChange = ref('');
 
   const mastoidAirCellOpening = ref('なし');
@@ -254,7 +254,7 @@
         '痛みの領域': painArea.value,
         '手術手技': operationType.value,
         'mastoid air cellの開放': mastoidAirCellOpening.value,
-        '錐体静脈': (props.disName === 'TN')? preservationOfPetrosalVein.value:'',
+        '錐体静脈': (props.diseaseName === 'TN')? preservationOfPetrosalVein.value:'',
         'VA移動': transpositionOfVA.value,
         '関与血管': treatedVessels.value,
         '責任血管': mostResponsibleVessel.value,

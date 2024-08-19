@@ -1,37 +1,42 @@
 <template>
-    <StrokeAtDForm
-    ref="strokeAtDChild"
-    :strokeTypeCIOrICH="disNameSelected"
-    />
+  <component
+    :is="currentFormComponent"
+    ref="formChild"
+    :diseaseName="disNameSelected"
+  />
 </template>
 
 <script setup>
   import { ref, defineExpose, defineProps, watch } from 'vue';
-  import StrokeAtDForm from './StrokeAtDForm.vue';
+  import StrokeAtDForm from './StrokeAtDForm.vue'
 
   // Props: 読み込み時に配列で定義する
   const props = defineProps({
     disNameSelected: String,
   });
-  
-  const currentDisName = props.disNameSelected;
-  // const strokeTypeCIOrICH = 'CI';
-  const strokeTypeCIOrICH = props.disNameSelected;
+
+  // const currentDisName = props.disNameSelected;
+  let diseaseName = ref(props.disNameSelected);  //
+  // props.disNameSelected;
 
   // 親コンポーネントから子コンポーネントのメソッドを呼び出す
-  const strokeAtDChild = ref(null);
+  const formChild = ref(null);
 
   const getSummaryAtDischargeTextFromGrandChild = () => {
-    return strokeAtDChild.value.getSummaryAtDischargeOfStroke();
+    return formChild.value.getSummaryAtDischargeOfStroke();
   }
 
-  watch(currentDisName, (currentDisName) => {
-    strokeTypeCIOrICH.value = currentDisName;
-  });
+  watch(props.disNameSelected, (disName) => {
+    diseaseName = disName;
+  }, { immediate: true });
 
   defineExpose({
     getSummaryAtDischargeTextFromGrandChild,
   });
+
+  // diseaseNameSelected の値に基づいてコンポーネントを切り替える
+  const currentFormComponent = ref((props.disNameSelected === ('CI'||'ICH')) ? StrokeAtDForm : '');
+
 </script>
 
 <style scoped>

@@ -378,7 +378,7 @@
     '退院時神経所見 {' + createSummaryText(strokeSummaryAtDischarge.neurologicalInformationAtDischarge) + '}\r' +
     '退院時内服 {' + createSummaryText(strokeSummaryAtDischarge.otherInformationAtDischarge) + '}';
     // return summaryText
-    return props.strokeTypeCIOrICH + ' ' + isCI.value + ' ' + summaryText;
+    return summaryText;
   }
 
   // defineExpose

@@ -8,6 +8,12 @@
       <ul>
         <li><a href="#" @click.prevent="menuClicked('/summaryAtDischarge')">退院サマリ</a></li>
       </ul>
+
+      <h3>入退院サマリ　フレーム</h3>
+      <ul>
+        <li><a href="#" @click.prevent="menuClicked('/summaryFrame')">入退院サマリ</a></li>
+      </ul>
+
       <h3>手術名</h3>
       <ul>
         <li><a href="#" @click.prevent="menuClicked('/surgery')">Clipping</a></li>

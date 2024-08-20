@@ -202,7 +202,8 @@
     };
 
     function createSummary() {
-      const detailedDiseaseSummary = child.value.getSummaryTextFromGrandChild();
+      console.log(chooseDisName.value);
+      const detailedDiseaseSummary = (chooseDisName.value === null) ? '':child.value.getSummaryTextFromGrandChild();
 
       const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
       const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);

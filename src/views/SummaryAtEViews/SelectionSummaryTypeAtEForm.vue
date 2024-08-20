@@ -8,7 +8,7 @@
 
 <script setup>
   import { ref, shallowRef, defineExpose, defineProps, watch, markRaw } from 'vue';
-  import MVDAtEForm from './/MVDViews/MVDForm.vue'
+  import MVDAtEForm from './MVDViews/MVDForm.vue'
   import StrokeAtEForm from './StrokeViews/StrokeForm.vue'
   import AsymptomAtEForm from './AsymptomForm/AsymptomaticForm.vue'
 

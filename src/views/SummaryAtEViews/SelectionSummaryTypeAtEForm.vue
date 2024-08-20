@@ -1,5 +1,4 @@
 <template>
-  //親コンポーネント{{ disNameSelected }}
   <component
     :is="currentFormComponent"
     ref="formChild"
@@ -9,9 +8,9 @@
 
 <script setup>
   import { ref, defineExpose, defineProps, watch } from 'vue';
-  import MVDAtEForm from '../SummaryViews/MVDViews/MVDForm.vue'
-  import StrokeAtEForm from '../SummaryViews/StrokeViews/StrokeForm.vue'
-  import AsymptomAtEForm from '../SummaryViews/AsymptomForm/AsymptomaticForm.vue'
+  import MVDAtEForm from './/MVDViews/MVDForm.vue'
+  import StrokeAtEForm from './StrokeViews/StrokeForm.vue'
+  import AsymptomAtEForm from './AsymptomForm/AsymptomaticForm.vue'
 
   // Props: 読み込み時に配列で定義する
   const props = defineProps({

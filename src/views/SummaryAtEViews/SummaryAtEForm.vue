@@ -18,7 +18,7 @@
         </v-col>
       </v-row>
         <!-- 疾患によって切り換えるcomponent -->
-      <v-col cols="12">{{ selectedDisease }}
+      <v-col cols="12">
         <component :is="selectedDiseaseComponent()" ref="child" :disNameSelected="chooseDisName"></component>
       </v-col>
       <v-row>

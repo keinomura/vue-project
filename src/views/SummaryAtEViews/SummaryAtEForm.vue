@@ -203,7 +203,7 @@
 
     function createSummary() {
       console.log(chooseDisName.value);
-      const detailedDiseaseSummary = (chooseDisName.value === null) ? '':child.value.getSummaryTextFromGrandChild();
+      const detailedDiseaseSummary = (chooseDisName.value === null) ? '':'{' + child.value.getSummaryTextFromGrandChild() + '}';
 
       const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
       const chiefComplainText = textReplaced("【主訴】", chiefComplain.value);
@@ -217,7 +217,7 @@
       const premRSText = " 発症前mRS:" + premRS.value.value;
 
       summary.value = chiefComplainText + presentHistoryText + pastHistoryText + exm + '\r'
-      + '{' + detailedDiseaseSummary + '}' + '\r'
+      +  detailedDiseaseSummary + '\r'
       + "\r---------入院データ----------"
       + [QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',') ;
 

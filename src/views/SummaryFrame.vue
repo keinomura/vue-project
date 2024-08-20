@@ -22,7 +22,12 @@
   </template>
 
   <script setup>
-    import { ref } from 'vue';
+    import { ref, defineProps } from 'vue';
+
+  // Props
+  const props = defineProps({
+      title: String,
+    });
 
     const child = ref(null);
 

@@ -8,7 +8,9 @@ const routes = [
   { path: '/summary', component: SummaryForm },
   { path: '/summaryAtDischarge', component: SummaryAtDischargeForm },
   { path: '/surgery', component: SurgeryForm },
-  { path: '/summaryFrame', component: SummaryFrame },
+  { path: '/summaryFrame', component: SummaryFrame, props: {title: '入院サマリですよ'}},
+  // { path: '/summaryFrame', component: SummaryFrame},
+
 ];
 
 const router = createRouter({

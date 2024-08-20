@@ -23,14 +23,14 @@
   </template>
 
   <script setup>
-    import { ref, defineProps, watch } from 'vue';
+    import { ref, shallowRef, defineProps, watch } from 'vue';
     import summaryAtEView from './SummaryAtEViews/SummaryAtEForm.vue';
   // Props
   const props = defineProps({
       title: String,
     });
 
-    const child = ref(null);
+    const child = shallowRef(null);
     const calledComponent = ref('');
     const summary = ref('');
     const createCalledComponent = () => {

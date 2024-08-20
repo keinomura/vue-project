@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-  import { ref, defineExpose, defineProps, watch } from 'vue';
+  import { ref, shallowRef, defineExpose, defineProps, watch } from 'vue';
   import MVDAtEForm from './/MVDViews/MVDForm.vue'
   import StrokeAtEForm from './StrokeViews/StrokeForm.vue'
   import AsymptomAtEForm from './AsymptomForm/AsymptomaticForm.vue'
@@ -18,7 +18,7 @@
   });
 
   // 親コンポーネントから子コンポーネントのメソッドを呼び出す
-  const formChild = ref(null);
+  const formChild = shallowRef(null);
 
   //　親コンポーネントからみて孫コンポーネントのメソッドを呼び出す
   const getSummaryTextFromGrandChild = () => {
@@ -40,7 +40,7 @@
   });
 
   // diseaseNameSelected の値に基づいてコンポーネントを切り替える
-  const currentFormComponent = ref(null);
+  const currentFormComponent = shallowRef(null);
 
   watch(() => props.disNameSelected, (newVal) => {
     if (newVal === 'TN' || newVal === 'HFS') {

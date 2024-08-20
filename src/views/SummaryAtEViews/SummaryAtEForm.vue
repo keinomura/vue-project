@@ -123,10 +123,10 @@
 </template>
 
   <script setup>
-    import { ref, watch } from 'vue';
+    import { ref, shallowRef, watch } from 'vue';
     import SelectionSummaryType from './SelectionSummaryTypeAtEForm.vue';
 
-    const child = ref(null);
+    const child = shallowRef(null);
     const chooseDisName = ref(null);
 
     const selectedDisease = ref('デフォルト');

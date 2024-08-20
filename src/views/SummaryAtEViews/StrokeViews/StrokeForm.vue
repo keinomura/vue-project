@@ -135,14 +135,17 @@
         <v-label>部位</v-label>
       </v-col>
     </v-row>
-    <v-col cols="12" label="病変部位">
-      <v-checkbox-group v-model="lesionLocation" label="病変部位" class="d-flex flex-wrap">
-        <template v-for="location in lesionLocationSelection">
-          <v-checkbox :label="location" :value="location"></v-checkbox>
-        </template>
-      </v-checkbox-group>
-    </v-col>
 
+    <v-row>
+      <v-col cols="2" label="病変部位" v-for="eachLesionLocation in lesionLocationSelection">
+        <v-checkbox
+          :label="eachLesionLocation"
+          :value="eachLesionLocation"
+          v-model="lesionLocation"
+        >
+        </v-checkbox>
+      </v-col>
+    </v-row>
 
     <!-- 脳出血の場合に外科治療の有無を選択 -->
     <v-radio-group v-if="diseaseName === 'ICH'" v-model="surgicalTreatment" label="外科治療の有無" inline>
@@ -244,7 +247,7 @@
       '病型': strokeType.value,
       '病型詳細': strokeTypeElse.value,
       '病側': lesionSide.value,
-      '発症時刻': formatDate(strokeOnsetTime.value),
+      '発症時刻': strokeOnsetTime.value,
       '入院時刻': admissionTime.value,
       '抗血小板薬': antiplateletType.value,
       '抗凝固薬': anticoagulantType.value,

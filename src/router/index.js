@@ -8,7 +8,8 @@ const routes = [
   { path: '/summary', component: SummaryForm },
   { path: '/summaryAtDischarge', component: SummaryAtDischargeForm },
   // { path: '/surgery', component: SurgeryForm },
-  { path: '/summaryFrame', component: SummaryFrame, props: {title: '入院サマリですよ'}},
+  { path: '/summaryFrame/hospitalization', component: SummaryFrame, props: {title: '入院サマリ'}},
+  { path: '/summaryFrame/discharge', component: SummaryFrame, props: {title: '退院サマリ'}},
   // { path: '/summaryFrame', component: SummaryFrame},
 
 ];

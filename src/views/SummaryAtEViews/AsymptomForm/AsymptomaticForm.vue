@@ -65,7 +65,6 @@
       </div>
 
 <!-- Aneurysm -->
-      <!-- lesion side {{ lesionSide }} -->
       <div v-if="diseaseName === 'Aneurysm'">
         <div v-if="lesionSide.includes('右')">
           <v-col>

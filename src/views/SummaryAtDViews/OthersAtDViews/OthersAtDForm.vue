@@ -1,6 +1,6 @@
 <template>
   <v-container style="background-color: yellowgreen">
-    <!-- CSDH -->{{ diseaseName }}
+    <!-- CSDH -->
     <v-container v-if="diseaseName === 'CSDH'">
       <v-radio-group v-model="operation" label="手術" inline>
         <v-radio label="あり" value="あり"></v-radio>

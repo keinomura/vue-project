@@ -104,10 +104,9 @@
           <v-divider>入院中その他治療</v-divider>
         </v-col>
       <v-row>
-      <v-col cols="2" v-for="additionalTherapy in otherAdditionalTherapiesSelection" :key="drug">
+      <v-col cols="2" v-for="additionalTherapy in otherAdditionalTherapiesSelection" :key="additionalTherapy">
             <v-checkbox
-              v-bind="attrs"
-              v-on="on"
+
               :label="additionalTherapy.label"
               :value="additionalTherapy.value"
               v-model="otherAdditionalTherapies"
@@ -184,19 +183,19 @@
     <v-divider>退院時情報</v-divider>
 
     <v-radio-group v-model="upperLimb" label="上肢" inline>
-      <v-radio v-for=" n in [0, 1, 2, 3, 4]" :key="n" :label="n" :value="n"></v-radio>
+      <v-radio v-for=" n in [0, 1, 2, 3, 4]" :key="n" :label=n.toString() :value="n"></v-radio>
     </v-radio-group>
     <v-radio-group v-model="lowerLimb" label="下肢" inline>
-      <v-radio v-for=" n in [0, 1, 2, 3, 4]" :key="n" :label="n" :value="n"></v-radio>
+      <v-radio v-for=" n in [0, 1, 2, 3, 4]" :key="n" :label=n.toString() :value="n"></v-radio>
     </v-radio-group>
     <v-radio-group v-model="articulation" label="構音" inline>
-      <v-radio v-for=" n in [0, 1, 2]" :key="n" :label="n" :value="n"></v-radio>
+      <v-radio v-for=" n in [0, 1, 2]" :key="n" :label=n.toString() :value="n"></v-radio>
     </v-radio-group>
     <v-radio-group v-model="aphasia" label="失語" inline>
-      <v-radio v-for=" n in [0, 1, 2, 3]" :key="n" :label="n" :value="n"></v-radio>
+      <v-radio v-for=" n in [0, 1, 2, 3]" :key="n" :label=n.toString() :value="n"></v-radio>
     </v-radio-group>
     <v-radio-group v-model="hemianopsia" label="半盲" inline>
-      <v-radio v-for=" n in [0, 1, 2, 3]" :key="n" :label="n" :value="n"></v-radio>
+      <v-radio v-for=" n in [0, 1, 2, 3]" :key="n" :label=n.toString() :value="n"></v-radio>
     </v-radio-group>
 
     <v-radio-group v-model="eating" label="摂食" inline>
@@ -236,8 +235,7 @@
   }, { immediate: true });
   // (props.diseaseName === 'ICH')? ref(true): ref(false);
   const strokeType = ref([]);
-  console.log(props.diseaseName)
-  // const strokeTypeSelection = ref([]);
+  // console.log(props.diseaseName)
 
   const strokeTypeElse = ref('');
   const intravenousInjection = ref([]);

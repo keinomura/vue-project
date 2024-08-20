@@ -1,14 +1,13 @@
 <template>
     <div class="side-menu">
-      <h3>入退院サマリ　フレーム</h3>
+      <h3>入退院サマリ</h3>
       <ul>
         <li><a href="#" @click.prevent="menuClicked('/summaryFrame/hospitalization')">入院サマリ</a></li>
         <li><a href="#" @click.prevent="menuClicked('/summaryFrame/discharge')">退院サマリ</a></li>
       </ul>
-      <h3>手術名</h3>
+      <h3>手術記録</h3>
       <ul>
-        <li><a href="#" @click.prevent="menuClicked('/surgery')">Clipping</a></li>
-        <li><a href="#" @click.prevent="menuClicked('/surgery')">CSDH</a></li>
+        <li><a href="#" @click.prevent="menuClicked('/summaryFrame/operationRecord')">手術記録</a></li>
       </ul>
     </div>
   </template>

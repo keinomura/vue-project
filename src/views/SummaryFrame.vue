@@ -2,136 +2,16 @@
     <v-container fluid>
       <v-row>
         <v-col cols="12" md="6">
-          <h2 class="mb-4">入院サマリ</h2>
+          <h2 class="mb-4">{{ title }}</h2>
 
-            <v-container ref="form" class="no-horizontal-scroll">
-              <v-row class="ma-2">
-                <v-col cols="12">
-                  <v-radio-group v-model="selectedDisease" label="疾患を選択してください" inline>
-                    <v-radio v-for="disease in diseases" :key="disease" :label="disease" :value="disease"></v-radio>
-                  </v-radio-group>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field v-model="chiefComplain" label="主訴" outlined></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-textarea v-model="presentHistory" label="現病歴" outlined></v-textarea>
-                </v-col>
-              </v-row>
-                <!-- 疾患によって切り換えるcomponent -->
-              <v-col cols="12">
-                <component :is="selectedDiseaseComponent()" ref="child"></component>
-              </v-col>
-              <v-row>
-                <v-col cols="12" md="8">
-                  <v-select v-model="admissionRoute"
-                              :items="routeOptions"
-                              return-object
-                              label="入院経路" outlined>
-                  </v-select>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <v-radio-group v-model="inHospitalOnset" label="院内発症" inline>
-                    <v-radio label="あり" value="あり"></v-radio>
-                    <v-radio label="なし" value="なし"></v-radio>
-                  </v-radio-group>
-                </v-col>
-                <v-col cols="6">
-                  <v-radio-group v-model="QQ" label="QQ" inline>
-                    <v-radio label="あり" value="あり"></v-radio>
-                    <v-radio label="なし" value="なし"></v-radio>
-                  </v-radio-group>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <v-radio-group v-model="admissionType" label="予定入院/緊急入院" inline>
-                    <v-radio label="予定入院" value="予定入院"></v-radio>
-                    <v-radio label="緊急入院" value="緊急入院"></v-radio>
-                  </v-radio-group>
-                </v-col>
-                <v-col cols="6">
-                  <v-radio-group v-model="otherHP" label="他院から紹介" inline>
-                    <v-radio label="あり" value="あり"></v-radio>
-                    <v-radio label="なし" value="なし"></v-radio>
-                  </v-radio-group>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col v-if="otherHP=='あり'" cols="12">
-                  <v-text-field v-model="referralHospital" label="紹介元" outlined></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-divider>既往歴</v-divider>
-                <v-col cols="12">
-                  <v-row id="pastHistoryArea" label="既往歴">
-                    <v-checkbox
-                      v-for="pastHistory in pastHistories"
-                      v-model="riskFactors"
-                      :label="pastHistory"
-                      :value="pastHistory"
-                      multiple
-                      persistent-hint
-                    ></v-checkbox>
-                  </v-row>
-                  <v-row>
-                    <v-textarea v-model="pastHistory" label="その他特記すべきことなし" outlined></v-textarea>
-                  </v-row>
-                </v-col>
-                <v-divider>入院時評価</v-divider>
-                <v-col cols="12">
-                  <v-radio-group v-model="E"  inline>
-                    E
-                    <v-radio label="4" value="4"></v-radio>
-                    <v-radio label="3" value="3"></v-radio>
-                    <v-radio label="2" value="2"></v-radio>
-                    <v-radio label="1" value="1"></v-radio>
-                  </v-radio-group>
-                  <v-radio-group v-model="V"  inline>
-                    V
-                    <v-radio label="5" value="5"></v-radio>
-                    <v-radio label="4" value="4"></v-radio>
-                    <v-radio label="3" value="3"></v-radio>
-                    <v-radio label="2" value="2"></v-radio>
-                    <v-radio label="1" value="1"></v-radio>
-                  </v-radio-group>
-                  <v-radio-group v-model="M"  inline>
-                    M
-                    <v-radio label="6" value="6"></v-radio>
-                    <v-radio label="5" value="5"></v-radio>
-                    <v-radio label="4" value="4"></v-radio>
-                    <v-radio label="3" value="3"></v-radio>
-                    <v-radio label="2" value="2"></v-radio>
-                    <v-radio label="1" value="1"></v-radio>
-                  </v-radio-group>
-                  <v-textarea v-model="exam" label="身体所見" outlined></v-textarea>
-                </v-col>
-                <v-col cols="12" md="8">
-                  <v-select v-model="premRS"
-                              :items="mRSOptions"
-                              item-title="text"
-                              item-value="value"
-                              return-object
-                              label="発症前 mRS" outlined>
-                  </v-select>
-                </v-col>
-
-              </v-row>
-            </v-container>
+            
             <v-container class="d-flex justify-center pa-2">
               <v-btn color="primary" @click="createSummary">作成</v-btn>
             </v-container>
           </v-col>
         <v-col cols="12" md="6"  >
         <v-card>
-          <v-card-title>入院時サマリー</v-card-title>
+          <v-card-title>{{ title }}</v-card-title>
           <v-card-text>
             <v-textarea v-model="summary" outlined rows="30"></v-textarea>
           </v-card-text>
@@ -143,13 +23,6 @@
 
   <script setup>
     import { ref } from 'vue';
-
-    // import HFSForm from './MVDViews/HFSForm.vue';
-    // import TNForm from './MVDViews/TNForm.vue';
-    // import ICHForm from './StrokeViews/ICHForm.vue';
-    // import CIForm from './StrokeViews/CIForm.vue';
-    // import ICSForm from './AsymptomForm/ICSForm.vue';
-    // import AneurysmForm from './AsymptomForm/AneurysmForm.vue';
 
     const child = ref(null);
 

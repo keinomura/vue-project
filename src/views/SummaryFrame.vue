@@ -26,6 +26,8 @@
     import { ref, shallowRef, defineProps, watch, markRaw } from 'vue';
     import summaryAtEView from './SummaryAtEViews/SummaryAtEForm.vue';
     import summaryAtDView from './SummaryAtDViews/SummaryAtDForm.vue';
+
+    import operationRecordView from './OperationRecordViews/OperationRecordForm.vue';
   // Props
   const props = defineProps({
       title: String,
@@ -44,6 +46,8 @@
         ? markRaw(summaryAtEView)
         : newTitle === '退院サマリ'
         ? markRaw(summaryAtDView)
+        : newTitle === '手術記録'
+        ? markRaw(operationRecordView)
         : null;
   },
   { immediate: true }

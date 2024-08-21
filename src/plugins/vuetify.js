@@ -1,6 +1,8 @@
 // src/plugins/vuetify.js
 import 'vuetify/styles'; // Vuetifyのスタイルをインポート
 import { createVuetify } from 'vuetify';
+import { aliases, mdi } from 'vuetify/iconsets/mdi';
+import { VTimePicker } from 'vuetify/labs/VTimePicker'
 
 export default createVuetify({
   theme: {
@@ -17,6 +19,13 @@ export default createVuetify({
     }
   },
   icons: {
-    iconfont: 'mdi', // 'mdi'を使用
+    iconfont: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    }, // 'mdi'を使用
+  },
+  components: {
+    VTimePicker,
   },
 });

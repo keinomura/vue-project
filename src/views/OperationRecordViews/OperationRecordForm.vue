@@ -42,17 +42,32 @@
       <component :is="selectedDiseaseComponent" ref="child" :disNameSelected="chooseDisName"></component>
     </v-col> -->
 
-    //手術開始時間 入力(日付、時間入力)
-    <!-- <v-row>
-      <v-col cols="12" md="6">
-      <v-date-picker v-model="operationStartDate" label="手術開始日" outlined></v-date-picker>
+       <!-- 手術開始時間入力 -->
+    <!-- 1. 手術開始時間 入力(時間入力) 2桁入力で制限、入力されたら次の入力欄にフォーカス -->
+     <v-row>
+      <v-col>
+        <h3>手術開始時間</h3>
+        <v-time-picker
+          format="24hr"
+          v-model="operationStartTime"
+          label="手術開始時間"
+        ></v-time-picker>
       </v-col>
-      <v-col cols="12" md="6">
-      <v-time-picker v-model="operationStartTime" label="手術開始時間" outlined></v-time-picker>
+      <v-col>
+        <h3>手術終了時間</h3>
+        <v-time-picker
+          format="24hr"
+          v-model="operationEndTime"
+          label="手術終了時間"
+        ></v-time-picker>
       </v-col>
-    </v-row> -->
-    //手術終了時間 入力
-    //総手術時間 表示
+    </v-row>
+    <v-row>
+      <v-col>
+        <h3>総手術時間{{ operationTime }}</h3>
+      </v-col>
+    </v-row>
+
 
 
 
@@ -63,6 +78,8 @@
 
   <script setup>
     import { ref, defineExpose, watch, shallowRef, markRaw } from 'vue';
+    import { VTimePicker } from 'vuetify/labs/VTimePicker'
+
     // import SelectionSummaryType from './SelectOperationTypeForm.vue';
 
     // variables
@@ -87,13 +104,59 @@
     const typeOfOperation2Text = ref('');
     const preoperativeInformation = ref('');
     const operationStartDate = ref('');
-    const operationStartTime = ref('');
 
+    const operationStartTime = ref('13:00');
+    const operationEndTime = ref('16:00');
+    const operationTime = ref('');
+
+    const calculateOperationTime = () => {
+      const startTime = operationStartTime.value.split(':');
+      const endTime = operationEndTime.value.split(':');
+      const startHour = parseInt(startTime[0], 10);
+      const startMinute = parseInt(startTime[1], 10);
+      const endHour = parseInt(endTime[0], 10);
+      const endMinute = parseInt(endTime[1], 10);
+      const start = startHour * 60 + startMinute;
+      const end = endHour * 60 + endMinute;
+      const time = end - start;
+      let hour = Math.floor(time / 60);
+      hour = (hour < 0) ? hour + 24 : hour;
+      let minute = time % 60;
+      //minuteは二桁表示
+      let minuteStr = minute.toString();
+      minute = (minuteStr.length === 1) ? '0' + minuteStr : minuteStr;
+      operationTime.value = `${hour}:${minute}`;
+    };
+    watch(() => [operationStartTime.value, operationEndTime.value], () => {
+      calculateOperationTime(); 
+    }, { immediate: true });
+
+    const time = ref('');
+    const timeStep = ref('');
+
+
+
+    const allowedHours = v => v % 2;
+    const allowedMinutes= v => v >= 10 && v <= 50;
+    const allowedStep= m => m % 10 === 0;
 
     // variables Options
 
 
-
+    function validateAndFocus(refValue, nextInputRef) {
+      const value = parseInt(refValue.value, 10);
+      if (value >= 0 && value <= 24) {
+        refValue.value = value;
+        nextTick(() => {
+          const nextInput = refs[nextInputRef];
+          if (nextInput) {
+            nextInput.focus();
+          }
+        });
+      } else {
+        refValue.value = '';
+  }
+}
 
 
     const complication = ref('なし');

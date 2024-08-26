@@ -1,40 +1,157 @@
 <template>
   <v-container ref="form" class="no-horizontal-scroll">
+    <v-divider>術前情報</v-divider>
+    <v-textarea v-model="preoperativeInformation" label="術前情報" outlined></v-textarea>
     <v-row>
       <v-radio-group v-model="operationType" label="手術種類" inline>
         <v-radio v-for="operationType in typeOfOperationOptions" :key="operationType" :label="operationType" :value="operationType"></v-radio>
       </v-radio-group>
     </v-row>
+    <OperationSelectCard
+      :detailOperationOptions="detailOperationOptions"
+      @update:operation="handleOperationUpdate"
+      @update:operationText="handleOperationTextUpdate"
+    />
 
-    <!-- 手術種類1 -->
-     <v-container>
-      <v-row>
-        <v-radio-group v-model="typeOfOperation1" label="手術種類" inline>
-          <v-radio v-for="typeOfOperation1 in typeOfOperationOptions1" :key="typeOfOperation1" :label="typeOfOperation1" :value="typeOfOperation1"></v-radio>
-        </v-radio-group>
-      </v-row>
-      <v-row>
-        <v-text-field v-if="typeOfOperation1 === 'その他'"
-        v-model="typeOfOperation1Text" label="その他手術種類" outlined></v-text-field>
-      </v-row>
-    </v-container>
-    <!-- 手術種類2 combined operationの時だけ-->
-    <v-container v-if="operationType === 'combined surgery'">
-      <v-row>
-        <v-radio-group v-model="typeOfOperation2" label="手術種類" inline>
-          <v-radio v-for="typeOfOperation2 in typeOfEndovascularSurgeryOptions" :key="typeOfOperation2" :label="typeOfOperation2" :value="typeOfOperation2"></v-radio>
-        </v-radio-group>
-      </v-row>
-      <v-row>
-        <v-text-field v-if="typeOfOperation2 === 'その他'"
-        v-model="typeOfOperation2Text" label="その他手術種類" outlined></v-text-field>
-      </v-row>
-    </v-container>
+    <OperationSelectCard v-if="operationType === 'combined surgery'"
+      :detailOperationOptions="detailEndovascularOperationOptions"
+      @update:operation="handleOperationUpdate"
+      @update:operationText="handleOperationTextUpdate"
+    />
 
-    <v-divider>術前情報</v-divider>
-    <v-textarea v-model="preoperativeInformation" label="術前情報" outlined></v-textarea>
-    
-    <v-divider>手術詳細</v-divider>
+    <v-divider>麻酔</v-divider>
+    <v-row align="end">
+      <v-col cols="6">
+        <v-radio-group v-model="anesthesia" label="麻酔" inline>
+          <v-radio label="局所麻酔" value="局所麻酔"></v-radio>
+          <v-radio label="局所麻酔＋鎮静" value="局所麻酔＋鎮静"></v-radio>
+          <v-radio label="全身麻酔" value="全身麻酔"></v-radio>
+          <v-radio label="その他" value="その他"></v-radio>
+        </v-radio-group>
+      </v-col>
+      <v-col cols="6">
+        <v-text-field v-if="anesthesia === 'その他'" v-model="anesthesiaText" label="その他麻酔" outlined></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-card v-if="operationType === 'open surgery'" elevation="3">
+    <v-divider>体位</v-divider>
+    <v-row align="end">
+      <v-col cols="7">
+        <v-radio-group v-model="position" label="体位" inline>
+          <v-radio label="仰臥位" value="仰臥位"></v-radio>
+          <v-radio label="側臥位" value="側臥位"></v-radio>
+          <v-radio label="半側臥位" value="半側臥位"></v-radio>
+          <v-radio label="腹臥位" value="腹臥位"></v-radio>
+          <v-radio label="座位" value="座位"></v-radio>
+          <v-radio label="その他" value="その他"></v-radio>
+        </v-radio-group>
+      </v-col>
+      <v-col cols="5">
+        <v-text-field v-if="position === 'その他'" v-model="positionText" label="その他体位" outlined></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-divider>頭部位置</v-divider>
+    <v-row align="end">
+      <v-col cols="5">
+        <v-radio-group v-model="headPosition" label="頭部位置" inline>
+          <v-radio label="Mayfield 3-pin" value="Mayfield 3-pin"></v-radio>
+          <v-radio label="馬蹄型" value="馬蹄型"></v-radio>
+          <v-radio label="その他" value="その他"></v-radio>
+        </v-radio-group>
+      </v-col>
+      <v-col cols="7">
+        <v-text-field v-if="headPosition === 'その他'" v-model="headPositionText" label="その他頭部固定" outlined></v-text-field>
+      </v-col>
+    </v-row>
+    <!-- 屈曲 -->
+    <v-row align="center">
+      <v-col cols="5">
+        <v-radio-group v-model="headFlexion" label="屈曲" inline>
+          <v-radio label="自然位" value="自然位"></v-radio>
+          <v-radio label="屈曲位" value="屈曲位"></v-radio>
+          <v-radio label="伸展位" value="伸展位"></v-radio>
+        </v-radio-group>
+      </v-col>
+      <v-col cols="2">
+        <h2>{{ Math.floor(Number(headFlexionText)) }}°</h2>
+      </v-col>
+      <v-col cols="5">
+        <v-slider
+          v-model="headFlexionText"
+          :thumb-size="20"
+          thumb-label="always"
+          step="5"
+          ticks="always"
+          tick-size="4"
+          :max="90"
+          :min="0"
+          track-color="blue"
+          thumb-color="blue"
+          color="light-blue"
+        ></v-slider>
+      </v-col>
+    </v-row>
+
+    <v-row align="end">
+      <v-col cols="5">
+        <v-radio-group v-model="headLateralVending" label="側屈" inline>
+          <v-radio label="なし" value="なし"></v-radio>
+          <v-radio label="健側" value="健側"></v-radio>
+          <v-radio label="患側" value="患側"></v-radio>
+        </v-radio-group>
+      </v-col>
+      <v-col cols="2">
+        <h2>{{ Math.floor(Number(headLateralVendingText)) }}°</h2>
+      </v-col>
+      <v-col cols="5">
+        <v-slider
+          v-model="headLateralVendingText"
+          :thumb-size="20"
+          thumb-label="always"
+          step="5"
+          ticks="always"
+          tick-size="4"
+          :max="90"
+          :min="0"
+          track-color="green"
+          thumb-color="green"
+          color="light-green"
+        ></v-slider>
+      </v-col>
+    </v-row>
+
+    <v-row align="end">
+      <v-col cols="5">
+        <v-radio-group v-model="headRotation" label="回旋" inline>
+          <v-radio label="なし" value="なし"></v-radio>
+          <v-radio label="健側" value="健側"></v-radio>
+          <v-radio label="患側" value="患側"></v-radio>
+        </v-radio-group>
+      </v-col>
+      <v-col cols="2">
+        <h2>{{ Math.floor(Number(headRotationText)) }}°</h2>
+      </v-col>
+      <v-col cols="5">
+        <v-slider
+          v-model="headRotationText"
+          :thumb-size="20"
+          thumb-label="always"
+          step="5"
+          ticks="always"
+          tick-size="4"
+          :max="90"
+          :min="0"
+          track-color="orange"
+          thumb-color="orange"
+          color="orange-lighten-1"
+        ></v-slider>
+      </v-col>
+    </v-row>
+  </v-card>
+
+    <v-divider>手術アプローチ</v-divider>
 
 
     <!-- 疾患によって切り換えるcomponent -->
@@ -42,7 +159,7 @@
       <component :is="selectedDiseaseComponent" ref="child" :disNameSelected="chooseDisName"></component>
     </v-col> -->
 
-       <!-- 手術開始時間入力 -->
+    <!-- 手術開始時間入力 -->
     <!-- 1. 手術開始時間 入力(時間入力) 2桁入力で制限、入力されたら次の入力欄にフォーカス -->
      <v-row>
       <v-col>
@@ -67,47 +184,71 @@
         <h3>総手術時間{{ operationTime }}</h3>
       </v-col>
     </v-row>
-
-
-
-
-
-        </v-container>
-
-  </template>
+  </v-container>
+</template>
 
   <script setup>
     import { ref, defineExpose, watch, shallowRef, markRaw } from 'vue';
     import { VTimePicker } from 'vuetify/labs/VTimePicker'
-
-    // import SelectionSummaryType from './SelectOperationTypeForm.vue';
+    import OperationSelectCard from './OperationSelectCard.vue';
 
     // variables
     const operationType = ref('open surgery');
-  
     const typeOfOperationOptions = ref(['open surgery', 'endovascular surgery', 'combined surgery']);
-    const typeOfOpenSurgeryOptions = ref(['TN', 'HFS', 'CSDH', 'Clipping', '開頭血腫除去', '減圧開頭術', '腫瘍摘出術', 'その他']);
-    const typeOfEndovascularSurgeryOptions = ref(['Coiling', 'Stent', 'その他']);
-
-
-    const typeOfOperationOptions1 = ref(['open surgery', 'endovascular surgery', 'combined surgery']);
-    const typeOfOperation1 = ref('');
-    watch(() => operationType.value, (newVal) => {
-      typeOfOperationOptions1.value = 
-        (newVal === 'open surgery' || newVal === 'combined surgery')? typeOfOpenSurgeryOptions.value:  
-        (newVal === 'endovascular surgery')? typeOfEndovascularSurgeryOptions.value: '';
+    const detailOperationOptions = ref('');
+    const detailOpenOperationOptions = ref({
+      'burr hole': ['CSDH', '脳室ドレナージ'],
+      'MVD': ['TN', 'HFS', '舌咽神経痛'],
+      'shunt': ['V-P shunt', 'L-P shunt'],
+      'Craniotomy': ['Clipping', 'Tumor', '開頭血腫除去術', '減圧開頭', 'AVM'],
+      'others': ['STA-MCA bypass', 'その他']
+    })
+    const detailEndovascularOperationOptions = ref({
+      'ICS': ['CAS', 'PTA'],
+      'Aneurysm': ['Coil', 'FD'],
+      'ACI': ['MT'],
+      'For SAH': ['PTA', 'エリル動注'],
+      'AVM': ['TAE', 'TVE', 'combined'],
+      'others': ['Tumor embolization', 'MMA embolization', 'その他']
+    })
+    watch (operationType, (newVal) => {
+      detailOperationOptions.value =
+        (newVal === 'open surgery' || newVal === 'combined surgery')? detailOpenOperationOptions.value:
+        (newVal === 'endovascular surgery')? detailEndovascularOperationOptions.value: '';
     }, { immediate: true });
+
 
 
     const typeOfOperation1Text = ref('');
     const typeOfOperation2 = ref('');
     const typeOfOperation2Text = ref('');
     const preoperativeInformation = ref('');
-    const operationStartDate = ref('');
 
     const operationStartTime = ref('13:00');
     const operationEndTime = ref('16:00');
     const operationTime = ref('');
+
+    const anesthesia = ref('局所麻酔');
+    const anesthesiaText = ref('');
+    const position = ref('仰臥位');
+    const positionText = ref('');
+
+    const headPosition = ref('Mayfield 3-pin');
+    const headPositionText = ref('');
+    const headFlexion = ref('自然位');
+    const headFlexionText = ref('');
+    const headLateralVending = ref('なし');
+    const headLateralVendingText = ref('');
+    const headRotation = ref('なし');
+    const headRotationText = ref('');
+
+
+    const handleOperationUpdate = (operation) => {
+      typeOfOperation1.value = operation;
+    };
+    const handleOperationTextUpdate = (operationText) => {
+      typeOfOperation1Text.value = operationText;
+    };
 
     const calculateOperationTime = () => {
       const startTime = operationStartTime.value.split(':');

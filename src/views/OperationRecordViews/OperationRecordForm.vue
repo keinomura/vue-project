@@ -136,10 +136,10 @@
       v-model:EndTime="operationEndTime"
       v-model:totalTime="operationTime"/>
 
-    <component 
-      is="componentByOperationType" 
-      v-model:operationType="operationType"
+      <component :is="componentByOperationType" 
+      v-model:operationType="typeOfOperationForSummary"
       v-model:OpeRecordByType="OpeRecordByType"
+      ref="childOfOperationRecord"
       />
   </v-container>
 </template>
@@ -148,6 +148,9 @@
     import { ref, defineExpose, watch, shallowRef, markRaw } from 'vue';
     import OperationSelectCard from './OperationSelectCard.vue';
     import TimeCalculation from './OpeTimeInput.vue';
+    import BurrHoleSurgery from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
+    // Import createCSDHSummary from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue'
+    // import { createCSDHSummary } from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
 
     // import OpenSurgeryForm from './OpenSurgeryForm.vue';
 
@@ -207,46 +210,46 @@
       {  max: 90, color: 'orange', thumbColor: 'orange', trackColor: 'orange-lighten-1' },
     ];
 
-    const componentByOperationType = ref(null);
-    const OpeRecordByType = ref(null);
-    // watch(() => operationType.value, (newVal) => {
-    //   if (newVal === 'open surgery') {
-    //     componentByOperationType.value = markRaw(OpenSurgeryForm);
-    //   } else if (newVal === 'endovascular surgery') {
-    //     componentByOperationType.value = markRaw(EndovascularSurgeryForm);
-    //   } else if (newVal === 'combined surgery') {
-    //     componentByOperationType.value = markRaw(CombinedSurgeryForm);
-    //   } else {
-    //     componentByOperationType.value = null;
-    //   }
-    // }, { immediate: true });
+    const typeOfOperationForSummary = ref('');
+    watch(() => typeOfOperation1.value, (newVal) => {
+      typeOfOperationForSummary.value = (newVal === 'その他')? typeOfOperation1Text.value: newVal;
+    });
+    const componentByOperationType = ref('');
+    const OpeRecordByType = ref('');
+    watch(() => typeOfOperationForSummary.value, (newVal) => {
+      if (newVal === 'CSDH' || newVal === '脳室ドレナージ') {
+        componentByOperationType.value = markRaw(BurrHoleSurgery);
+      } else {
+        componentByOperationType.value = null;
+      }
+    }, { immediate: true });
 
 
-
+    const childOfOperationRecord = ref(null);
 
     function createSummary() {
-      const detailedDiseaseSummary = (selectedDisease.value === 'デフォルト')? '':child.value.getSummaryAtDischargeTextFromGrandChild();
+      // const detailedDiseaseSummary = (selectedDisease.value === 'デフォルト')? '':child.value.getSummaryAtDischargeTextFromGrandChild();
+
+      return childOfOperationRecord.value.createRecordForEachOperation();
+
+
+      // // outcomeの値に対応するtextを取得するcomputedプロパティ
+      // const outcomeText = (outcomeValue) => {
+      //   const option = outcomeOptions.value.find(opt => opt.value === outcomeValue);
+      //   return option ? option.text : '';
+      // };
 
 
 
+      // //SummaryElementsで空白な要素をを削除する。
+      // const summaryText = Object.entries(SummaryElements)
+      //   .filter(([key, value]) => value && value.length !== 0 && value !== '\r\n')
+      //   .map(([key, value]) => `${key}: ${value}`)
+      //   .join(', ');
 
-      // outcomeの値に対応するtextを取得するcomputedプロパティ
-      const outcomeText = (outcomeValue) => {
-        const option = outcomeOptions.value.find(opt => opt.value === outcomeValue);
-        return option ? option.text : '';
-      };
-
-
-
-      //SummaryElementsで空白な要素をを削除する。
-      const summaryText = Object.entries(SummaryElements)
-        .filter(([key, value]) => value && value.length !== 0 && value !== '\r\n')
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(', ');
-
-      console.log(summaryText)
-      const commentText = (additionalComment.value)? additionalComment.value + '\r\n': '';
-      return summary.value = '【入院経過】\r\n' + commentText + detailedDiseaseSummary  + '\r' + summaryText;
+      // console.log(summaryText)
+      // const commentText = (additionalComment.value)? additionalComment.value + '\r\n': '';
+      // return summary.value = '【入院経過】\r\n' + commentText + detailedDiseaseSummary  + '\r' + summaryText;
     }
 
     function textReplaced(title, element) {

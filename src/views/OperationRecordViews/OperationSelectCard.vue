@@ -27,52 +27,34 @@
         </v-tabs>
       </v-card>
       <v-card style="margin-top: 10pt;">
-        <h2 align="left" :style="{ backgroundColor: backGroundColor }" style="padding-left: 10pt"> {{ typeOfOperation1 }}</h2>
+        <h2 align="left" :style="{ color: black }" style="padding-left: 10pt"> {{ typeOfOperation }}</h2>
       </v-card>
       <v-row style="margin-top: 10pt;">
-        <v-text-field v-if="typeOfOperation1 === 'その他'"
-          v-model="typeOfOperation1Text" label="その他手術種類" outlined @input="emitOperationText"></v-text-field>
+        <v-text-field v-if="typeOfOperation === 'その他'"
+          v-model="typeOfOperationText" label="その他手術種類" outlined ></v-text-field>
       </v-row>
     </v-card>
   </template>
   
 <script setup>
-import { ref, defineEmits, watch } from 'vue';
+import { ref, watch } from 'vue';
 
-const props = defineProps({
-  detailOperationOptions: {
-    type: Object,
-    required: true
-  }
-});
-const typeOfOperation1 = ref('');
+const detailOperationOptions = defineModel('detailOperationOptions')
+const typeOfOperation = defineModel('typeOfOperation');
+const typeOfOperationText = defineModel('typeOfOperationText');
 
 const backGroundColor = ref('');
-watch(() => props.detailOperationOptions, () => {
-  typeOfOperation1.value = '';
-  backGroundColor.value = Object.keys(props.detailOperationOptions).includes('Craniotomy') ? 'lightgreen' : 'orange';
+watch(() => detailOperationOptions.value, () => {
+  console.log(detailOperationOptions);
+  typeOfOperation.value = '';
+  backGroundColor.value = Object.keys(detailOperationOptions.value).includes('Craniotomy') ? 'lightgreen' : 'orange';
 }, { immediate: true });
 
-
-const emit = defineEmits(['update:operation', 'update:operationText']);
-
 const currentItem = ref('');
-const typeOfOperation1Text = ref('');
-
 const selectOperation = (operation) => {
-  typeOfOperation1.value = operation;
-  emit('update:operation', operation);
+  typeOfOperation.value = operation;
 };
 
-const emitOperationText = () => {
-  emit('update:operationText', typeOfOperation1Text.value);
-};
-
-watch(typeOfOperation1, (newVal) => {
-  if (newVal !== 'その他') {
-    typeOfOperation1Text.value = '';
-    emitOperationText();
-  }}, { immediate: true });
 
 </script>
   

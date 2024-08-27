@@ -8,189 +8,148 @@
       </v-radio-group>
     </v-row>
     <OperationSelectCard
-      :detailOperationOptions="detailOperationOptions"
-      @update:operation="handleOperationUpdate"
-      @update:operationText="handleOperationTextUpdate"
+      v-model:detailOperationOptions="detailOperationOptions"
+      v-model:typeOfOperation="typeOfOperation1"
+      v-model:typeOfOperationText="typeOfOperation1Text"
+
     />
 
     <OperationSelectCard v-if="operationType === 'combined surgery'"
-      :detailOperationOptions="detailEndovascularOperationOptions"
-      @update:operation="handleOperationUpdate"
-      @update:operationText="handleOperationTextUpdate"
+      v-model:detailOperationOptions="detailEndovascularOperationOptions"
+      v-model:typeOfOperation="typeOfOperation2"
+      v-model:typeOfOperationText="typeOfOperation2Text"
     />
 
     <v-divider>麻酔</v-divider>
     <v-row align="end">
-      <v-col cols="6">
+      <v-col cols="(anesthesia === 'その他') ? 8:12">
         <v-radio-group v-model="anesthesia" label="麻酔" inline>
-          <v-radio label="局所麻酔" value="局所麻酔"></v-radio>
-          <v-radio label="局所麻酔＋鎮静" value="局所麻酔＋鎮静"></v-radio>
-          <v-radio label="全身麻酔" value="全身麻酔"></v-radio>
-          <v-radio label="その他" value="その他"></v-radio>
+          <v-radio v-for="anesthesiaType in ['局所麻酔', '局所麻酔＋沈静', '全身麻酔', 'その他']" :label="anesthesiaType" :value="anesthesiaType"/>
         </v-radio-group>
       </v-col>
-      <v-col cols="6">
-        <v-text-field v-if="anesthesia === 'その他'" v-model="anesthesiaText" label="その他麻酔" outlined></v-text-field>
+      <v-col cols="4" v-if="anesthesia === 'その他'">
+        <v-text-field v-model="anesthesiaText" label="その他麻酔" outlined></v-text-field>
       </v-col>
     </v-row>
 
-    <v-card v-if="operationType === 'open surgery'" elevation="3">
-    <v-divider>体位</v-divider>
-    <v-row align="end">
-      <v-col cols="7">
-        <v-radio-group v-model="position" label="体位" inline>
-          <v-radio label="仰臥位" value="仰臥位"></v-radio>
-          <v-radio label="側臥位" value="側臥位"></v-radio>
-          <v-radio label="半側臥位" value="半側臥位"></v-radio>
-          <v-radio label="腹臥位" value="腹臥位"></v-radio>
-          <v-radio label="座位" value="座位"></v-radio>
-          <v-radio label="その他" value="その他"></v-radio>
-        </v-radio-group>
-      </v-col>
-      <v-col cols="5">
-        <v-text-field v-if="position === 'その他'" v-model="positionText" label="その他体位" outlined></v-text-field>
-      </v-col>
-    </v-row>
+  <v-card v-if="operationType === 'open surgery'" elevation="3" >
+    <v-tabs v-model="currentTab" fixed-tabs style="background-color: yellow;">
+      <v-tab>{{ position }}</v-tab>
+      <v-tab>{{ headPosition }}</v-tab>
+      <v-tab>{{ headFlexion }} {{ headFlexionText }}</v-tab>
+      <v-tab>側屈-{{ headLateralVending }} {{ headLateralVendingText }}</v-tab>
+      <v-tab>回旋-{{ headRotation }} {{ headRotationText }}</v-tab>
+    </v-tabs>
 
-    <v-divider>頭部位置</v-divider>
-    <v-row align="end">
-      <v-col cols="5">
-        <v-radio-group v-model="headPosition" label="頭部位置" inline>
-          <v-radio label="Mayfield 3-pin" value="Mayfield 3-pin"></v-radio>
-          <v-radio label="馬蹄型" value="馬蹄型"></v-radio>
-          <v-radio label="その他" value="その他"></v-radio>
-        </v-radio-group>
-      </v-col>
-      <v-col cols="7">
-        <v-text-field v-if="headPosition === 'その他'" v-model="headPositionText" label="その他頭部固定" outlined></v-text-field>
-      </v-col>
-    </v-row>
-    <!-- 屈曲 -->
-    <v-row align="center">
-      <v-col cols="5">
-        <v-radio-group v-model="headFlexion" label="屈曲" inline>
-          <v-radio label="自然位" value="自然位"></v-radio>
-          <v-radio label="屈曲位" value="屈曲位"></v-radio>
-          <v-radio label="伸展位" value="伸展位"></v-radio>
-        </v-radio-group>
-      </v-col>
-      <v-col cols="2">
-        <h2>{{ Math.floor(Number(headFlexionText)) }}°</h2>
-      </v-col>
-      <v-col cols="5">
-        <v-slider
-          v-model="headFlexionText"
-          :thumb-size="20"
-          thumb-label="always"
-          step="5"
-          ticks="always"
-          tick-size="4"
-          :max="90"
-          :min="0"
-          track-color="blue"
-          thumb-color="blue"
-          color="light-blue"
-        ></v-slider>
-      </v-col>
-    </v-row>
+    <v-tabs-window v-model="currentTab">
+      <v-tabs-window-item>
+        <v-divider>体位</v-divider>
+        <v-row align="end">
+          <v-col cols="(position === 'その他') ? 7:12">
+            <v-radio-group v-model="position" label="体位" inline>
+              <v-radio v-for="positionType in ['仰臥位', '側臥位', '半側臥位', '腹臥位', '座位', 'その他']" :label="positionType" :value="positionType"/>
+            </v-radio-group>
+          </v-col>
+          <v-col cols="5" v-if="position === 'その他'">
+            <v-text-field v-model="positionText" label="その他体位" outlined></v-text-field>
+          </v-col>
+        </v-row>
+      </v-tabs-window-item>
 
-    <v-row align="end">
-      <v-col cols="5">
-        <v-radio-group v-model="headLateralVending" label="側屈" inline>
-          <v-radio label="なし" value="なし"></v-radio>
-          <v-radio label="健側" value="健側"></v-radio>
-          <v-radio label="患側" value="患側"></v-radio>
-        </v-radio-group>
-      </v-col>
-      <v-col cols="2">
-        <h2>{{ Math.floor(Number(headLateralVendingText)) }}°</h2>
-      </v-col>
-      <v-col cols="5">
-        <v-slider
-          v-model="headLateralVendingText"
-          :thumb-size="20"
-          thumb-label="always"
-          step="5"
-          ticks="always"
-          tick-size="4"
-          :max="90"
-          :min="0"
-          track-color="green"
-          thumb-color="green"
-          color="light-green"
-        ></v-slider>
-      </v-col>
-    </v-row>
+      <v-tabs-window-item>
+        <v-divider>頭部位置</v-divider>
+        <v-row align="end">
+          <v-col cols="7">
+            <v-radio-group v-model="headPosition" label="頭部位置" inline>
+              <v-radio v-for="headPositionType in ['Mayfield 3-pin', '馬蹄型', 'その他']" :label="headPositionType" :value="headPositionType"/>
+            </v-radio-group>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field v-if="headPosition === 'その他'" v-model="headPositionText" label="その他頭部固定" outlined></v-text-field>
+          </v-col>
+        </v-row>
+      </v-tabs-window-item>
 
-    <v-row align="end">
-      <v-col cols="5">
-        <v-radio-group v-model="headRotation" label="回旋" inline>
-          <v-radio label="なし" value="なし"></v-radio>
-          <v-radio label="健側" value="健側"></v-radio>
-          <v-radio label="患側" value="患側"></v-radio>
-        </v-radio-group>
-      </v-col>
-      <v-col cols="2">
-        <h2>{{ Math.floor(Number(headRotationText)) }}°</h2>
-      </v-col>
-      <v-col cols="5">
-        <v-slider
-          v-model="headRotationText"
-          :thumb-size="20"
-          thumb-label="always"
-          step="5"
-          ticks="always"
-          tick-size="4"
-          :max="90"
-          :min="0"
-          track-color="orange"
-          thumb-color="orange"
-          color="orange-lighten-1"
-        ></v-slider>
-      </v-col>
-    </v-row>
+      <!-- TODO:子コンポーネントにする。 -->
+      <v-tabs-window-item>  
+        <v-divider>屈曲</v-divider>
+        <v-row align="center">
+          <v-col cols="5">
+            <v-radio-group v-model="headFlexion" label="屈曲" inline>
+              <v-radio v-for="headFlexionType in ['自然位', '屈曲位', '伸展位']" :label="headFlexionType" :value="headFlexionType"/>
+            </v-radio-group>
+          </v-col>
+          <v-col cols="2">
+            <h2>{{ Math.floor(Number(headFlexionText)) }}°</h2>
+          </v-col>
+          <v-col cols="5">
+            <v-slider
+              v-model="headFlexionText"
+              v-bind="sliderVariables[0]"
+            ></v-slider>
+          </v-col>
+        </v-row>
+      </v-tabs-window-item>
+
+      <v-tabs-window-item>
+        <v-divider>側屈</v-divider>
+        <v-row align="center">
+          <v-col cols="5">
+            <v-radio-group v-model="headLateralVending" label="側屈" inline>
+              <v-radio v-for="headLateralVendingType in ['なし', '健側', '患側']" :label="headLateralVendingType" :value="headLateralVendingType"/>
+            </v-radio-group>
+          </v-col>
+          <v-col cols="2">
+            <h2>{{ Math.floor(Number(headLateralVendingText)) }}°</h2>
+          </v-col>
+          <v-col cols="5">
+            <v-slider v-model="headLateralVendingText" v-bind="sliderVariables[1]"></v-slider>
+          </v-col>
+        </v-row>
+      </v-tabs-window-item>
+
+      <v-tabs-window-item>
+        <v-divider>回旋</v-divider>
+        <v-row align="center">
+          <v-col cols="5">
+            <v-radio-group v-model="headRotation" label="回旋" inline>
+              <v-radio v-for="headRotationType in ['なし', '健側', '患側']" :label="headRotationType" :value="headRotationType"/>
+            </v-radio-group>
+          </v-col>
+          <v-col cols="2">
+            <h2>{{ Math.floor(Number(headRotationText)) }}°</h2>
+          </v-col>
+          <v-col cols="5">
+            <v-slider
+              v-model="headRotationText"
+              v-bind="sliderVariables[2]"
+            ></v-slider>
+          </v-col>
+        </v-row>
+      </v-tabs-window-item>
+    </v-tabs-window>
   </v-card>
 
-    <v-divider>手術アプローチ</v-divider>
-
-
-    <!-- 疾患によって切り換えるcomponent -->
-    <!-- <v-col cols="12">
-      <component :is="selectedDiseaseComponent" ref="child" :disNameSelected="chooseDisName"></component>
-    </v-col> -->
-
     <!-- 手術開始時間入力 -->
-    <!-- 1. 手術開始時間 入力(時間入力) 2桁入力で制限、入力されたら次の入力欄にフォーカス -->
-     <v-row>
-      <v-col>
-        <h3>手術開始時間</h3>
-        <v-time-picker
-          format="24hr"
-          v-model="operationStartTime"
-          label="手術開始時間"
-        ></v-time-picker>
-      </v-col>
-      <v-col>
-        <h3>手術終了時間</h3>
-        <v-time-picker
-          format="24hr"
-          v-model="operationEndTime"
-          label="手術終了時間"
-        ></v-time-picker>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <h3>総手術時間{{ operationTime }}</h3>
-      </v-col>
-    </v-row>
+    <TimeCalculation
+      v-model:StartTime="operationStartTime"
+      v-model:EndTime="operationEndTime"
+      v-model:totalTime="operationTime"/>
+
+    <component 
+      is="componentByOperationType" 
+      v-model:operationType="operationType"
+      v-model:OpeRecordByType="OpeRecordByType"
+      />
   </v-container>
 </template>
 
   <script setup>
     import { ref, defineExpose, watch, shallowRef, markRaw } from 'vue';
-    import { VTimePicker } from 'vuetify/labs/VTimePicker'
     import OperationSelectCard from './OperationSelectCard.vue';
+    import TimeCalculation from './OpeTimeInput.vue';
+
+    // import OpenSurgeryForm from './OpenSurgeryForm.vue';
 
     // variables
     const operationType = ref('open surgery');
@@ -217,22 +176,23 @@
         (newVal === 'endovascular surgery')? detailEndovascularOperationOptions.value: '';
     }, { immediate: true });
 
+    const preoperativeInformation = ref('');
 
-
+    const typeOfOperation1 = ref('');
     const typeOfOperation1Text = ref('');
     const typeOfOperation2 = ref('');
     const typeOfOperation2Text = ref('');
-    const preoperativeInformation = ref('');
+    const currentTab = ref('0');
+
+    const anesthesia = ref('局所麻酔');
+    const anesthesiaText = ref('');
 
     const operationStartTime = ref('13:00');
     const operationEndTime = ref('16:00');
     const operationTime = ref('');
 
-    const anesthesia = ref('局所麻酔');
-    const anesthesiaText = ref('');
     const position = ref('仰臥位');
     const positionText = ref('');
-
     const headPosition = ref('Mayfield 3-pin');
     const headPositionText = ref('');
     const headFlexion = ref('自然位');
@@ -241,129 +201,30 @@
     const headLateralVendingText = ref('');
     const headRotation = ref('なし');
     const headRotationText = ref('');
+    const sliderVariables = [
+      { max: 90, color: 'blue', thumbColor: 'blue', trackColor: 'light-blue' },
+      { max: 90, color: 'green', thumbColor: 'green', trackColor: 'light-green' },
+      {  max: 90, color: 'orange', thumbColor: 'orange', trackColor: 'orange-lighten-1' },
+    ];
 
-
-    const handleOperationUpdate = (operation) => {
-      typeOfOperation1.value = operation;
-    };
-    const handleOperationTextUpdate = (operationText) => {
-      typeOfOperation1Text.value = operationText;
-    };
-
-    const calculateOperationTime = () => {
-      const startTime = operationStartTime.value.split(':');
-      const endTime = operationEndTime.value.split(':');
-      const startHour = parseInt(startTime[0], 10);
-      const startMinute = parseInt(startTime[1], 10);
-      const endHour = parseInt(endTime[0], 10);
-      const endMinute = parseInt(endTime[1], 10);
-      const start = startHour * 60 + startMinute;
-      const end = endHour * 60 + endMinute;
-      const time = end - start;
-      let hour = Math.floor(time / 60);
-      hour = (hour < 0) ? hour + 24 : hour;
-      let minute = time % 60;
-      //minuteは二桁表示
-      let minuteStr = minute.toString();
-      minute = (minuteStr.length === 1) ? '0' + minuteStr : minuteStr;
-      operationTime.value = `${hour}:${minute}`;
-    };
-    watch(() => [operationStartTime.value, operationEndTime.value], () => {
-      calculateOperationTime(); 
-    }, { immediate: true });
-
-    const time = ref('');
-    const timeStep = ref('');
-
-
-
-    const allowedHours = v => v % 2;
-    const allowedMinutes= v => v >= 10 && v <= 50;
-    const allowedStep= m => m % 10 === 0;
-
-    // variables Options
-
-
-    function validateAndFocus(refValue, nextInputRef) {
-      const value = parseInt(refValue.value, 10);
-      if (value >= 0 && value <= 24) {
-        refValue.value = value;
-        nextTick(() => {
-          const nextInput = refs[nextInputRef];
-          if (nextInput) {
-            nextInput.focus();
-          }
-        });
-      } else {
-        refValue.value = '';
-  }
-}
-
-
-    const complication = ref('なし');
-    const complicationText = ref('');
-    const additionalComment = ref('');
-
-    const dischargeRoute = ref({ text: '2 家庭', value: '2' });
-    const dischargeRouteOptions = ref([
-      { text: '1 院内他科', value: '1' },
-      { text: '2 家庭', value: '2' },
-      { text: '3 転院', value: '3' },
-      { text: '4 介護老人保健施設', value: '4' },
-      { text: '5 病院以外の介護施設', value: '5' },
-      { text: '6 死亡退院', value: '6' },
-      { text: '7 その他', value: '7' },
-    ]);
-
-    const referralHospital = ref('');
-    const postmRS = ref({ text: 'mRS 0:正常', value: '0' });
-    const summary = ref('');
-    const mRSOptions = ref([
-      { text: 'mRS 0:正常', value: '0' },
-      { text: 'mRS 1:症候+、障害なし', value: '1' },
-      { text: 'mRS 2:身の回りのことはできる', value: '2' },
-      { text: 'mRS 3:歩けるが、外出は介助', value: '3' },
-      { text: 'mRS 4:歩行、トイレ介助必要', value: '4' },
-      { text: 'mRS 5:寝たきり', value: '5' },
-      { text: 'mRS 6:死亡', value: '6' }
-    ]);
-
-    const outcome = ref('2');
-    const outcomeOptions = ref([
-      { text: '1 治癒', value: '1' }, //F
-      { text: '2 軽快', value: '2' }, //R
-      { text: '3 寛解', value: '3' }, //R
-      { text: '4 不変', value: '4' }, //N
-      { text: '5 増悪', value: '5' }, //W
-      { text: '6 死亡', value: '6' }, //D
-      { text: '7 入院病名以外の死亡', value: '7' }, //D
-      { text: '9 その他', value: '9' } //U
-    ]);
-
-    const outocomeHL7Options = ref([
-      { text: 'D 死亡', value: 'D' },
-      { text: 'R 回復', value: 'R' },
-      { text: 'N 回復せず／変わらない', value: 'N' },
-      { text: 'W 悪化', value: 'W' },
-      { text: 'S 後遺症', value: 'S' },
-      { text: 'F 完全に回復した', value: 'F' },
-      { text: 'U 未知', value: 'U' }
-    ]);
-
-    // methods
-    // function selectedDiseaseComponent() {
-    //   if (selectedDisease.value === 'デフォルト'){
-    //     return null;
-    //    } else {
-    //     return SelectionSummaryType;
-    //    }
-    // };
+    const componentByOperationType = ref(null);
+    const OpeRecordByType = ref(null);
+    // watch(() => operationType.value, (newVal) => {
+    //   if (newVal === 'open surgery') {
+    //     componentByOperationType.value = markRaw(OpenSurgeryForm);
+    //   } else if (newVal === 'endovascular surgery') {
+    //     componentByOperationType.value = markRaw(EndovascularSurgeryForm);
+    //   } else if (newVal === 'combined surgery') {
+    //     componentByOperationType.value = markRaw(CombinedSurgeryForm);
+    //   } else {
+    //     componentByOperationType.value = null;
+    //   }
+    // }, { immediate: true });
 
 
 
 
     function createSummary() {
-      
       const detailedDiseaseSummary = (selectedDisease.value === 'デフォルト')? '':child.value.getSummaryAtDischargeTextFromGrandChild();
 
 
@@ -375,14 +236,6 @@
         return option ? option.text : '';
       };
 
-      const SummaryElements = {
-        // '経過': additionalComment.value +'\r\n',
-        '合併症': complicationText.value,
-        '退院時mRS': postmRS.value.text,
-        '退院経路': dischargeRoute.value.text,
-        '退院先': referralHospital.value.text,
-        '転帰': outcomeText(outcome.value),
-      };
 
 
       //SummaryElementsで空白な要素をを削除する。

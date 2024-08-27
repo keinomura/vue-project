@@ -4,7 +4,7 @@
     <v-textarea v-model="preoperativeInformation" label="術前情報" outlined></v-textarea>
     <v-row>
       <v-radio-group v-model="operationType" label="手術種類" inline>
-        <v-radio v-for="operationType in typeOfOperationOptions" :key="operationType" :label="operationType" :value="operationType"></v-radio>
+        <v-radio v-for="operationType in ['open surgery', 'endovascular surgery', 'combined surgery']" :key="operationType" :label="operationType" :value="operationType"></v-radio>
       </v-radio-group>
     </v-row>
     <OperationSelectCard
@@ -129,7 +129,7 @@
       </v-tabs-window-item>
     </v-tabs-window>
   </v-card>
-
+ {{ AnesthesiaHeadPositionFromChild }}
     <!-- 手術開始時間入力 -->
     <TimeCalculation
       v-model:StartTime="operationStartTime"
@@ -139,6 +139,7 @@
       <component :is="componentByOperationType" 
       v-model:operationType="typeOfOperationForSummary"
       v-model:OpeRecordByType="OpeRecordByType"
+      v-model:AnesthesiaHeadPosition="AnesthesiaHeadPositionFromChild"
       ref="childOfOperationRecord"
       />
   </v-container>
@@ -156,7 +157,6 @@
 
     // variables
     const operationType = ref('open surgery');
-    const typeOfOperationOptions = ref(['open surgery', 'endovascular surgery', 'combined surgery']);
     const detailOperationOptions = ref('');
     const detailOpenOperationOptions = ref({
       'burr hole': ['CSDH', '脳室ドレナージ'],
@@ -194,21 +194,35 @@
     const operationEndTime = ref('16:00');
     const operationTime = ref('');
 
-    const position = ref('仰臥位');
+    const position = ref('');
     const positionText = ref('');
-    const headPosition = ref('Mayfield 3-pin');
+    const headPosition = ref('');
     const headPositionText = ref('');
-    const headFlexion = ref('自然位');
+    const headFlexion = ref('');
     const headFlexionText = ref('');
-    const headLateralVending = ref('なし');
+    const headLateralVending = ref('');
     const headLateralVendingText = ref('');
-    const headRotation = ref('なし');
+    const headRotation = ref('');
     const headRotationText = ref('');
     const sliderVariables = [
       { max: 90, color: 'blue', thumbColor: 'blue', trackColor: 'light-blue' },
       { max: 90, color: 'green', thumbColor: 'green', trackColor: 'light-green' },
       {  max: 90, color: 'orange', thumbColor: 'orange', trackColor: 'orange-lighten-1' },
     ];
+
+    const AnesthesiaHeadPositionFromChild = ref({})
+    watch (AnesthesiaHeadPositionFromChild, () =>{
+      console.log('changed')
+      anesthesia.value = AnesthesiaHeadPositionFromChild.value.anesthesia;
+      position.value = AnesthesiaHeadPositionFromChild.value.bodyPosition;
+      headPosition.value = AnesthesiaHeadPositionFromChild.value.headPosition;
+      headFlexion.value = AnesthesiaHeadPositionFromChild.value.headFlexion;
+      headFlexionText.value = AnesthesiaHeadPositionFromChild.value.headFlexionDegree;
+      headLateralVending.value = AnesthesiaHeadPositionFromChild.value.headLateralFlexion;
+      headLateralVendingText.value = AnesthesiaHeadPositionFromChild.value.headLateralFlexionDegree;
+      headRotation.value = AnesthesiaHeadPositionFromChild.value.headRotation;
+      headRotationText.value = AnesthesiaHeadPositionFromChild.value.headRotationDegree
+    }, { immediate: true, deep: true });
 
     const typeOfOperationForSummary = ref('');
     watch(() => typeOfOperation1.value, (newVal) => {

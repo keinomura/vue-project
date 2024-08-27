@@ -20,6 +20,14 @@
       v-model:typeOfOperationText="typeOfOperation2Text"
     />
 
+    <component :is="componentByOperationType" 
+      v-model:operationType="typeOfOperationForSummary"
+      v-model:OpeRecordByType="OpeRecordByType"
+      v-model:AnesthesiaHeadPosition="AnesthesiaHeadPositionFromChild"
+      ref="childOfOperationRecord"
+      />
+
+
     <v-divider>麻酔</v-divider>
     <v-row align="end">
       <v-col cols="(anesthesia === 'その他') ? 8:12">
@@ -134,13 +142,6 @@
       v-model:StartTime="operationStartTime"
       v-model:EndTime="operationEndTime"
       v-model:totalTime="operationTime"/>
-
-      <component :is="componentByOperationType" 
-      v-model:operationType="typeOfOperationForSummary"
-      v-model:OpeRecordByType="OpeRecordByType"
-      v-model:AnesthesiaHeadPosition="AnesthesiaHeadPositionFromChild"
-      ref="childOfOperationRecord"
-      />
   </v-container>
 </template>
 
@@ -241,10 +242,39 @@
     const childOfOperationRecord = ref(null);
 
     function createSummary() {
-      // const detailedDiseaseSummary = (selectedDisease.value === 'デフォルト')? '':child.value.getSummaryAtDischargeTextFromGrandChild();
 
-      return childOfOperationRecord.value.createRecordForEachOperation();
+      const preOpeInfo = (preoperativeInformation.value)? '【術前情報】' + preoperativeInformation.value + '\r\n\r\n': '';
+      const operationPositionItems = {
+        '体位': (position.value==='その他')? positionText.value: position.value,
+        '頭部固定': (headPosition.value === 'その他')? headPositionText.value: headPosition.value,
+        '頭部屈曲': (headFlexion.value !== '自然位')? headFlexion.value + headFlexionText.value +'°': '',
+        '頭部側屈': (headLateralVending.value !== 'なし')? headLateralVending.value + headLateralVendingText.value +'°': '',
+        '頭部回旋': (headRotation.value !== 'なし')? headRotation.value + headRotationText.value +'°': '',
+      };
+      const operationTimes = {
+        '手術開始時間': operationStartTime.value,
+        '手術終了時間': operationEndTime.value,
+        '手術時間': operationTime.value,
+      }
+      const anesthesiaItems = (anesthesia.value === 'その他')? anesthesiaText.value: anesthesia.value
+      
 
+      const detailSummary = childOfOperationRecord.value.createRecordForEachOperation();
+
+      function summaryText (Items) {
+        const text = Object.entries(Items)
+        .filter(([key, value]) => value && value.length !== 0 && value !== '\r\n')
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ');
+        return text;
+      }
+      return  preOpeInfo 
+      + '麻酔:' + anesthesiaItems
+
+      + '\n'
+      + '{' + summaryText(operationPositionItems) + '}' + '\r\n' 
+      + '{' + summaryText(operationTimes) + '}' + '\r\n\r\n'
+      + detailSummary;
 
       // // outcomeの値に対応するtextを取得するcomputedプロパティ
       // const outcomeText = (outcomeValue) => {

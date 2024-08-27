@@ -113,7 +113,7 @@
       Object.entries(opeInfoItems).filter(([key, value]) => value !== '')
     );
     const text = Object.entries(opeInfoItems).map(([key, value]) => `${key}: ${value}`).join(', ');
-    return finalRecord + '\n{' + text + '}';
+    return finalRecord + '\n\n{' + text + '}';
   };
 
   // vent. drainage
@@ -171,7 +171,7 @@
       Object.entries(opeInfoItems).filter(([key, value]) => value !== '')
     );
     const text = Object.entries(opeInfoItems).map(([key, value]) => `${key}: ${value}`).join(', ');
-    return finalRecord + '\n{' + text + '}';
+    return finalRecord + '\n\n{' + text + '}';
   };
 
 

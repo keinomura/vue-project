@@ -129,7 +129,6 @@
       </v-tabs-window-item>
     </v-tabs-window>
   </v-card>
- {{ AnesthesiaHeadPositionFromChild }}
     <!-- 手術開始時間入力 -->
     <TimeCalculation
       v-model:StartTime="operationStartTime"

@@ -150,6 +150,8 @@
     import OperationSelectCard from './OperationSelectCard.vue';
     import TimeCalculation from './OpeTimeInput.vue';
     import BurrHoleSurgery from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
+    import MVDSurgery from './OpenSurgeryViews/MVDViews/MVDSurgery.vue';
+
     // Import createCSDHSummary from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue'
     // import { createCSDHSummary } from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
 
@@ -160,7 +162,7 @@
     const detailOperationOptions = ref('');
     const detailOpenOperationOptions = ref({
       'burr hole': ['CSDH', '脳室ドレナージ'],
-      'MVD': ['TN', 'HFS', '舌咽神経痛'],
+      'MVD': ['TN', 'HFS', '舌咽神経痛', 'NVC複数合併例'],
       'shunt': ['V-P shunt', 'L-P shunt'],
       'Craniotomy': ['Clipping', 'Tumor', '開頭血腫除去術', '減圧開頭', 'AVM'],
       'others': ['STA-MCA bypass', 'その他']
@@ -212,7 +214,6 @@
 
     const AnesthesiaHeadPositionFromChild = ref({})
     watch (AnesthesiaHeadPositionFromChild, () =>{
-      console.log('changed')
       anesthesia.value = AnesthesiaHeadPositionFromChild.value.anesthesia;
       position.value = AnesthesiaHeadPositionFromChild.value.bodyPosition;
       headPosition.value = AnesthesiaHeadPositionFromChild.value.headPosition;
@@ -233,6 +234,8 @@
     watch(() => typeOfOperationForSummary.value, (newVal) => {
       if (newVal === 'CSDH' || newVal === '脳室ドレナージ') {
         componentByOperationType.value = markRaw(BurrHoleSurgery);
+      } else if (newVal === 'TN' || newVal === 'HFS' || newVal === '舌咽神経痛' || newVal === 'NVC複数合併例') {
+        componentByOperationType.value = markRaw(MVDSurgery);
       } else {
         componentByOperationType.value = null;
       }
@@ -270,29 +273,10 @@
       }
       return  preOpeInfo 
       + '麻酔:' + anesthesiaItems
-
       + '\n'
       + '{' + summaryText(operationPositionItems) + '}' + '\r\n' 
       + '{' + summaryText(operationTimes) + '}' + '\r\n\r\n'
       + detailSummary;
-
-      // // outcomeの値に対応するtextを取得するcomputedプロパティ
-      // const outcomeText = (outcomeValue) => {
-      //   const option = outcomeOptions.value.find(opt => opt.value === outcomeValue);
-      //   return option ? option.text : '';
-      // };
-
-
-
-      // //SummaryElementsで空白な要素をを削除する。
-      // const summaryText = Object.entries(SummaryElements)
-      //   .filter(([key, value]) => value && value.length !== 0 && value !== '\r\n')
-      //   .map(([key, value]) => `${key}: ${value}`)
-      //   .join(', ');
-
-      // console.log(summaryText)
-      // const commentText = (additionalComment.value)? additionalComment.value + '\r\n': '';
-      // return summary.value = '【入院経過】\r\n' + commentText + detailedDiseaseSummary  + '\r' + summaryText;
     }
 
     function textReplaced(title, element) {

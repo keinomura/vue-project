@@ -27,7 +27,6 @@
       ref="childOfOperationRecord"
       />
 
-
     <v-divider>麻酔</v-divider>
     <v-row align="end">
       <v-col cols="(anesthesia === 'その他') ? 8:12">
@@ -151,6 +150,7 @@
     import TimeCalculation from './OpeTimeInput.vue';
     import BurrHoleSurgery from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
     import MVDSurgery from './OpenSurgeryViews/MVDViews/MVDSurgery.vue';
+    import ShuntSurgery from './OpenSurgeryViews/ShuntViews/ShuntSurgery.vue';
 
     // Import createCSDHSummary from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue'
     // import { createCSDHSummary } from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
@@ -236,6 +236,8 @@
         componentByOperationType.value = markRaw(BurrHoleSurgery);
       } else if (newVal === 'TN' || newVal === 'HFS' || newVal === '舌咽神経痛' || newVal === 'NVC複数合併例') {
         componentByOperationType.value = markRaw(MVDSurgery);
+      } else if (newVal === 'V-P shunt' || newVal === 'L-P shunt') {
+        componentByOperationType.value = markRaw(ShuntSurgery);
       } else {
         componentByOperationType.value = null;
       }

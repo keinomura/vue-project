@@ -1,6 +1,6 @@
 <template>
   <v-card style="margin-top: 10pt;" elevation="3" >
-    <h2 style="background-color: aquamarine;">{{ operationType }}</h2>
+    <h2 style="padding-left: 15pt;background-color: aquamarine;">{{ operationType }}</h2>
     <v-component v-if="operationType === 'CSDH'">
       <v-radio-group v-model="hematomaSide" label="病変側" inline>
         <v-radio label="右" value="右"></v-radio>
@@ -160,12 +160,12 @@
     const skinIncisionText = '皮膚切開は' + skinIncision.value + 'に行った。'
     const punctureSiteText = 'Burr holeを開け、骨、硬膜を止血。尖刃で硬膜を切開し、脳表を確認。脳表をバイポーラで凝固した。'
     + 'あらかじめドレナージチューブを表皮から皮下に挿入しておく。'
-    + (punctureSite === '前角') ? '穿刺針をnasion, 外耳孔に向けて挿入した。':'穿刺針をnasionに向けて挿入した。'
+    const punctureDirection = (punctureSite.value === '前角') ? '穿刺針をnasion, 外耳孔に向けて挿入した。':'穿刺針をnasionに向けて挿入した。';
     const drainagePlacement = '穿刺針よりCSFの流出を確認した。穿刺針を抜き、同じTractにドレナージチューブを挿入した。'
     + measurementPoint.value + 'を基準にドレナージチューブを'+ punctureLength.value +'cm挿入して固定した。'
     const closeText = '型どおりに閉創し、手術を終了した。'
 
-    const finalRecord = info + '\n' + punctureText + skinIncisionText + punctureSiteText + drainagePlacement + closeText
+    const finalRecord = info + '\n' + punctureText + skinIncisionText + punctureSiteText + punctureDirection + drainagePlacement + closeText
 
     opeInfoItems = Object.fromEntries(
       Object.entries(opeInfoItems).filter(([key, value]) => value !== '')

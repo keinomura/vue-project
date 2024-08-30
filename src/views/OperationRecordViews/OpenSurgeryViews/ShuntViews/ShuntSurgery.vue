@@ -43,8 +43,8 @@
       <v-row class="mx-2 my-2">
       <h3 class="mx-2 my-2" style="color: grey;">腰椎</h3>
     </v-row>
-      <v-radio-group v-model="operationSide" label="手術側" inline>
-        <v-radio v-model="punctureLevel" v-for="level in ['L2/3', 'L3/4', 'L4/5', 'L5/S1']" :label="level" :value="level"></v-radio>
+      <v-radio-group v-model="punctureLevel" label="手術部位" inline>
+        <v-radio  v-for="level in ['L2/3', 'L3/4', 'L4/5', 'L5/S1']" :label="level" :value="level"></v-radio>
       </v-radio-group>
       <v-radio-group v-model="punctureSite" label="穿刺" inline>
         <v-radio label="Sagittal" value="Sagittal"></v-radio>
@@ -107,7 +107,7 @@
     const punctureLevel = ref('');
 
     // devices
-    const devices = ref([]);
+    const devices = ref('');
     const settingPressure = ref('');
 
     // anesthesia
@@ -170,12 +170,14 @@
           + '皮下にシャント圧調整バルブを挿入するスペースを作った。'
         }
       const TextOfVentPuncture = () => {
-        return (punctureSite.value === '前角') ? '穿刺針をnasion, 外耳孔に向けて挿入した。':'穿刺針をnasionに向けて挿入した。'
+        const insertionPoint = (punctureSite.value === '前角') ? 'nasion, 外耳孔':'nasion';
+        return '穿刺針を' + insertionPoint + 'に向けて挿入した。'
         +'穿刺針よりCSFの流出を確認した。穿刺針を抜き、同じTractに近位ドレナージチューブを挿入した。'
         + measurementPoint.value + 'を基準に近位ドレナージチューブを'+ punctureLength.value +'cm挿入して固定した。'
       }
+
       const TextOfAbdominalSide = () => {
-        return '臍'+ abdominalSide.value +'外側に5cmの横切開を行った。、皮下組織を切開した後。鈍的に脂肪組織を剥離し、腹直筋外膜を露出した。'
+        return '臍'+ abdominalSide.value +'外側に5cmの横切開を行った。皮下組織を切開した後。鈍的に脂肪組織を剥離し、腹直筋外膜を露出した。'
         + '腹直筋外膜を縦切開した後、腹直筋を線維方向に分離、剥離し、腹直筋内膜を露出した。内膜を鑷子で交互につまみ上げ、腹膜下組織、臓器を落とす。内膜、腹膜を切開し、腹腔を確認した。'
         + '切開部にたばこ縫合をかけた。\r\n'
         + '切開部より皮下にpasserを用いてシャントチューブを、近位チューブとの接合部まで通した。'
@@ -195,18 +197,24 @@
       //   (punctureTiming.value === '先に') ? [TextOfBurrHoleAndPocketForBulb, TextOfVentPuncture, TextOfAbdominalSide, TextOfConnectionAndClosure]:
       //   [TextOfBurrHoleAndPocketForBulb, TextOfAbdominalSide, TextOfVentPuncture, TextOfConnectionAndClosure];
 
-
-    const opeInfoItems = {
-      '手術側': operationSide.value,
-      '穿刺位置': punctureSite.value,
-      '皮膚切開': skinIncision.value,
-      '近位チューブ挿入': (operationType.value === 'V-P shunt') ? 
+    const tubeInsert= ()  => {
+      return (operationType.value === 'V-P shunt') ? 
                         measurementPoint.value + 'から' + punctureLength.value + 'cm挿入':
-                        '表面から' + punctureLength.value + 'cm挿入',
-      '穿刺タイミング': punctureTiming.value,
-      '穿刺レベル': punctureLevel.value,
-      '腹部術側': abdominalSide.value,
-      'Kcode': 'K174-2 水頭症手術 シャント手術'
+                        '表面から' + punctureLength.value + 'cm挿入'
+    };
+    const fetchOpeInfoItems = () => {
+      return {
+        '手術側': operationSide.value,
+        '穿刺位置': punctureSite.value,
+        '皮膚切開': skinIncision.value,
+        '穿刺タイミング': punctureTiming.value,
+        '近位チューブ挿入': tubeInsert(),
+        '穿刺レベル': punctureLevel.value,
+        '腹部術側': abdominalSide.value,
+        'デバイス': devices.value,
+        '設定圧': settingPressure.value,
+        'Kcode': 'K174-2 水頭症手術 シャント手術'
+      };
     };
 
     // methods
@@ -226,8 +234,9 @@
         [TextOfBurrHoleAndPocketForBulb(), TextOfAbdominalSide(), TextOfVentPuncture(), TextOfConnectionAndClosure()];
 
       const operationRecordText = operationProcedureArray.join('\n');
+
+      const opeInfoItems = fetchOpeInfoItems();
       const opeInfoText = createOpeInfoItemsText(opeInfoItems);
-      // return operationInfo + '\n\n' + operationProcedureArray +'\n\n' + opeInfoItems;
       return operationInfo + '\n\n' + operationRecordText + '\n\n{' + opeInfoText + '}';
     }
       

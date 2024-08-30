@@ -239,32 +239,7 @@
       const opeInfoText = createOpeInfoItemsText(opeInfoItems);
       return operationInfo + '\n\n' + operationRecordText + '\n\n{' + opeInfoText + '}';
     }
-      
 
-
-
-
-
-      
-
-      // const finalRecord = info + '\n' + burrHoleText + punctureText + drainOrWashText + closeText + counterSideText
-  
-      // opeInfoItems = Object.fromEntries(
-      //   Object.entries(opeInfoItems).filter(([key, value]) => value !== '')
-      // );
-      // const text = Object.entries(opeInfoItems).map(([key, value]) => `${key}: ${value}`).join(', ');
-      // return finalRecord + '\n\n{' + text + '}';
-    
-
-      
-
-
-  
-  
-    // function createRecordForEachOperation() {
-    //   return (operationType.value === 'CSDH') ? createRecordForCSDH() : createRecordForVentDrainage();
-    // };
-  
     defineExpose({
       createRecordForEachOperation,
     });

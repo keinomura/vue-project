@@ -31,7 +31,7 @@
     <v-row align="end">
       <v-col cols="(anesthesia === 'その他') ? 8:12">
         <v-radio-group v-model="anesthesia" label="麻酔" inline>
-          <v-radio v-for="anesthesiaType in ['局所麻酔', '局所麻酔＋沈静', '全身麻酔', 'その他']" :label="anesthesiaType" :value="anesthesiaType"/>
+          <v-radio v-for="anesthesiaType in ['局所麻酔', '局所麻酔＋鎮静', '全身麻酔', 'その他']" :label="anesthesiaType" :value="anesthesiaType"/>
         </v-radio-group>
       </v-col>
       <v-col cols="4" v-if="anesthesia === 'その他'">

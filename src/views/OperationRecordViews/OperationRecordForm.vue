@@ -148,9 +148,11 @@
     import { ref, defineExpose, watch, shallowRef, markRaw } from 'vue';
     import OperationSelectCard from './OperationSelectCard.vue';
     import TimeCalculation from './OpeTimeInput.vue';
+
     import BurrHoleSurgery from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
     import MVDSurgery from './OpenSurgeryViews/MVDViews/MVDSurgery.vue';
     import ShuntSurgery from './OpenSurgeryViews/ShuntViews/ShuntSurgery.vue';
+    import ClippingSurgery from './OpenSurgeryViews/CraniotomyViews/ClippingSurgery.vue';
 
     // Import createCSDHSummary from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue'
     // import { createCSDHSummary } from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
@@ -238,6 +240,8 @@
         componentByOperationType.value = markRaw(MVDSurgery);
       } else if (newVal === 'V-P shunt' || newVal === 'L-P shunt') {
         componentByOperationType.value = markRaw(ShuntSurgery);
+      } else if (newVal === 'Clipping') {
+        componentByOperationType.value = markRaw(ClippingSurgery);
       } else {
         componentByOperationType.value = null;
       }

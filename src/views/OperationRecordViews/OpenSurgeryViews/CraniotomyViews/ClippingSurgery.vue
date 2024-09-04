@@ -50,8 +50,8 @@
       <v-text-field v-if="approachType === 'その他'" class="mx-2" v-model="approachTypeText" label="その他" outlined></v-text-field>
     </v-row>
   </v-card>
-  {{ clippingDetails }}
-  {{ unCheckedClippingSite }}
+  <!-- {{ clippingDetails }}
+  {{ unCheckedClippingSite }} -->
     <!-- <v-component v-for="(eachSite, index) in clippingDetails" :key="index">
       <v-row class="mx-2">
         <v-col cols="1">
@@ -76,9 +76,30 @@
       item-key="site"
       >
       <template #item="{element, index}">
-        <div>
-          {{ element.site }}
-        </div>
+        <v-card>
+          <v-row class="mx-2 my-2">
+            <v-col cols="1">
+              <h3>{{ index + 1 }}</h3>
+            </v-col>
+            <v-col cols="4" v-if="element.site !== 'その他'">
+              <h3>{{ element.site }}</h3>
+            </v-col>
+            <v-col cols="4" v-if="element.site === 'その他'">
+              <v-text-field v-model="element.siteText" label="部位" outlined></v-text-field>
+            </v-col>
+            <v-col cols="7">
+              <v-radio-group v-model="element.method" label="方法" inline @change="modifyClipArray(element)">
+                <v-radio label="clip" value="clip"></v-radio>
+                <v-radio label="wrapping" value="wrapping"></v-radio>
+              </v-radio-group>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              <v-text-field v-if="element.method === 'clip'" v-model="element.clip" label="クリップ" outlined></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card>
       </template>
     </draggable>
     //upper this
@@ -107,19 +128,32 @@
       //   );
       // }, {immediate: true});
       const clippingDetails = ref([]);
-      // clippingDetailで動脈瘤の場所が新たに追加された時、clippingDetailsに新たな場所のオブジェクトを追加する
+      // clippingDetailで動脈瘤の場所が新たに追加された時clippingDetailsを変化させる。
       watch(clippingSite, (newVal) => {
-        // newValとclippingDetailsのsiteを比較して、clippingDetailsにないものを追加する
-        newVal.forEach((site) => {
-          if (!clippingDetails.value.map((eachSite) => eachSite.site).includes(site)) {
-            clippingDetails.value.push({
-              site: site,
-              method: '',
-              clip: ''
-            });
-          }
-        });
+        //1. newValとclippingDetailsのsiteを比較して、2. clippingDetailsにないものを追加する　か 3. clippingDetailsに余分にあるものを削除する
+        // newValとclippingDetailsのsiteをその要素数で比較する。
+        if (newVal.length > clippingDetails.value.length) {
+          // clippingDetailsにないものを追加する
+          newVal.forEach((site) => {
+            if (!clippingDetails.value.map((eachSite) => eachSite.site).includes(site)) {
+              clippingDetails.value.push({
+                site: site,
+                method: '',
+                clip: ''
+              });
+            }
+          });
+        } else {
+          // clippingDetailsに余分にあるものを削除する
+          clippingDetails.value = clippingDetails.value.filter((eachSite) => {
+            return newVal.includes(eachSite.site);
+          });
+        }
       }, {immediate: true});
+
+
+
+
       // clippingDetailsのsiteで選ばれていない選択肢
       const unCheckedClippingSite = ref([]);
       watch(clippingDetails, (newVal) => {
@@ -134,7 +168,16 @@
       const drag = ref(false);
 
 
-      
+      // methods
+      function modifyClipArray(element) {
+        if (element.method === 'clip') {
+          element.clip = [''];
+        } else {
+          element.clip = '';
+        }
+        const index = clippingDetails.value.findIndex((eachSite) => eachSite.site === element.site);
+        clippingDetails.value[index] = element;
+      }
   
     //   // anesthesia
     //   const AnesthesiaHeadPositionForVPshunt = ref({

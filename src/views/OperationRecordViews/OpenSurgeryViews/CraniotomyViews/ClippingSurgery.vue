@@ -104,10 +104,13 @@
     </draggable>
     //upper this
 
+    <selectClip></selectClip>
+
   </template>
     <script setup>
       import { ref, defineModel, defineExpose, watch } from 'vue';
       import draggable from 'vuedraggable';
+      import selectClip from './selectClip.vue';
 
       const operationType = defineModel('operationType');
       const OpeRecordByType = defineModel('OpeRecordByType');

@@ -93,7 +93,7 @@ watch ([selectedClipShape, selectedClipSeries, selectedClipLength], () => {
 
 }, { immediate: true, deep: true });
 
-const selectedClip = ref('');
+const selectedClip = defineModel('selectedClip');
 
 function formatClipText(clip) {
       return `No:${clip['No']}  ${clip['Series']} ${clip['Shape']} ${clip['Effective_Blade_Length_mm']}mm`;

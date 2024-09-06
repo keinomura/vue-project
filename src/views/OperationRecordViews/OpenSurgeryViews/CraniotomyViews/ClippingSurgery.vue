@@ -50,55 +50,65 @@
       <v-text-field v-if="approachType === 'その他'" class="mx-2" v-model="approachTypeText" label="その他" outlined></v-text-field>
     </v-row>
   </v-card>
-  <!-- {{ clippingDetails }}
-  {{ unCheckedClippingSite }} -->
-    <!-- <v-component v-for="(eachSite, index) in clippingDetails" :key="index">
-      <v-row class="mx-2">
-        <v-col cols="1">
-          <h3>{{ index + 1 }}</h3>
-        </v-col>
-        <v-col cols="11">
-          <v-card>
-            <v-row class="mx-2">
-              <v-radio-group v-model="eachSite.site" label="部位選択">
-                <v-radio v-for="choice in unCheckedClippingSite" :key="choice" :label="choice" :value="choice"></v-radio>
-              </v-radio-group>
-              <v-text-field v-model="eachSite.method" label="方法" outlined></v-text-field>
-              <v-text-field v-model="eachSite.clip" label="クリップ" outlined></v-text-field>
-            </v-row>
-          </v-card>
-          </v-col>
-      </v-row>
-    </v-component> -->
-//under this
+
+    <h3 class="mx-2 my-2" style="color: grey;">クリップ詳細 順番はDragして変更</h3>
     <draggable 
       :list="clippingDetails"
       item-key="site"
       >
       <template #item="{element, index}">
         <v-card>
-          <v-row class="mx-2 my-2">
+          <v-row class="mx-2 my-1 d-flex" style="height: 20pt;">
             <v-col cols="1">
               <h3>{{ index + 1 }}</h3>
             </v-col>
-            <v-col cols="4" v-if="element.site !== 'その他'">
+            <v-col cols="3" v-if="element.site !== 'その他'">
               <h3>{{ element.site }}</h3>
             </v-col>
-            <v-col cols="4" v-if="element.site === 'その他'">
+            <v-col cols="3" v-if="element.site === 'その他'">
               <v-text-field v-model="element.siteText" label="部位" outlined></v-text-field>
             </v-col>
             <v-col cols="7">
-              <v-radio-group v-model="element.method" label="方法" inline @change="modifyClipArray(element)">
+              <v-radio-group v-model="element.method" inline @change="modifyClipArray(element)">
                 <v-radio label="clip" value="clip"></v-radio>
                 <v-radio label="wrapping" value="wrapping"></v-radio>
               </v-radio-group>
             </v-col>
           </v-row>
+
           <v-row>
-            <v-col cols="3">
-              <v-text-field v-if="element.method === 'clip'" v-model="element.clip" label="クリップ" outlined></v-text-field>
+            <v-col cols="4">
+            </v-col>
+            <v-col cols="7">
+             <v-btn style="width: auto;">choose clip</v-btn>
             </v-col>
           </v-row>
+          
+              <!-- ダイアログを表示するボタン -->
+    <v-row>
+      <v-col cols="4">
+      </v-col>
+      element: {{element}} element.clip:{{ element.clip }} index:{{ index }}
+      <v-col cols="7">
+        <v-btn @click="dialog = true; selectedElement = clippingDetails[index]" style="width: auto;">{{ element.clip }}</v-btn>
+      </v-col>
+    </v-row>
+
+    <!-- ダイアログの定義 -->
+    <v-dialog v-model="dialog" max-width="700px">
+      <v-card>
+        element:{{ selectedElement }}
+        <v-card-title class="headline">ダイアログのタイトル</v-card-title>
+        <v-card-text>
+          <selectClip v-model:selectedClip="selectedElement.clip"></selectClip>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="dialog = false; selectedElement = ''">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
         </v-card>
       </template>
     </draggable>
@@ -169,6 +179,10 @@
       }, {immediate: true});
 
       const drag = ref(false);
+      const dialog = ref(false);
+
+      const selectedClip = ref('');
+      const selectedElement = ref('');
 
 
       // methods

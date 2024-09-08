@@ -55,20 +55,19 @@
     <draggable 
       :list="clippingDetails"
       item-key="site"
+      class="my-2 mx-2"
       >
       <template #item="{element, index}">
-        <v-card>
-          <v-row class="mx-2 my-1 d-flex" style="height: 20pt;">
+        <v-card class="my-2" :style="getCardStyle(index)">
+          <v-row class="mx-2" style="height: auto;" align="center">
             <v-col cols="1">
-              <h3>{{ index + 1 }}</h3>
+              <h2>{{ index + 1 }}</h2>
             </v-col>
-            <v-col cols="3" v-if="element.site !== 'その他'">
-              <h3>{{ element.site }}</h3>
+            <v-col cols="3" >
+              <h3 v-if="element.site !== 'その他'">{{ element.site }}</h3>
+              <v-text-field v-else v-model="element.siteText" label="部位" outlined></v-text-field>
             </v-col>
-            <v-col cols="3" v-if="element.site === 'その他'">
-              <v-text-field v-model="element.siteText" label="部位" outlined></v-text-field>
-            </v-col>
-            <v-col cols="7">
+            <v-col cols="7" align-center>
               <v-radio-group v-model="element.method" inline @change="modifyClipArray(element)">
                 <v-radio label="clip" value="clip"></v-radio>
                 <v-radio label="wrapping" value="wrapping"></v-radio>
@@ -76,47 +75,43 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="4">
+          <v-row v-if="clippingDetails[index].method === 'clip'" v-for="(clip, cIndex) in clippingDetails[index].clip" class="my-2">
+            <v-col cols="1">
+              <h3 class="mx-5" style="color: gray;">{{ cIndex + 1 }}</h3>
             </v-col>
             <v-col cols="7">
-             <v-btn style="width: auto;">choose clip</v-btn>
+              <v-btn @click="dialog = true; indexArrayForDialog = [index, cIndex]" style="width: auto;">
+                <h3 v-if="clip !== ''">{{ clip }}</h3>
+                <h3 v-else>クリップを選択</h3>
+              </v-btn>
+            </v-col>
+            <v-col cols="2">
+              <v-btn @click="clippingDetails[index].clip.push('')" style="width: auto;">追加</v-btn>
+            </v-col>
+            <v-col cols="2">
+              <v-btn @click="clippingDetails[index].clip.splice(cIndex, 1)" style="width: auto;">削除</v-btn>
             </v-col>
           </v-row>
-          
-              <!-- ダイアログを表示するボタン -->
-    <v-row>
-      <v-col cols="4">
-      </v-col>
-      element: {{element}} element.clip:{{ element.clip }} index:{{ index }}
-      <v-col cols="7">
-        <v-btn @click="dialog = true; selectedElement = clippingDetails[index]" style="width: auto;">{{ element.clip }}</v-btn>
-      </v-col>
-    </v-row>
 
     <!-- ダイアログの定義 -->
-    <v-dialog v-model="dialog" max-width="700px">
-      <v-card>
-        element:{{ selectedElement }}
-        <v-card-title class="headline">ダイアログのタイトル</v-card-title>
-        <v-card-text>
-          <selectClip v-model:selectedClip="selectedElement.clip"></selectClip>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialog = false; selectedElement = ''">閉じる</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <v-dialog v-model="dialog" max-width="700px">
+            <v-card>
+              <v-card-title class="headline">ダイアログのタイトル</v-card-title>
+              <v-card-text>
+                <selectClip v-model:selectedClip="clippingDetails[indexArrayForDialog[0]].clip[indexArrayForDialog[1]]"></selectClip>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="dialog = false; selectedElement = ''">閉じる</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
 
         </v-card>
       </template>
     </draggable>
-    //upper this
-
-    <selectClip></selectClip>
-
   </template>
+
     <script setup>
       import { ref, defineModel, defineExpose, watch } from 'vue';
       import draggable from 'vuedraggable';
@@ -134,12 +129,7 @@
       const CraniotomyTypeText = ref('');
       const approachType = ref('');
       const approachTypeText = ref('');
-      const clippingDetail = ref([]);
-      // watch (clippingSite , (newVal) => {
-      //   clippingDetail.value = Object.fromEntries(
-      //     newVal.map((site) => [site, ''])
-      //   );
-      // }, {immediate: true});
+      
       const clippingDetails = ref([]);
       // clippingDetailで動脈瘤の場所が新たに追加された時clippingDetailsを変化させる。
       watch(clippingSite, (newVal) => {
@@ -164,9 +154,6 @@
         }
       }, {immediate: true});
 
-
-
-
       // clippingDetailsのsiteで選ばれていない選択肢
       const unCheckedClippingSite = ref([]);
       watch(clippingDetails, (newVal) => {
@@ -178,64 +165,72 @@
         });
       }, {immediate: true});
 
-      const drag = ref(false);
       const dialog = ref(false);
 
-      const selectedClip = ref('');
       const selectedElement = ref('');
-
+      const indexArrayForDialog = ref([]);
 
       // methods
       function modifyClipArray(element) {
-        if (element.method === 'clip') {
+        if (element.method !== 'clip') {
           element.clip = [''];
-        } else {
-          element.clip = '';
+        } else if (element.method === 'clip' && element.clip.length === 0) {
+          element.clip = [''];
         }
         const index = clippingDetails.value.findIndex((eachSite) => eachSite.site === element.site);
         clippingDetails.value[index] = element;
       }
   
-    //   // anesthesia
-    //   const AnesthesiaHeadPositionForVPshunt = ref({
-    //     'anesthesia': '全身麻酔',
-    //     'bodyPosition': (punctureSite.value === '前角') ? '仰臥位': '側臥位',
-    //     'headPosition': '馬蹄型',
-    //     'headFlexion': '自然位',
-    //     'headFlexionDegree': '0',
-    //     'headLateralFlexion': 'なし',
-    //     'headLateralFlexionDegree': '0',
-    //     'headRotation': (punctureSite.value === '前角') ? '健側': 'なし',
-    //     'headRotationDegree': (punctureSite.value === '前角') ? '30': '0',
-    //   });
-    //   watch(punctureSite, (newVal) => {
-    //     if (newVal === '前角') {
-    //       AnesthesiaHeadPosition.value.bodyPosition = '仰臥位';
-    //       AnesthesiaHeadPosition.value.headRotation = '健側';
-    //       AnesthesiaHeadPosition.value.headRotationDegree = '30';
-    //     } else {
-    //       AnesthesiaHeadPosition.value.bodyPosition = '側臥位';
-    //       AnesthesiaHeadPosition.value.headRotation = 'なし';
-    //       AnesthesiaHeadPosition.value.headRotationDegree = '0';
-    //     }
-    //   }, {immediate: true});
+      // グラデーションの色を生成する関数
+const getCardStyle = (index) => {
+  const color = `hsl(${index * 30}, 100%, 70%)`; // インデックスに基づいて色を生成
+  return {
+    borderLeft: `5px solid ${color}`,
+    borderBottom: `5px solid ${color}`,
+  };
+};
+
+      // anesthesia
+      const AnesthesiaHeadPositionForPterional = ref({
+        'anesthesia': '全身麻酔',
+        'bodyPosition': '仰臥位',
+        'headPosition': 'Mayfield 3-pin',
+        'headFlexion': '自然位',
+        'headFlexionDegree': '0',
+        'headLateralFlexion': 'なし',
+        'headLateralFlexionDegree': '0',
+        'headRotation': '患側',
+        'headRotationDegree': '20',
+      });
+      // watch(punctureSite, (newVal) => {
+      //   if (newVal === '前角') {
+      //     AnesthesiaHeadPosition.value.bodyPosition = '仰臥位';
+      //     AnesthesiaHeadPosition.value.headRotation = '健側';
+      //     AnesthesiaHeadPosition.value.headRotationDegree = '30';
+      //   } else {
+      //     AnesthesiaHeadPosition.value.bodyPosition = '側臥位';
+      //     AnesthesiaHeadPosition.value.headRotation = 'なし';
+      //     AnesthesiaHeadPosition.value.headRotationDegree = '0';
+      //   }
+      // }, {immediate: true});
   
-    //   const AnesthesiaHeadPositionForLPshunt = ref({
-    //     'anesthesia': '全身麻酔',
-    //     'bodyPosition': '側臥位',
-    //     'headPosition': '馬蹄型',
-    //     'headFlexion': '自然位',
-    //     'headFlexionDegree': '0',
-    //     'headLateralFlexion': 'なし',
-    //     'headLateralFlexionDegree': '0',
-    //     'headRotation': 'なし',
-    //     'headRotationDegree': '0',
-    //   });
-    //   AnesthesiaHeadPosition.value = (operationType.value === 'V-P shunt') ? AnesthesiaHeadPositionForVPshunt.value : AnesthesiaHeadPositionForLPshunt.value;
+      const AnesthesiaHeadPositionForFrontal = ref({
+        'anesthesia': '全身麻酔',
+        'bodyPosition': '仰臥位',
+        'headPosition': 'Mayfield 3-pin',
+        'headFlexion': '自然位',
+        'headFlexionDegree': '0',
+        'headLateralFlexion': 'なし',
+        'headLateralFlexionDegree': '0',
+        'headRotation': 'なし',
+        'headRotationDegree': '0',
+      });
+      AnesthesiaHeadPosition.value = (CraniotomyType.value === 'pterional approach') ? AnesthesiaHeadPositionForPterional.value 
+      : AnesthesiaHeadPositionForFrontal.value;
   
-    //   watch(operationType, (newVal) => {
-    //     AnesthesiaHeadPosition.value = (newVal === 'V-P shunt') ? AnesthesiaHeadPositionForVPshunt.value : AnesthesiaHeadPositionForLPshunt.value;
-    // }, {immediate: true});
+      watch(CraniotomyType, (newVal) => {
+        AnesthesiaHeadPosition.value = (newVal === 'pterional approach') ? AnesthesiaHeadPositionForPterional.value : AnesthesiaHeadPositionForFrontal.value;
+    }, {immediate: true});
     
   
     //   //operation texts

@@ -41,157 +41,198 @@
     <v-text-field v-if="CraniotomyType === 'その他'" class="mx-2" v-model="CraniotomyTypeText" label="その他" outlined></v-text-field>
     <v-row class="mx-2">
       <v-radio-group v-model="approachType" label="アプローチ" inline>
-        <v-radio label="transsylvian" value="transsylvian"></v-radio>
-        <v-radio label="subfrontal + transsylvian" value="subfrontal + transsylvian"></v-radio>
-        <v-radio label="interhemispheric" value="interhemispheric"></v-radio>
-        <v-radio label="subtemporal" value="subtemporal"></v-radio>
+        <v-radio label="transsylvian" value="transsylvian approach"></v-radio>
+        <v-radio label="subfrontal + transsylvian" value="subfrontal + transsylvian approach"></v-radio>
+        <v-radio label="interhemispheric" value="interhemispheric approach"></v-radio>
+        <v-radio label="subtemporal" value="subtemporal approach"></v-radio>
         <v-radio label="その他" value="その他"></v-radio>
       </v-radio-group>
       <v-text-field v-if="approachType === 'その他'" class="mx-2" v-model="approachTypeText" label="その他" outlined></v-text-field>
     </v-row>
   </v-card>
 
-    <h3 class="mx-2 my-2" style="color: grey;">クリップ詳細 順番はDragして変更</h3>
-    <draggable 
-      :list="clippingDetails"
-      item-key="site"
-      class="my-2 mx-2"
-      >
-      <template #item="{element, index}">
-        <v-card class="my-2" :style="getCardStyle(index)">
-          <v-row class="mx-2" style="height: auto;" align="center">
-            <v-col cols="1">
-              <h2>{{ index + 1 }}</h2>
-            </v-col>
-            <v-col cols="3" >
-              <h3 v-if="element.site !== 'その他'">{{ element.site }}</h3>
-              <v-text-field v-else v-model="element.siteText" label="部位" outlined></v-text-field>
-            </v-col>
-            <v-col cols="7" align-center>
-              <v-radio-group v-model="element.method" inline @change="modifyClipArray(element)">
-                <v-radio label="clip" value="clip"></v-radio>
-                <v-radio label="wrapping" value="wrapping"></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
+  <v-card class="my-2" elevation="3">
+    <v-radio-group v-model="difficultyOfVeinDissection" label="静脈処理の難易度" inline>
+      <v-radio label="容易" value="容易"></v-radio>
+      <v-radio label="普通" value="普通"></v-radio>
+      <v-radio label="難しい" value="難しい"></v-radio>
+    </v-radio-group>
+  </v-card>
+  
+  <h3 class="mx-2 my-2" style="color: grey;">クリップ詳細 順番はDragして変更</h3>
+  <draggable 
+    :list="detailInformationOfAneurysmTreatment"
+    item-key="site"
+    class="my-2 mx-2"
+    >
+    <template #item="{element, index}">
+      <v-card class="my-2" :style="getCardStyle(index)">
+        <v-row class="mx-2" style="height: auto;" align="center">
+          <v-col cols="1">
+            <h2>{{ index + 1 }}</h2>
+          </v-col>
+          <v-col cols="3" >
+            <h3 v-if="element.site !== 'その他'">{{ element.site }}</h3>
+            <v-text-field v-else v-model="element.siteText" label="部位" outlined></v-text-field>
+          </v-col>
+          <v-col cols="7" align-center>
+            <v-radio-group v-model="element.method" inline >
+              <v-radio label="clip" value="clip"></v-radio>
+              <v-radio label="wrapping" value="wrapping"></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-row>
 
-          <v-row v-if="clippingDetails[index].method === 'clip'" v-for="(clip, cIndex) in clippingDetails[index].clip" class="my-2">
-            <v-col cols="1">
-              <h3 class="mx-5" style="color: gray;">{{ cIndex + 1 }}</h3>
-            </v-col>
-            <v-col cols="7">
-              <v-btn @click="dialog = true; indexArrayForDialog = [index, cIndex]" style="width: auto;">
-                <h3 v-if="clip !== ''">{{ clip }}</h3>
-                <h3 v-else>クリップを選択</h3>
-              </v-btn>
-            </v-col>
-            <v-col cols="2">
-              <v-btn @click="clippingDetails[index].clip.push('')" style="width: auto;">追加</v-btn>
-            </v-col>
-            <v-col cols="2">
-              <v-btn @click="clippingDetails[index].clip.splice(cIndex, 1)" style="width: auto;">削除</v-btn>
-            </v-col>
-          </v-row>
+        <v-row v-if="detailInformationOfAneurysmTreatment[index].method === 'clip'" v-for="(clip, cIndex) in detailInformationOfAneurysmTreatment[index].clip" class="my-2">
+          <v-col cols="1">
+            <h3 class="mx-5" style="color: gray;">{{ cIndex + 1 }}</h3>
+          </v-col>
+          <v-col cols="7">
+            <v-btn @click="dialog = true; indexArrayForDialog = [index, cIndex]" style="width: auto;">
+              <h3 v-if="clip !== ''">{{ clip }}</h3>
+              <h3 v-else>クリップを選択</h3>
+            </v-btn>
+          </v-col>
+          <v-col cols="2">
+            <v-btn @click="detailInformationOfAneurysmTreatment[index].clip.push('')" style="width: auto;">追加</v-btn>
+          </v-col>
+          <v-col cols="2">
+            <v-btn @click="detailInformationOfAneurysmTreatment[index].clip.splice(cIndex, 1)" style="width: auto;">削除</v-btn>
+          </v-col>
+        </v-row>
 
-    <!-- ダイアログの定義 -->
-          <v-dialog v-model="dialog" max-width="700px">
-            <v-card>
-              <v-card-title class="headline">ダイアログのタイトル</v-card-title>
-              <v-card-text>
-                <selectClip v-model:selectedClip="clippingDetails[indexArrayForDialog[0]].clip[indexArrayForDialog[1]]"></selectClip>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialog = false; selectedElement = ''">閉じる</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+  <!-- ダイアログの定義 -->
+        <v-dialog v-model="dialog" max-width="700px">
+          <v-card>
+            <v-card-title class="headline">ダイアログのタイトル</v-card-title>
+            <v-card-text>
+              <selectClip v-model:selectedClip="detailInformationOfAneurysmTreatment[indexArrayForDialog[0]].clip[indexArrayForDialog[1]]"></selectClip>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="dialog = false; selectedElement = ''">閉じる</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-        </v-card>
-      </template>
-    </draggable>
-  </template>
+      </v-card>
+      
+    </template>
+  </draggable>
+  <v-card class="my-2" elevation="3">
+    <v-row class="mx-2 my-2">
+      <h3 class="mx-2 my-2" style="color: grey;">クリップ詳細</h3>
+      <v-textarea v-model="clippingProcedureDetailText" outlined></v-textarea>
+    </v-row>
+  </v-card>
+  <v-card class="my-2" elevation="3">
+    <v-row align="end"> 
+      <v-col cols="5" >
+          <v-radio-group v-model="useOfTemporaryClip" label="テンポラリークリップの使用" inline>
+            <v-radio label="あり" value="あり"></v-radio>
+            <v-radio label="なし" value="なし"></v-radio>
+          </v-radio-group>
+        </v-col>
+        <v-col cols="5">
+          <v-text-field v-if="useOfTemporaryClip === 'あり'" v-model="temporaryClippingTime" label="クリップ遮断時間" outlined></v-text-field>
+        </v-col>
+      </v-row>
+  </v-card>
+  <v-card class="my-2" elevation="3">
+    <v-row class="my-2">
+      <v-radio-group v-model="duraRepairMaterial" label="硬膜修復材料" inline>
+        <v-radio label="DuraGen" value="DuraGen"></v-radio>
+        <v-radio label="デュラウェーブ" value="デュラウェーブ"></v-radio>
+        <v-radio label="なし" value="なし"></v-radio>
+        <v-radio label="その他" value="その他"></v-radio>
+      </v-radio-group>
+      <v-text-field v-if="duraRepairMaterial === 'その他'" v-model="duraRepairMaterialText" label="その他" outlined></v-text-field>
+    </v-row>
+    <v-row>
+      <v-radio-group v-model="artificialBone" label="骨セメントの使用" inline>
+        <v-radio label="ストライカー" value="ダイレクトインジェクト（ストライカー）"></v-radio>
+        <v-radio label="なし" value="なし"></v-radio>
+        <v-radio label="その他" value="その他"></v-radio>
+      </v-radio-group>
+      <v-text-field v-if="artificialBone === 'その他'" v-model="artificialBoneText" label="その他" outlined></v-text-field>
+    </v-row>
+  </v-card>
+</template>
 
     <script setup>
       import { ref, defineModel, defineExpose, watch } from 'vue';
       import draggable from 'vuedraggable';
       import selectClip from './selectClip.vue';
 
+      // models 親コンポーネントの変数と同期させる
       const operationType = defineModel('operationType');
-      const OpeRecordByType = defineModel('OpeRecordByType');
       const AnesthesiaHeadPosition = defineModel('AnesthesiaHeadPosition');
   
+      // variables: operation information
       const ruptureOrNot = ref('');
       const operationSide = ref('');
       const clippingSite = ref([]);
       const clippingSiteText = ref('');
-      const CraniotomyType = ref('');
+
+      // variables, extradural procedure
+      const CraniotomyType = ref('pterional approach');
       const CraniotomyTypeText = ref('');
       const approachType = ref('');
       const approachTypeText = ref('');
-      
-      const clippingDetails = ref([]);
-      // clippingDetailで動脈瘤の場所が新たに追加された時clippingDetailsを変化させる。
+
+      //variables: intradural procedure
+      const difficultyOfVeinDissection = ref('');
+      const clippingProcedureDetailText = ref('');
+      const useOfTemporaryClip = ref('');
+      const temporaryClippingTime = ref('');
+
+      const detailInformationOfAneurysmTreatment = ref([]);
+      // clippingDetailで動脈瘤の場所が新たに追加された時detailInformationOfAneurysmTreatmentを変化させる。
       watch(clippingSite, (newVal) => {
-        //1. newValとclippingDetailsのsiteを比較して、2. clippingDetailsにないものを追加する　か 3. clippingDetailsに余分にあるものを削除する
-        // newValとclippingDetailsのsiteをその要素数で比較する。
-        if (newVal.length > clippingDetails.value.length) {
-          // clippingDetailsにないものを追加する
+        //1. newValとdetailInformationOfAneurysmTreatmentのsiteを比較して、2. detailInformationOfAneurysmTreatmentにないものを追加する　か 3. detailInformationOfAneurysmTreatmentに余分にあるものを削除する
+        // newValとdetailInformationOfAneurysmTreatmentのsiteをその要素数で比較する。
+        if (newVal.length > detailInformationOfAneurysmTreatment.value.length) {
+          // detailInformationOfAneurysmTreatmentにないものを追加する
           newVal.forEach((site) => {
-            if (!clippingDetails.value.map((eachSite) => eachSite.site).includes(site)) {
-              clippingDetails.value.push({
+            if (!detailInformationOfAneurysmTreatment.value.map((eachSite) => eachSite.site).includes(site)) {
+              detailInformationOfAneurysmTreatment.value.push({
                 site: site,
                 method: '',
-                clip: ''
+                clip: [''],
               });
             }
           });
         } else {
-          // clippingDetailsに余分にあるものを削除する
-          clippingDetails.value = clippingDetails.value.filter((eachSite) => {
+          // detailInformationOfAneurysmTreatmentに余分にあるものを削除する
+          detailInformationOfAneurysmTreatment.value = detailInformationOfAneurysmTreatment.value.filter((eachSite) => {
             return newVal.includes(eachSite.site);
           });
         }
       }, {immediate: true});
 
-      // clippingDetailsのsiteで選ばれていない選択肢
-      const unCheckedClippingSite = ref([]);
-      watch(clippingDetails, (newVal) => {
-        // unCheckedClippingSiteからclippingDetailsのsiteを取り除いたものをunCheckedClippingSiteに代入
-        unCheckedClippingSite.value = 
-        // clippingDetailsのsiteを取り出して配列にする。これをunCheckedClippingSiteと比較して、clippingDetailsのsiteにないものをunCheckedClippingSiteに代入する
-        clippingSite.value.filter((site) => {
-          return !newVal.map((eachSite) => eachSite.site).includes(site);
-        });
-      }, {immediate: true});
-
+      //variables: dialog for selecting clip
       const dialog = ref(false);
-
       const selectedElement = ref('');
       const indexArrayForDialog = ref([]);
 
+      //variables: closure
+      const duraRepairMaterial = ref('');
+      const duraRepairMaterialText = ref('');
+      const artificialBone = ref('');
+      const artificialBoneText = ref('');
+
       // methods
-      function modifyClipArray(element) {
-        if (element.method !== 'clip') {
-          element.clip = [''];
-        } else if (element.method === 'clip' && element.clip.length === 0) {
-          element.clip = [''];
-        }
-        const index = clippingDetails.value.findIndex((eachSite) => eachSite.site === element.site);
-        clippingDetails.value[index] = element;
-      }
-  
       // グラデーションの色を生成する関数
-const getCardStyle = (index) => {
-  const color = `hsl(${index * 30}, 100%, 70%)`; // インデックスに基づいて色を生成
-  return {
-    borderLeft: `5px solid ${color}`,
-    borderBottom: `5px solid ${color}`,
-  };
-};
+      const getCardStyle = (index) => {
+        const color = `hsl(${index * 20}, 100%, 70%)`; // インデックスに基づいて色を生成
+        return {
+          borderLeft: `5px solid ${color}`,
+          borderBottom: `5px solid ${color}`,
+        };
+      };
 
       // anesthesia
-      const AnesthesiaHeadPositionForPterional = ref({
+      AnesthesiaHeadPosition.value = {
         'anesthesia': '全身麻酔',
         'bodyPosition': '仰臥位',
         'headPosition': 'Mayfield 3-pin',
@@ -201,127 +242,102 @@ const getCardStyle = (index) => {
         'headLateralFlexionDegree': '0',
         'headRotation': '患側',
         'headRotationDegree': '20',
-      });
-      // watch(punctureSite, (newVal) => {
-      //   if (newVal === '前角') {
-      //     AnesthesiaHeadPosition.value.bodyPosition = '仰臥位';
-      //     AnesthesiaHeadPosition.value.headRotation = '健側';
-      //     AnesthesiaHeadPosition.value.headRotationDegree = '30';
-      //   } else {
-      //     AnesthesiaHeadPosition.value.bodyPosition = '側臥位';
-      //     AnesthesiaHeadPosition.value.headRotation = 'なし';
-      //     AnesthesiaHeadPosition.value.headRotationDegree = '0';
-      //   }
-      // }, {immediate: true});
-  
-      const AnesthesiaHeadPositionForFrontal = ref({
-        'anesthesia': '全身麻酔',
-        'bodyPosition': '仰臥位',
-        'headPosition': 'Mayfield 3-pin',
-        'headFlexion': '自然位',
-        'headFlexionDegree': '0',
-        'headLateralFlexion': 'なし',
-        'headLateralFlexionDegree': '0',
-        'headRotation': 'なし',
-        'headRotationDegree': '0',
-      });
-      AnesthesiaHeadPosition.value = (CraniotomyType.value === 'pterional approach') ? AnesthesiaHeadPositionForPterional.value 
-      : AnesthesiaHeadPositionForFrontal.value;
-  
+      };
       watch(CraniotomyType, (newVal) => {
-        AnesthesiaHeadPosition.value = (newVal === 'pterional approach') ? AnesthesiaHeadPositionForPterional.value : AnesthesiaHeadPositionForFrontal.value;
-    }, {immediate: true});
-    
+        if (newVal === 'pterional approach') {
+          AnesthesiaHeadPosition.value.headRotation = '患側';
+          AnesthesiaHeadPosition.value.headRotationDegree = '20';
+        } else {
+          AnesthesiaHeadPosition.value.headRotation = 'なし';
+          AnesthesiaHeadPosition.value.headRotationDegree = '0';
+        }
+      }, {immediate: true});
+
+      // clippingDetailText
+      //operation texts
+      const operationInfo = () => {
+        return 'Clipping ' + operationSide.value + ' ' + ruptureOrNot.value
+        // return 'Clipping ' + operationSide.value + ' ' + ruptureOrNot.value + ' ' + clippingSite.value.join(', ');
+      }
+
+      // extradural operation
+      const extraduralOperationText = () => {
+        const skinIncisionDesignText = 
+        (CraniotomyType === 'pterional approach')? '皮膚切開は患側hair line内にCurved Shapeで正中付近から外耳道付近までのデザインで行った。'
+        :'皮膚切開はhair line内にbicoronal Incisionのデザインで行った。';
+        const skinIncisionText = '型どおり皮膚切開し、筋層も同様に切開した。筋層を骨弁から剥がしフックで翻転した。';
+        const craniotomyText = '開頭は' + CraniotomyType.value + 'とし、Burr holeを3カ所開け、硬膜と骨を十分に剥離した後に骨切りした。骨弁を外し、硬膜、骨の止血を十分に行った。硬膜と周囲骨の間にサージセルを詰めた後、硬膜をTentingし、硬膜外からの出血をコントロールした。';
+        const sphenoidRidgeText = (CraniotomyType === 'pterional approach')? 'sphenoid ridgeの硬膜を十分に剥がし、sphenoid ridgeをリューエルを用い十分に削った。':'';
+        const duraOpeningText = (CraniotomyType === 'pterional approach')? '硬膜をBaseを基部とする半円状に切開し翻転した。4-0ニューロロンで硬膜をつり上げた。':
+        'Sinusを基部とする半円状に切開し翻転した。4-0ニューロロンで硬膜をつり上げた。';
+
+        return skinIncisionDesignText + skinIncisionText + craniotomyText + sphenoidRidgeText + duraOpeningText;
+      }
+
+      // intradural operation
+      const intraduralOperationText = () => {
+        const approachText = 'アプローチは' + approachType.value + 'とし、Sylvian fissureを十分に開けた。';
+        const veinText = '静脈処理は' + difficultyOfVeinDissection.value + 'であった。';
+
+        return approachText + veinText;
+      }
+
+
+      // clipping
+      const clippingText = () => {
+        const temporaryClipText = (useOfTemporaryClip.value === 'あり') ? 'テンポラリークリップを使用し、クリップ遮断時間は' + temporaryClippingTime.value + 'であった。': 'テンポラリークリップは使用しなかった。';
+        const clippingDetailText = detailInformationOfAneurysmTreatment.value.map((detail, index) => {
+          return (detail.method === 'clip') ? detail.site + 'に' + detail.clip.join(', ') + 'をクリップした。': detail.site + 'にwrappingを行った。';
+        }).join('\r\n');
+
+        return temporaryClipText + '\r\n' + clippingDetailText;
+      }
+
+      //closure
+      const closureText = '硬膜を4-0ニューロロンで縫合した。元に戻し、硬膜をBaseを基部とする半円状に縫合した。筋層を縫合し、皮膚を縫合した。';
+
+      const opeInformationItems = () =>{
+        return {
+        '破裂有無': ruptureOrNot.value,
+        '手術側': operationSide.value,
+        'クリップ部位': clippingSite.value.join(', '),
+        'クリップ部位(その他)': clippingSiteText.value,
+        '開頭': CraniotomyType.value,
+        '開頭(その他)': CraniotomyTypeText.value,
+        'アプローチ': approachType.value,
+        'アプローチ(その他)': approachTypeText.value,
+        '静脈処理の難易度': difficultyOfVeinDissection.value,
+        'テンポラリークリップの使用': useOfTemporaryClip.value,
+        'クリップ遮断時間': temporaryClippingTime.value,
+        '硬膜修復材料': duraRepairMaterial.value,
+        '硬膜修復材料(その他)': duraRepairMaterialText.value,
+        '骨セメントの使用': artificialBone.value,
+        '骨セメントの使用(その他)': artificialBoneText.value,
+        'Kcode': 'K174-1 脳動脈瘤クリッピング術'
+        }
+      };
+
+      function createOpeInfoItemsText(Items) {
+        // delete empty items
+        Items = Object.fromEntries(
+          Object.entries(Items).filter(([key, value]) => value !== '')
+        );
+        // items to text
+        const text = Object.entries(Items).map(([key, value]) => `${key}: ${value}`).join(', ');
+        return text;
+      }
   
-    //   //operation texts
-    //   const operationInfo = '頭部' + (operationType.value === 'V-P shunt') ? operationSide.value + 'VPシャント術':'LPシャント術';
+      function createRecordForEachOperation() {
+        const operationProcedureArray = 
+        [extraduralOperationText(), intraduralOperationText(), '\n' + clippingProcedureDetailText.value + '\n', clippingText(), closureText];
+        
+        const operationRecordText = operationProcedureArray.join('\n');
   
-    //   // realtimeに変わらなくてもいい。最終的な記録を作成するときに使う　-> functionにする
-    //   const TextOfBurrHoleAndPocketForBulb = () => {
-    //     return (punctureSite.value === '前角') ? '正中から'+ operationSide.value + 'に3cm、Coronal sutureの前方1cmにBurr holeを開けるべく、皮膚切開を行った。'
-    //       :'Inionの上方6cm、正中から'+ operationSide.value + '3cmの位置にBurr holeを開けるべく、皮膚切開を行った。'
-    //       + '皮膚切開は' + skinIncision.value + 'に行った。' + '筋層を切開剥離し、骨を露出した。Perforatorを用いてburr holeを開けた。'
-    //       + '骨を止血後、硬膜をバイポーラで止血凝固。尖刃で硬膜を十字切開し脳表を確認。脳表をバイポーラで凝固し尖刃で切開した。'
-    //       + 'あらかじめドレナージチューブを表皮から皮下に挿入しておいた。'
-    //   }
-    //     const TextOfLumbarPunctureAndPocketForBulb = () => {
-    //       return '穿刺レベル' + punctureLevel.value + 'の傍正中にlinearに皮膚切開を行った。'
-    //         + '穿刺針を' + punctureLevel.value + 'に向けて'+ punctureSite.value + 'から挿入した。'
-    //         + '穿刺針よりCSFの流出を確認した。穿刺針より脊髄腔内に近位ドレナージチューブを'+ punctureLength.value +'cm挿入した。'
-    //         + '皮下にシャント圧調整バルブを挿入するスペースを作った。'
-    //       }
-    //     const TextOfVentPuncture = () => {
-    //       const insertionPoint = (punctureSite.value === '前角') ? 'nasion, 外耳孔':'nasion';
-    //       return '穿刺針を' + insertionPoint + 'に向けて挿入した。'
-    //       +'穿刺針よりCSFの流出を確認した。穿刺針を抜き、同じTractに近位ドレナージチューブを挿入した。'
-    //       + measurementPoint.value + 'を基準に近位ドレナージチューブを'+ punctureLength.value +'cm挿入して固定した。'
-    //     }
+        const opeInfoText = createOpeInfoItemsText(opeInformationItems());
+        return operationInfo() + '\n\n' + operationRecordText + '\n\n{' + opeInfoText + '}';
+      }
   
-    //     const TextOfAbdominalSide = () => {
-    //       return '臍'+ abdominalSide.value +'外側に5cmの横切開を行った。皮下組織を切開した後。鈍的に脂肪組織を剥離し、腹直筋外膜を露出した。'
-    //       + '腹直筋外膜を縦切開した後、腹直筋を線維方向に分離、剥離し、腹直筋内膜を露出した。内膜を鑷子で交互につまみ上げ、腹膜下組織、臓器を落とす。内膜、腹膜を切開し、腹腔を確認した。'
-    //       + '切開部にたばこ縫合をかけた。\r\n'
-    //       + '切開部より皮下にpasserを用いてシャントチューブを、近位チューブとの接合部まで通した。'
-    //     }
-    //     const TextOfConnectionAndClosure = () => {
-    //       return '遠位チューブ、圧調整バルブ、近位チューブを接合した。CSFの流出を確認した後、遠位チューブはダグラス窩に向かって30cm挿入した。'
-    //     + '腹直筋内膜、腹膜のたばこ縫合を結紮しチューブを適度な締め付けで固定した。\r\n'
-    //     + '近位部、遠位部共に皮下を3-0バイクリルで縫合し、表皮をステープラーで縫合した。'
-    //     } 
-  
-    //     //V-P shunt text
-    //     // [burrhole + pocket for bulb, puncture, abdominal side, connection, closure]
-    //     // [burrhole + pocket for bulb, abdominal side, puncture, connection, closure]
-    //     // L-P shunt text
-    //     // [lumbar puncture + pocket for bulb, abdominal side, puncture, connection, closure]
-    //     // const operationProcedureArray = (operationType.value === 'L-P shunt') ? [TextOfLumbarPunctureAndPocketForBulb, TextOfAbdominalSide, TextOfConnectionAndClosure]:
-    //     //   (punctureTiming.value === '先に') ? [TextOfBurrHoleAndPocketForBulb, TextOfVentPuncture, TextOfAbdominalSide, TextOfConnectionAndClosure]:
-    //     //   [TextOfBurrHoleAndPocketForBulb, TextOfAbdominalSide, TextOfVentPuncture, TextOfConnectionAndClosure];
-  
-    //   const tubeInsert= ()  => {
-    //     return (operationType.value === 'V-P shunt') ? 
-    //                       measurementPoint.value + 'から' + punctureLength.value + 'cm挿入':
-    //                       '表面から' + punctureLength.value + 'cm挿入'
-    //   };
-    //   const fetchOpeInfoItems = () => {
-    //     return {
-    //       '手術側': operationSide.value,
-    //       '穿刺位置': punctureSite.value,
-    //       '皮膚切開': skinIncision.value,
-    //       '穿刺タイミング': punctureTiming.value,
-    //       '近位チューブ挿入': tubeInsert(),
-    //       '穿刺レベル': punctureLevel.value,
-    //       '腹部術側': abdominalSide.value,
-    //       'デバイス': devices.value,
-    //       '設定圧': settingPressure.value,
-    //       'Kcode': 'K174-2 水頭症手術 シャント手術'
-    //     };
-    //   };
-  
-    //   // methods
-    //   function createOpeInfoItemsText(Items) {
-    //     // delete empty items
-    //     Items = Object.fromEntries(
-    //       Object.entries(Items).filter(([key, value]) => value !== '')
-    //     );
-    //     // items to text
-    //     const text = Object.entries(Items).map(([key, value]) => `${key}: ${value}`).join(', ');
-    //     return text;
-    //   }
-  
-    //   function createRecordForEachOperation() {
-    //     const operationProcedureArray = (operationType.value === 'L-P shunt') ? [TextOfLumbarPunctureAndPocketForBulb(), TextOfAbdominalSide(), TextOfConnectionAndClosure()]:
-    //       (punctureTiming.value === '先に') ? [TextOfBurrHoleAndPocketForBulb(), TextOfVentPuncture(), TextOfAbdominalSide(), TextOfConnectionAndClosure()]:
-    //       [TextOfBurrHoleAndPocketForBulb(), TextOfAbdominalSide(), TextOfVentPuncture(), TextOfConnectionAndClosure()];
-  
-    //     const operationRecordText = operationProcedureArray.join('\n');
-  
-    //     const opeInfoItems = fetchOpeInfoItems();
-    //     const opeInfoText = createOpeInfoItemsText(opeInfoItems);
-    //     return operationInfo + '\n\n' + operationRecordText + '\n\n{' + opeInfoText + '}';
-    //   }
-  
-    //   defineExpose({
-    //     createRecordForEachOperation,
-    //   });
+      defineExpose({
+        createRecordForEachOperation,
+      });
     </script>

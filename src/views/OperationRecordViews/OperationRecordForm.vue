@@ -26,8 +26,6 @@
       v-model:AnesthesiaHeadPosition="AnesthesiaHeadPositionFromChild"
       ref="childOfOperationRecord"
       />
-
-    <v-divider>麻酔</v-divider>
     <v-row align="end">
       <v-col cols="(anesthesia === 'その他') ? 8:12">
         <v-radio-group v-model="anesthesia" label="麻酔" inline>

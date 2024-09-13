@@ -151,6 +151,7 @@
     import MVDSurgery from './OpenSurgeryViews/MVDViews/MVDSurgery.vue';
     import ShuntSurgery from './OpenSurgeryViews/ShuntViews/ShuntSurgery.vue';
     import ClippingSurgery from './OpenSurgeryViews/CraniotomyViews/ClippingSurgery.vue';
+    import CraniotomySurgery from './OpenSurgeryViews/CraniotomyViews/CraniotomySurgery.vue';
 
     // Import createCSDHSummary from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue'
     // import { createCSDHSummary } from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
@@ -240,6 +241,8 @@
         componentByOperationType.value = markRaw(ShuntSurgery);
       } else if (newVal === 'Clipping') {
         componentByOperationType.value = markRaw(ClippingSurgery);
+      } else if (newVal === 'Tumor' || newVal === '開頭血腫除去術' || newVal === '減圧開頭' || newVal === 'AVM') {
+        componentByOperationType.value = markRaw(CraniotomySurgery);
       } else {
         componentByOperationType.value = null;
       }

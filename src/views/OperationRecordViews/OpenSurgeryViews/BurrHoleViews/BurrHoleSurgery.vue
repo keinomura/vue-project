@@ -28,24 +28,29 @@
     </v-component>
 
     <v-component v-if="operationType === '脳室ドレナージ'">
-      <v-radio-group v-model="operationSide" label="手術側" inline>
-        <v-radio label="右" value="右"></v-radio>
-        <v-radio label="左" value="左"></v-radio>
-      </v-radio-group>
-      <v-radio-group v-model="punctureSite" label="穿刺" inline>
-        <v-radio label="前角" value="前角"></v-radio>
-        <v-radio label="後角" value="後角"></v-radio>
-      </v-radio-group>
-      <v-radio-group v-model="skinIncision" label="皮膚切開" inline>
-        <v-radio label="linear" value="linear"></v-radio>
-        <v-radio label="curved" value="curved"></v-radio>
-        <v-radio label="U-shape" value="U-shape"></v-radio>
-      </v-radio-group>
-      <v-radio-group v-model="measurementPoint" label="測定基準" inline>
-        <v-radio label="脳表" value="脳表"></v-radio>
-        <v-radio label="外板" value="外板"></v-radio>
-      </v-radio-group>
+      <v-row class="my-2 mx-2">
+        <v-radio-group v-model="operationSide" label="手術側" inline>
+          <v-radio label="右" value="右"></v-radio>
+          <v-radio label="左" value="左"></v-radio>
+        </v-radio-group>
+        <v-radio-group v-model="punctureSite" label="穿刺" inline>
+          <v-radio label="前角" value="前角"></v-radio>
+          <v-radio label="後角" value="後角"></v-radio>
+        </v-radio-group>
+      </v-row>
+      <v-row class="my-2 mx-2">
+        <v-radio-group v-model="skinIncision" label="皮膚切開" inline>
+          <v-radio label="linear" value="linear"></v-radio>
+          <v-radio label="curved" value="curved"></v-radio>
+          <v-radio label="U-shape" value="U-shape"></v-radio>
+        </v-radio-group>
+        <v-radio-group v-model="measurementPoint" label="測定基準" inline>
+          <v-radio label="脳表" value="脳表"></v-radio>
+          <v-radio label="外板" value="外板"></v-radio>
+        </v-radio-group>
       <v-text-field v-model="punctureLength" label="穿刺長 cm" outlined></v-text-field>
+    </v-row>
+
     </v-component>
   </v-card>
 </template>

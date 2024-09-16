@@ -1,178 +1,139 @@
-<template>
-    <v-card class="my-2" elevation="3" >
-      <h2 style="padding-left: 15pt;background-color: aquamarine;">{{ operationType }}</h2>
-    
-      <v-radio-group v-model="ruptureOrNot" label="破裂有無" inline>
-        <v-radio label="破裂脳動脈瘤" value="破裂脳動脈瘤"></v-radio>
-        <v-radio label="未破裂脳動脈瘤" value="未破裂脳動脈瘤"></v-radio>
+<template class="my-2" elevation="3" >
+  <h2 style="padding-left: 15pt;background-color: aquamarine;">{{ operationType }}</h2>
+  <v-card class="" elevation="3">
+
+    <v-row class="mx-2 my-2">
+      <v-col :cols="operationSide !== 'その他'? 12:6">
+        <v-radio-group v-model="operationSide" label="手術側" inline>
+          <v-radio v-for="side in ['右', '左', '正中', '両側', 'その他']" :label="side" :value="side"></v-radio>
+        </v-radio-group>
+      </v-col>
+      <v-col v-if="operationSide === 'その他'" cols="6">
+        <v-text-field v-model="operationSideText" label="その他" outlined></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-row class="mx-2">
+      <v-col :cols="operationSideBasedOnTent !== 'その他'? 12:6">
+        <v-radio-group v-model="operationSideBasedOnTent" label="テント上下" inline>
+          <v-radio v-for="side in ['テント上', 'テント下', 'その他']" :label="side" :value="side"></v-radio>
+        </v-radio-group>
+      </v-col>
+      <v-col cols="6">
+        <v-text-field v-if="operationSideBasedOnTent === 'その他'" v-model="operationSideBasedOnTentText" label="その他" outlined></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="operationSideBasedOnTent === 'テント上'|| operationSideBasedOnTent === 'テント下'" class="mx-2">
+      <v-col>
+        <v-radio-group v-model="approach" label="approach" inline>
+          <v-radio v-if="operationSideBasedOnTent === 'テント上'" v-for="approach in ['pterional approach', 'subfrontal approach', 'その他']" :label="approach" :value="approach"></v-radio>
+          <v-radio v-if="operationSideBasedOnTent === 'テント下'" v-for="approach in ['midline approach', 'retrosigmoid approach', 'その他']" :label="approach" :value="approach"></v-radio>
+        </v-radio-group>
+      </v-col>
+    </v-row>
+  </v-card>
+
+  <!-- 手術詳細 -->
+  <v-card class="my-2" elevation="3">
+    <v-textarea class="mx-2 my-2" v-model="procedureDetailText" label="手術詳細" outlined rows="8"></v-textarea>
+  </v-card>
+
+  <!-- 各疾患 -->
+  <!-- 腫瘍摘出術 -->
+  <v-card v-if="operationType == 'Tumor'" class="my-2" elevation="3">
+    <v-row class="mx-2 my-2">
+      <v-radio-group v-model="pathology" label="病理提出" inline>
+        <v-radio v-for="patho in ['あり', 'なし']" :label="patho" :value="patho"/>
       </v-radio-group>
-  
-      <v-radio-group v-model="operationSide" label="手術側" inline>
-        <v-radio label="右" value="右"></v-radio>
-        <v-radio label="左" value="左"></v-radio>
+      <v-radio-group v-model="rapidPathology" label="迅速病理" inline>
+        <v-radio v-for="patho in ['あり', 'なし']" :label="patho" :value="patho"/>
       </v-radio-group>
-      <v-row class="mx-2 my-2">
-            <h4 class="mx-2 my-2" style="color: grey;">クリップ部位</h4>
-          </v-row>
-      <v-row class="mx-2">
-        <v-checkbox 
-          v-model="clippingSite"
-          v-for="site in ['MCA:M1-2', 'M1', 'IC-Pcom', 'IC-Ant.Chor.a', 'Acom', 'IC-bif', 'M2', 'M3', 'BA-SCA', 'distal ACA', 'その他']"
-          :label="site"
-          :value="site"
-          multiple
-          ></v-checkbox>
-      </v-row>
-      <v-row class="mx-2">
-        <v-text-field v-if="clippingSite.includes('その他')" v-model="clippingSiteText" label="その他" outlined></v-text-field>
-      </v-row>
-    </v-card>
-  
-    <v-card class="my-2" elevation="3">
-      <v-row class="mx-2 my-2">
-        <h3 class="mx-2 my-2" style="color: grey;">開頭</h3>
-      </v-row>
-      <v-radio-group v-model="CraniotomyType" label="開頭" inline>
-        <v-radio label="pterional approach" value="pterional approach"></v-radio>
-        <v-radio label="unilateral frontal approach" value="unilateral frontal approach"></v-radio>
-        <v-radio label="bifrontal approach" value="bifrontal approach"></v-radio>
+    </v-row>
+  </v-card>
+
+  <!-- 開頭血腫除去術 -->
+  <v-card v-if="operationType === '開頭血腫除去術'" class="my-2" elevation="3">
+    <v-row class="mx-2 my-2"/>
+      <v-radio-group v-model="decompressionWithHematomaEvacuation" label="減圧開頭術の併用" inline>
+        <v-radio v-for="decompression in ['あり', 'なし']" :label="decompression" :value="decompression"></v-radio>
+      </v-radio-group>
+    <v-row class="mx-2">
+      <v-radio-group v-model="ventDrainageWithHematomaEvacuation" label="脳室ドレナージの併用" inline>
+        <v-radio v-for="drainage in ['あり', 'なし']" :label="drainage" :value="drainage"/>
+      </v-radio-group>
+      <v-radio-group v-if="ventDrainageWithHematomaEvacuation === 'あり'" v-model="ventDrainageSide" label="脳室ドレナージ左右" inline>
+        <v-radio v-for="drainage in ['左', '右']" :label="drainage" :value="drainage"/>
+      </v-radio-group>
+            <v-radio-group v-if="ventDrainageWithHematomaEvacuation === 'あり'" v-model="ventDrainageSite" label="脳室ドレナージ左右" inline>
+        <v-radio v-for="drainage in ['前角', '後角']" :label="drainage" :value="drainage"/>
+      </v-radio-group>
+    </v-row>
+  </v-card>
+  <drainage 
+    v-if="ventDrainageWithHematomaEvacuation === 'あり'"
+    v-model:operationType="ventDrainageName"
+  ></drainage>
+
+
+
+  <!-- 閉創 -->
+  <v-card class="my-2" elevation="3">
+    <v-row class="mx-2 my-2">
+      <v-radio-group v-model="duraRepairMaterial" label="硬膜修復材料" inline>
+        <v-radio label="DuraGen" value="DuraGen"></v-radio>
+        <v-radio label="デュラウェーブ" value="デュラウェーブ"></v-radio>
+        <v-radio label="なし" value="なし"></v-radio>
         <v-radio label="その他" value="その他"></v-radio>
       </v-radio-group>
-      <v-text-field v-if="CraniotomyType === 'その他'" class="mx-2" v-model="CraniotomyTypeText" label="その他" outlined></v-text-field>
-      <v-row class="mx-2">
-        <v-radio-group v-model="approachType" label="アプローチ" inline>
-          <v-radio label="transsylvian" value="transsylvian approach"></v-radio>
-          <v-radio label="subfrontal + transsylvian" value="subfrontal + transsylvian approach"></v-radio>
-          <v-radio label="interhemispheric" value="interhemispheric approach"></v-radio>
-          <v-radio label="subtemporal" value="subtemporal approach"></v-radio>
-          <v-radio label="その他" value="その他"></v-radio>
-        </v-radio-group>
-        <v-text-field v-if="approachType === 'その他'" class="mx-2" v-model="approachTypeText" label="その他" outlined></v-text-field>
-      </v-row>
-    </v-card>
-  
-    <v-card class="my-2" elevation="3">
-      <v-radio-group v-model="difficultyOfVeinDissection" label="静脈処理の難易度" inline>
-        <v-radio label="容易" value="容易"></v-radio>
-        <v-radio label="普通" value="普通"></v-radio>
-        <v-radio label="難しい" value="難しい"></v-radio>
+      <v-text-field v-if="duraRepairMaterial === 'その他'" v-model="duraRepairMaterialText" label="その他" outlined></v-text-field>
+    </v-row>
+    <v-row class="mx-2">
+      <v-radio-group v-model="artificialBone" label="骨セメントの使用" inline>
+        <v-radio label="ストライカー" value="ダイレクトインジェクト（ストライカー）"></v-radio>
+        <v-radio label="なし" value="なし"></v-radio>
+        <v-radio label="その他" value="その他"></v-radio>
       </v-radio-group>
-    </v-card>
-    
-    <h3 class="mx-2 my-2" style="color: grey;">クリップ詳細 順番はDragして変更</h3>
-    <draggable 
-      :list="detailInformationOfAneurysmTreatment"
-      item-key="site"
-      class="my-2 mx-2"
-      >
-      <template #item="{element, index}">
-        <v-card class="my-2" :style="getCardStyle(index)">
-          <v-row class="mx-2" style="height: auto;" align="center">
-            <v-col cols="1">
-              <h2>{{ index + 1 }}</h2>
-            </v-col>
-            <v-col cols="3" >
-              <h3 v-if="element.site !== 'その他'">{{ element.site }}</h3>
-              <v-text-field v-else v-model="element.siteText" label="部位" outlined></v-text-field>
-            </v-col>
-            <v-col cols="7" align-center>
-              <v-radio-group v-model="element.method" inline >
-                <v-radio label="clip" value="clip"></v-radio>
-                <v-radio label="wrapping" value="wrapping"></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
-  
-          <v-row v-if="detailInformationOfAneurysmTreatment[index].method === 'clip'" v-for="(clip, cIndex) in detailInformationOfAneurysmTreatment[index].clip" class="my-2">
-            <v-col cols="1">
-              <h3 class="mx-5" style="color: gray;">{{ cIndex + 1 }}</h3>
-            </v-col>
-            <v-col cols="7">
-              <v-btn @click="dialog = true; indexArrayForDialog = [index, cIndex]" style="width: auto;">
-                <h3 v-if="clip !== ''">{{ clip }}</h3>
-                <h3 v-else>クリップを選択</h3>
-              </v-btn>
-            </v-col>
-            <v-col cols="2">
-              <v-btn @click="detailInformationOfAneurysmTreatment[index].clip.push('')" style="width: auto;">追加</v-btn>
-            </v-col>
-            <v-col cols="2">
-              <v-btn @click="detailInformationOfAneurysmTreatment[index].clip.splice(cIndex, 1)" style="width: auto;">削除</v-btn>
-            </v-col>
-          </v-row>
-  
-    <!-- ダイアログの定義 -->
-          <v-dialog v-model="dialog" max-width="700px">
-            <v-card>
-              <v-card-title class="headline">ダイアログのタイトル</v-card-title>
-              <v-card-text>
-                <selectClip v-model:selectedClip="detailInformationOfAneurysmTreatment[indexArrayForDialog[0]].clip[indexArrayForDialog[1]]"></selectClip>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialog = false; selectedElement = ''">閉じる</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-  
-        </v-card>
-        
-      </template>
-    </draggable>
-    <v-card class="my-2" elevation="3">
-      <v-row class="mx-2 my-2">
-        <h3 class="mx-2 my-2" style="color: grey;">クリップ詳細</h3>
-        <v-textarea v-model="clippingProcedureDetailText" outlined></v-textarea>
-      </v-row>
-    </v-card>
-    <v-card class="my-2" elevation="3">
-      <v-row align="end"> 
-        <v-col cols="5" >
-            <v-radio-group v-model="useOfTemporaryClip" label="テンポラリークリップの使用" inline>
-              <v-radio label="あり" value="あり"></v-radio>
-              <v-radio label="なし" value="なし"></v-radio>
-            </v-radio-group>
-          </v-col>
-          <v-col cols="5">
-            <v-text-field v-if="useOfTemporaryClip === 'あり'" v-model="temporaryClippingTime" label="クリップ遮断時間" outlined></v-text-field>
-          </v-col>
-        </v-row>
-    </v-card>
-    <v-card class="my-2" elevation="3">
-      <v-row class="my-2">
-        <v-radio-group v-model="duraRepairMaterial" label="硬膜修復材料" inline>
-          <v-radio label="DuraGen" value="DuraGen"></v-radio>
-          <v-radio label="デュラウェーブ" value="デュラウェーブ"></v-radio>
-          <v-radio label="なし" value="なし"></v-radio>
-          <v-radio label="その他" value="その他"></v-radio>
-        </v-radio-group>
-        <v-text-field v-if="duraRepairMaterial === 'その他'" v-model="duraRepairMaterialText" label="その他" outlined></v-text-field>
-      </v-row>
-      <v-row>
-        <v-radio-group v-model="artificialBone" label="骨セメントの使用" inline>
-          <v-radio label="ストライカー" value="ダイレクトインジェクト（ストライカー）"></v-radio>
-          <v-radio label="なし" value="なし"></v-radio>
-          <v-radio label="その他" value="その他"></v-radio>
-        </v-radio-group>
-        <v-text-field v-if="artificialBone === 'その他'" v-model="artificialBoneText" label="その他" outlined></v-text-field>
-      </v-row>
-    </v-card>
-  </template>
+      <v-text-field v-if="artificialBone === 'その他'" v-model="artificialBoneText" label="その他" outlined></v-text-field>
+    </v-row>
+  </v-card>
+</template>
   
       <script setup>
         import { ref, defineModel, defineExpose, watch } from 'vue';
         import draggable from 'vuedraggable';
         import selectClip from './selectClip.vue';
+        import drainage from '../BurrHoleViews/BurrHoleSurgery.vue';
   
         // models 親コンポーネントの変数と同期させる
         const operationType = defineModel('operationType');
         const AnesthesiaHeadPosition = defineModel('AnesthesiaHeadPosition');
     
         // variables: operation information
-        const ruptureOrNot = ref('');
         const operationSide = ref('');
+        const operationSideText = ref('');
+        const operationSideBasedOnTent = ref('');
+        const operationSideBasedOnTentText = ref('');
+        const approach = ref('');
+
+        const procedureDetailText = ref('');
+
+        //variables: tumor
+        const pathology = ref('');
+        const rapidPathology = ref('');
+
+        //variables: hematoma
+        const decompressionWithHematomaEvacuation = ref('');
+        const ventDrainageWithHematomaEvacuation = ref('');
+        const ventDrainageSide = ref('');
+        const ventDrainageSite = ref('');
+        const ventDrainageName = ref('脳室ドレナージ');
+
+        // variables: clipping
         const clippingSite = ref([]);
         const clippingSiteText = ref('');
+
+
   
         // variables, extradural procedure
         const CraniotomyType = ref('pterional approach');

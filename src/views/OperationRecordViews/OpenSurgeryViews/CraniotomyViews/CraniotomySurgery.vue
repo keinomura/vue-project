@@ -54,27 +54,20 @@
 
   <!-- 開頭血腫除去術 -->
   <v-card v-if="operationType === '開頭血腫除去術'" class="my-2" elevation="3">
-    <v-row class="mx-2 my-2"/>
+    <v-row class="mx-2 my-2">
       <v-radio-group v-model="decompressionWithHematomaEvacuation" label="減圧開頭術の併用" inline>
         <v-radio v-for="decompression in ['あり', 'なし']" :label="decompression" :value="decompression"></v-radio>
       </v-radio-group>
-    <v-row class="mx-2">
       <v-radio-group v-model="ventDrainageWithHematomaEvacuation" label="脳室ドレナージの併用" inline>
         <v-radio v-for="drainage in ['あり', 'なし']" :label="drainage" :value="drainage"/>
-      </v-radio-group>
-      <v-radio-group v-if="ventDrainageWithHematomaEvacuation === 'あり'" v-model="ventDrainageSide" label="脳室ドレナージ左右" inline>
-        <v-radio v-for="drainage in ['左', '右']" :label="drainage" :value="drainage"/>
-      </v-radio-group>
-            <v-radio-group v-if="ventDrainageWithHematomaEvacuation === 'あり'" v-model="ventDrainageSite" label="脳室ドレナージ左右" inline>
-        <v-radio v-for="drainage in ['前角', '後角']" :label="drainage" :value="drainage"/>
       </v-radio-group>
     </v-row>
   </v-card>
   <drainage 
     v-if="ventDrainageWithHematomaEvacuation === 'あり'"
     v-model:operationType="ventDrainageName"
+    ref="drainageOption"
   ></drainage>
-
 
 
   <!-- 閉創 -->
@@ -104,10 +97,14 @@
         import draggable from 'vuedraggable';
         import selectClip from './selectClip.vue';
         import drainage from '../BurrHoleViews/BurrHoleSurgery.vue';
+import ShuntSurgery from '../ShuntViews/ShuntSurgery.vue';
   
         // models 親コンポーネントの変数と同期させる
         const operationType = defineModel('operationType');
         const AnesthesiaHeadPosition = defineModel('AnesthesiaHeadPosition');
+
+        // 子コンポーネント
+        const drainageOption = ref(null);
     
         // variables: operation information
         const operationSide = ref('');
@@ -125,72 +122,20 @@
         //variables: hematoma
         const decompressionWithHematomaEvacuation = ref('');
         const ventDrainageWithHematomaEvacuation = ref('');
-        const ventDrainageSide = ref('');
-        const ventDrainageSite = ref('');
-        const ventDrainageName = ref('脳室ドレナージ');
-
-        // variables: clipping
-        const clippingSite = ref([]);
-        const clippingSiteText = ref('');
-
-
-  
-        // variables, extradural procedure
-        const CraniotomyType = ref('pterional approach');
-        const CraniotomyTypeText = ref('');
-        const approachType = ref('');
-        const approachTypeText = ref('');
-  
-        //variables: intradural procedure
-        const difficultyOfVeinDissection = ref('');
-        const clippingProcedureDetailText = ref('');
-        const useOfTemporaryClip = ref('');
-        const temporaryClippingTime = ref('');
-  
-        const detailInformationOfAneurysmTreatment = ref([]);
-        // clippingDetailで動脈瘤の場所が新たに追加された時detailInformationOfAneurysmTreatmentを変化させる。
-        watch(clippingSite, (newVal) => {
-          //1. newValとdetailInformationOfAneurysmTreatmentのsiteを比較して、2. detailInformationOfAneurysmTreatmentにないものを追加する　か 3. detailInformationOfAneurysmTreatmentに余分にあるものを削除する
-          // newValとdetailInformationOfAneurysmTreatmentのsiteをその要素数で比較する。
-          if (newVal.length > detailInformationOfAneurysmTreatment.value.length) {
-            // detailInformationOfAneurysmTreatmentにないものを追加する
-            newVal.forEach((site) => {
-              if (!detailInformationOfAneurysmTreatment.value.map((eachSite) => eachSite.site).includes(site)) {
-                detailInformationOfAneurysmTreatment.value.push({
-                  site: site,
-                  method: '',
-                  clip: [''],
-                });
-              }
-            });
-          } else {
-            // detailInformationOfAneurysmTreatmentに余分にあるものを削除する
-            detailInformationOfAneurysmTreatment.value = detailInformationOfAneurysmTreatment.value.filter((eachSite) => {
-              return newVal.includes(eachSite.site);
-            });
+        watch(operationType, (newVal) => {
+          if (newVal !== '減圧開頭術') {
+            ventDrainageWithHematomaEvacuation.value = '';
           }
-        }, {immediate: true});
-  
-        //variables: dialog for selecting clip
-        const dialog = ref(false);
-        const selectedElement = ref('');
-        const indexArrayForDialog = ref([]);
+        });
+        const ventDrainageName = ref('脳室ドレナージ');
   
         //variables: closure
         const duraRepairMaterial = ref('');
         const duraRepairMaterialText = ref('');
         const artificialBone = ref('');
         const artificialBoneText = ref('');
-  
-        // methods
-        // グラデーションの色を生成する関数
-        const getCardStyle = (index) => {
-          const color = `hsl(${index * 20}, 100%, 70%)`; // インデックスに基づいて色を生成
-          return {
-            borderLeft: `5px solid ${color}`,
-            borderBottom: `5px solid ${color}`,
-          };
-        };
+
+        // methods;
   
         // anesthesia
         AnesthesiaHeadPosition.value = {
@@ -204,77 +149,106 @@
           'headRotation': '患側',
           'headRotationDegree': '20',
         };
-        watch(CraniotomyType, (newVal) => {
-          if (newVal === 'pterional approach') {
-            AnesthesiaHeadPosition.value.headRotation = '患側';
-            AnesthesiaHeadPosition.value.headRotationDegree = '20';
-          } else {
-            AnesthesiaHeadPosition.value.headRotation = 'なし';
-            AnesthesiaHeadPosition.value.headRotationDegree = '0';
+        watch(approach, (newVal) => {
+          let anesthesiaFactor = {}
+          if (newVal === 'pterional approach'|| newVal === 'subfrontal approach') {
+            anesthesiaFactor = {
+              'bodyPosition': '仰臥位',
+              'headPosition': 'Mayfield 3-pin',
+              'headFlexion': '自然位',
+              'headFlexionDegree': '0',
+              'headLateralFlexion': 'なし',
+              'headLateralFlexionDegree': '0',
+              'headRotation': '患側',
+              'headRotationDegree': '20',
+            }
+          } else if (newVal === 'midline approach') {
+            anesthesiaFactor =
+            {'bodyPosition': '腹臥位',
+              'headFlexion': '屈曲位',
+              'headFlexionDegree': '20',
+              'headLateralFlexion': 'なし',
+              'headLateralFlexionDegree': '0',
+              'headRotation': 'なし',
+              'headRotationDegree': '0'
+            }
+          } else if (newVal === 'retrosigmoid approach') {
+            anesthesiaFactor =
+            {'bodyPosition': '側臥位',
+              'headFlexion': '屈曲位',
+              'headFlexionDegree': '20',
+              'headLateralFlexion': '健側',
+              'headLateralFlexionDegree': '20',
+              'headRotation': '健側',
+              'headRotationDegree': '30',
+            }
           }
+          Object.keys(AnesthesiaHeadPosition.value).forEach((key) => {
+              if (anesthesiaFactor[key]) {
+                AnesthesiaHeadPosition.value[key] = anesthesiaFactor[key];
+              }
+            });
+
         }, {immediate: true});
   
-        // clippingDetailText
+        // craniotomy Detail Text
         //operation texts
+        const operationName = {
+          'Tumor': '腫瘍摘出術',
+          '開頭血腫除去術': '開頭血腫除去術',
+          '減圧開頭': '減圧開頭',
+        }
         const operationInfo = () => {
-          return 'Clipping ' + operationSide.value + ' ' + ruptureOrNot.value
-          // return 'Clipping ' + operationSide.value + ' ' + ruptureOrNot.value + ' ' + clippingSite.value.join(', ');
+          return operationName[operationType.value];
         }
   
         // extradural operation
         const extraduralOperationText = () => {
-          const skinIncisionDesignText = 
-          (CraniotomyType === 'pterional approach')? '皮膚切開は患側hair line内にCurved Shapeで正中付近から外耳道付近までのデザインで行った。'
-          :'皮膚切開はhair line内にbicoronal Incisionのデザインで行った。';
-          const skinIncisionText = '型どおり皮膚切開し、筋層も同様に切開した。筋層を骨弁から剥がしフックで翻転した。';
-          const craniotomyText = '開頭は' + CraniotomyType.value + 'とし、Burr holeを3カ所開け、硬膜と骨を十分に剥離した後に骨切りした。骨弁を外し、硬膜、骨の止血を十分に行った。硬膜と周囲骨の間にサージセルを詰めた後、硬膜をTentingし、硬膜外からの出血をコントロールした。';
-          const sphenoidRidgeText = (CraniotomyType === 'pterional approach')? 'sphenoid ridgeの硬膜を十分に剥がし、sphenoid ridgeをリューエルを用い十分に削った。':'';
-          const duraOpeningText = (CraniotomyType === 'pterional approach')? '硬膜をBaseを基部とする半円状に切開し翻転した。4-0ニューロロンで硬膜をつり上げた。':
-          'Sinusを基部とする半円状に切開し翻転した。4-0ニューロロンで硬膜をつり上げた。';
+          const pterionalapproachText = '皮膚切開は患側hair line内にCurved Shapeで正中付近から外耳道付近までのデザインで行った。型どおり皮膚切開し、筋層も同様に切開した。筋層を骨弁から剥がしフックで翻転した。'
+          + '開頭はpterional を中心とし、Burr holeを3カ所開け、硬膜と骨を十分に剥離した後に骨切りした。骨弁を外し、硬膜、骨の止血を十分に行った。硬膜と周囲骨の間にサージセルを詰めた後、硬膜をTentingし、硬膜外からの出血をコントロールした。'
+          + 'sphenoid ridgeの硬膜を十分に剥がし、sphenoid ridgeをリューエルを用い十分に削った。'
+          + '硬膜をBaseを基部とする半円状に切開し翻転した。4-0ニューロロンで硬膜をつり上げた。';
+          const midlineApproachText = '皮膚切開は正中切開。頭側はinionより頭側に、尾側はC2までのデザインで行った。型どおり皮膚切開し、筋層も同様に切開した。筋層を骨から剥がしフックで翻転した。'
+          + '開頭範囲を確認し、Burrholeを開け、硬膜と骨を十分に剥離した後に骨切りした。骨弁を外し、硬膜、骨の止血を十分に行った。硬膜と周囲骨の間にサージセルを詰めた後、硬膜をTentingし、硬膜外からの出血をコントロールした。'
+          + '硬膜をX状に切開し翻転。4-0ニューロロンでつり上げた。'
+          const retrosigmoidApproachText = '皮膚切開は患側hair line内にCurved Shapeのデザインで行った。型どおり皮膚切開し、筋層も同様に切開した。筋層を骨弁から剥がしフックで翻転した。' 
+          + 'perforatorにて開頭予定部位でsinusから最も離れた場所にburr holeを開けた。硬膜を十分に骨から剥離し、ケリーソンパンチで開頭を広げた。'
+          + 'sinusを十分に確認できる位置まで開頭を広げた。'
+          + '開頭中のmastoid air cellの開放は骨片を開放部に充填し、デュラウェーブでSealした。'
+          + '周囲骨を止血し、硬膜外にサージセルを詰め止血した。硬膜を弧状に切開し、4-0ニューロロンでつり上げた。'
+
   
-          return skinIncisionDesignText + skinIncisionText + craniotomyText + sphenoidRidgeText + duraOpeningText;
-        }
-  
-        // intradural operation
-        const intraduralOperationText = () => {
-          const approachText = 'アプローチは' + approachType.value + 'とし、Sylvian fissureを十分に開けた。';
-          const veinText = '静脈処理は' + difficultyOfVeinDissection.value + 'であった。';
-  
-          return approachText + veinText;
-        }
-  
-  
-        // clipping
-        const clippingText = () => {
-          const temporaryClipText = (useOfTemporaryClip.value === 'あり') ? 'テンポラリークリップを使用し、クリップ遮断時間は' + temporaryClippingTime.value + 'であった。': 'テンポラリークリップは使用しなかった。';
-          const clippingDetailText = detailInformationOfAneurysmTreatment.value.map((detail, index) => {
-            return (detail.method === 'clip') ? detail.site + 'に' + detail.clip.join(', ') + 'をクリップした。': detail.site + 'にwrappingを行った。';
-          }).join('\r\n');
-  
-          return temporaryClipText + '\r\n' + clippingDetailText;
+          return (approach.value === 'pterional approach'||approach.value === 'subfrontal approach') ? pterionalapproachText:
+          (approach.value === 'midline approach') ? midlineApproachText:
+          (approach.value === 'retrosigmoid approach') ? retrosigmoidApproachText: '';
         }
   
         //closure
-        const closureText = '硬膜を4-0ニューロロンで縫合した。元に戻し、硬膜をBaseを基部とする半円状に縫合した。筋層を縫合し、皮膚を縫合した。';
+        const duraClosureText = () =>{
+          const duraRepairMaterialText = 
+          (duraRepairMaterial.value !== 'なし')? 
+          (duraRepairMaterial.value === 'その他') ? duraRepairMaterialText.value: duraRepairMaterial.value
+          : '';
+            const duraClosure = '硬膜を4-0ニューロロンで縫合した。筋層を縫合し、皮膚を縫合した。';
+
+          return (operationType.value === '減圧開頭')? '硬膜修復には' + duraRepairMaterialText + 'を使用し、硬膜は縫合せず。'
+          :'硬膜修復には' + duraRepairMaterialText + 'を使用した。' + duraClosure;
+        }
   
-        const opeInformationItems = () =>{
+        const opeInformationItems = () => {
           return {
-          '破裂有無': ruptureOrNot.value,
-          '手術側': operationSide.value,
-          'クリップ部位': clippingSite.value.join(', '),
-          'クリップ部位(その他)': clippingSiteText.value,
-          '開頭': CraniotomyType.value,
-          '開頭(その他)': CraniotomyTypeText.value,
-          'アプローチ': approachType.value,
-          'アプローチ(その他)': approachTypeText.value,
-          '静脈処理の難易度': difficultyOfVeinDissection.value,
-          'テンポラリークリップの使用': useOfTemporaryClip.value,
-          'クリップ遮断時間': temporaryClippingTime.value,
-          '硬膜修復材料': duraRepairMaterial.value,
-          '硬膜修復材料(その他)': duraRepairMaterialText.value,
-          '骨セメントの使用': artificialBone.value,
-          '骨セメントの使用(その他)': artificialBoneText.value,
-          'Kcode': 'K174-1 脳動脈瘤クリッピング術'
+            '手術側': operationSide.value,
+            'テント上下': operationSideBasedOnTent.value,
+            'テント上下詳細': operationSideBasedOnTentText.value,
+            'アプローチ': approach.value,
+            '病理提出': pathology.value,
+            '迅速病理': rapidPathology.value,
+            '減圧開頭術の併用': decompressionWithHematomaEvacuation.value,
+            '脳室ドレナージの併用': ventDrainageWithHematomaEvacuation.value,
+            '硬膜修復材料': duraRepairMaterial.value,
+            '硬膜修復材料詳細': duraRepairMaterialText.value,
+            '骨セメントの使用': artificialBone.value,
+            '骨セメントの使用詳細': artificialBoneText.value,
           }
         };
   
@@ -289,13 +263,15 @@
         }
     
         function createRecordForEachOperation() {
+          const drainageText = (ventDrainageWithHematomaEvacuation.value === 'あり') ? '\n\n脳室ドレナージは' + drainageOption.value.createRecordForEachOperation() + '\n': '';
+
           const operationProcedureArray = 
-          [extraduralOperationText(), intraduralOperationText(), '\n' + clippingProcedureDetailText.value + '\n', clippingText(), closureText];
+          [extraduralOperationText(), '\n' + procedureDetailText.value + '\n', duraClosureText()];
           
           const operationRecordText = operationProcedureArray.join('\n');
     
           const opeInfoText = createOpeInfoItemsText(opeInformationItems());
-          return operationInfo() + '\n\n' + operationRecordText + '\n\n{' + opeInfoText + '}';
+          return operationInfo() + '\n\n' + operationRecordText + drainageText + '\n\n{' + opeInfoText + '}';
         }
     
         defineExpose({

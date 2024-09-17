@@ -7,12 +7,16 @@
         <v-radio v-for="operationType in ['open surgery', 'endovascular surgery', 'combined surgery']" :key="operationType" :label="operationType" :value="operationType"></v-radio>
       </v-radio-group>
     </v-row>
+
+
     <OperationSelectCard
       v-model:detailOperationOptions="detailOperationOptions"
       v-model:typeOfOperation="typeOfOperation1"
       v-model:typeOfOperationText="typeOfOperation1Text"
-
     />
+    <v-card class="my-2" v-if="typeOfOperation1 === 'その他'">
+      <v-textarea v-model="detailOperationForElse" label="手術詳細" rows="10" outlined></v-textarea>
+    </v-card>
 
     <OperationSelectCard v-if="operationType === 'combined surgery'"
       v-model:detailOperationOptions="detailEndovascularOperationOptions"
@@ -26,6 +30,7 @@
       v-model:AnesthesiaHeadPosition="AnesthesiaHeadPositionFromChild"
       ref="childOfOperationRecord"
       />
+      <v-card class="my-2">
     <v-row align="end">
       <v-col cols="(anesthesia === 'その他') ? 8:12">
         <v-radio-group v-model="anesthesia" label="麻酔" inline>
@@ -36,6 +41,7 @@
         <v-text-field v-model="anesthesiaText" label="その他麻酔" outlined></v-text-field>
       </v-col>
     </v-row>
+  </v-card>
 
   <v-card v-if="operationType === 'open surgery'" elevation="3" >
     <v-tabs v-model="currentTab" fixed-tabs style="background-color: yellow;">
@@ -166,7 +172,7 @@
       'MVD': ['TN', 'HFS', '舌咽神経痛', 'NVC複数合併例'],
       'shunt': ['V-P shunt', 'L-P shunt'],
       'Craniotomy': ['Clipping', 'Tumor', '開頭血腫除去術', '減圧開頭', 'AVM'],
-      'others': ['STA-MCA bypass', 'その他']
+      'others': ['その他']
     })
     const detailEndovascularOperationOptions = ref({
       'ICS': ['CAS', 'PTA'],
@@ -176,6 +182,7 @@
       'AVM': ['TAE', 'TVE', 'combined'],
       'others': ['Tumor embolization', 'MMA embolization', 'その他']
     })
+    const detailOperationForElse = ref('');
     watch (operationType, (newVal) => {
       detailOperationOptions.value =
         (newVal === 'open surgery' || newVal === 'combined surgery')? detailOpenOperationOptions.value:
@@ -269,7 +276,7 @@
       const anesthesiaItems = (anesthesia.value === 'その他')? anesthesiaText.value: anesthesia.value
       
 
-      const detailSummary = childOfOperationRecord.value.createRecordForEachOperation();
+      const detailSummary = (typeOfOperation1.value === 'その他')? detailOperationForElse.value: childOfOperationRecord.value.createRecordForEachOperation();
 
       function summaryText (Items) {
         const text = Object.entries(Items)

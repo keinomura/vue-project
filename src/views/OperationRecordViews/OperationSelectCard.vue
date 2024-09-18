@@ -9,12 +9,19 @@
           >
             {{ item }}
             <v-menu activator="parent">
-              <v-btn
+              <!-- <v-btn
                 height="100%"
                 width="100%"
                 rounded="0"
                 v-on="on"
                 v-bind="props"
+                variant="plain"
+              ></v-btn> -->
+              <v-btn
+                height="100%"
+                width="100%"
+                rounded="0"
+
                 variant="plain"
               ></v-btn>
               <v-list>
@@ -27,7 +34,7 @@
         </v-tabs>
       </v-card>
       <v-card style="margin-top: 10pt;">
-        <h2 align="left" :style="{ color: black }" style="padding-left: 10pt"> {{ typeOfOperation }}</h2>
+        <h2 align="left" style="color: black; padding-left: 10pt">{{ typeOfOperation }}</h2>
       </v-card>
       <v-row style="margin-top: 10pt;">
         <v-text-field v-if="typeOfOperation === 'その他'"

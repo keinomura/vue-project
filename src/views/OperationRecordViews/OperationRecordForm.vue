@@ -26,7 +26,6 @@
 
     <component :is="componentByOperationType" 
       v-model:operationType="typeOfOperationForSummary"
-      v-model:OpeRecordByType="OpeRecordByType"
       v-model:AnesthesiaHeadPosition="AnesthesiaHeadPositionFromChild"
       ref="childOfOperationRecord"
       />
@@ -158,6 +157,7 @@
     import ShuntSurgery from './OpenSurgeryViews/ShuntViews/ShuntSurgery.vue';
     import ClippingSurgery from './OpenSurgeryViews/CraniotomyViews/ClippingSurgery.vue';
     import CraniotomySurgery from './OpenSurgeryViews/CraniotomyViews/CraniotomySurgery.vue';
+    import EndovascularSurgery from './EndVascularSurgeryViews/EndvascularSurgeryViews.vue';
 
     // Import createCSDHSummary from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue'
     // import { createCSDHSummary } from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
@@ -250,13 +250,15 @@
         componentByOperationType.value = markRaw(ClippingSurgery);
       } else if (newVal === 'Tumor' || newVal === '開頭血腫除去術' || newVal === '減圧開頭' || newVal === 'AVM') {
         componentByOperationType.value = markRaw(CraniotomySurgery);
+      } else if (newVal === 'CAS' || newVal === 'PTA' || newVal === 'Coil' || newVal === 'FD') {
+        componentByOperationType.value = markRaw(EndovascularSurgery);
       } else {
         componentByOperationType.value = null;
       }
     }, { immediate: true });
 
 
-    const childOfOperationRecord = ref(null);
+    const childOfOperationRecoord = ref(null);
 
     function createSummary() {
 

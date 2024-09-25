@@ -1,4 +1,4 @@
-[
+
   {
     "guidingCatheter": [
         {"catheterName": "RoadMaster", "catheterSize": ["6Fr", "7Fr", "8Fr"], "maker": "ニプロ"},
@@ -6,7 +6,7 @@
         {"catheterName": "Envoy", "catheterSize": ["6Fr", "7Fr", "8Fr"], "maker": "J&J"}
     ],
 
-    "occulusionBallonCatheter": [
+    "occlusionBallonCatheter": [
         {"balloonName": "Optimo", "catheterSize": ["6Fr", "7Fr", "8Fr", "9Fr"], "maker": "東海メディカル"},
         {"balloonName": "Branchor XS", "catheterSize": ["8Fr"], "maker": "朝日インテック"},
         {"balloonName": "MOMA", "catheterSize": ["8Fr", "9Fr"], "maker": "メドトロニック"}
@@ -729,7 +729,7 @@
       } 
     ],
 
-    "guide wire":[
+    "guideWire":[
       {
         "gideWireName": "アングル",
         "gideWireSize": [
@@ -754,7 +754,7 @@
       }
     ],
 
-    "suction catheter":[
+    "suctionCatheter":[
       {
         "catheterName": "REACT",
         "catheterSize": [
@@ -812,7 +812,7 @@
       }
     ],
 
-    "stent retriever": [
+    "stentRetriever": [
       {
         "stentRetrieverName": "Solitaire X",
         "stentRetrieverSize": [
@@ -851,6 +851,6 @@
       }
     ]
   }
-]
+
 
 

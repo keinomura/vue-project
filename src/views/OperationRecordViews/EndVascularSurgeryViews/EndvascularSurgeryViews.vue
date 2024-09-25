@@ -21,6 +21,8 @@
       </v-col>
     </v-row>
   </v-card>
+
+
   <draggable 
     v-model="detailInformationOfTreatment"
     item-key="title"
@@ -30,7 +32,7 @@
     >
     <template #item="{element, index}">
       <v-card class="my-2" color="lightgrey lighten-4">
-        <v-row class="mx-2" style="height: auto;" align="center">
+        <v-row class="mx-2">
           <v-col cols="1">
             <h2>{{ index + 1 }}</h2>
           </v-col>
@@ -44,10 +46,15 @@
                 validate-on-blur="true"
                 disable-lookup
                 color="grey darken-1"
-                class="my-2
-                "
               >
               </v-combobox>
+            </v-row>
+            <v-row >
+              <endvascularSurgeryDialog 
+                v-model:elementTitle="element.title"
+                v-model:elementText="element.description"
+                v-model:elementItem="element.item"
+                ></endvascularSurgeryDialog>
             </v-row>
             <v-row >
               <v-textarea v-model="element.description" label="部位" outlined color="grey darken-1"></v-textarea>
@@ -71,6 +78,7 @@
 <script setup>
 import { ref,watch } from 'vue';
 import draggable from 'vuedraggable';
+import endvascularSurgeryDialog from './EndvascularSurgeryDialog.vue';
 
 // models 親コンポーネントの変数と同期させる
 const operationType = defineModel('operationType');
@@ -93,7 +101,9 @@ const detailInformationOfTreatmentList = {
       'details':
         [
           {'title':'シース挿入', 'description':'8Frシースを右大腿動脈に挿入。'},
-          {'title':'親カテ挿入', 'description':'親カテを入れます。診断カテは6Fr。ワイヤーは35アングル'},
+          {'title':'親カテ挿入', 'description':'親カテを入れます。診断カテは6Fr。ワイヤーは35アングル', 
+            'item':{'parentCatheter':['Branchor XS', '8Fr', ''], 'catheterForDiagnosis':['JB2', '6Fr', ''], 'guideWire':['アングル', '0.035inch', '150cm']}
+          },
           {'title': '頭頚部DSA ', 'description':'CCA, ICA狭窄部を確認。頭部DSA異常なし。'},
           {'title': '3D DSA 造影', 'description':'3D DSA造影。CCA､ICAの径を測定。'},
           {'title': 'フィルター挿入', 'description':'フィルターはEZ-wire。フィルターの位置はICAの上流。lesion crossの時には親カテのバルーンでCCA遮断。遮断時間'},

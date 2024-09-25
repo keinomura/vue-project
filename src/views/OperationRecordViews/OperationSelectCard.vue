@@ -9,14 +9,6 @@
           >
             {{ item }}
             <v-menu activator="parent">
-              <!-- <v-btn
-                height="100%"
-                width="100%"
-                rounded="0"
-                v-on="on"
-                v-bind="props"
-                variant="plain"
-              ></v-btn> -->
               <v-btn
                 height="100%"
                 width="100%"
@@ -52,7 +44,6 @@ const typeOfOperationText = defineModel('typeOfOperationText');
 
 const backGroundColor = ref('');
 watch(() => detailOperationOptions.value, () => {
-  console.log(detailOperationOptions);
   typeOfOperation.value = '';
   backGroundColor.value = Object.keys(detailOperationOptions.value).includes('Craniotomy') ? 'lightgreen' : 'orange';
 }, { immediate: true });

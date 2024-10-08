@@ -1,7 +1,7 @@
 <template>
 
 
-      <div class="text-center">
+      <div class="text-center">{{ selectedItem }}
     <v-btn color="primary">
       {{ buttonText }}
       <v-menu activator="parent">
@@ -60,7 +60,8 @@
   // const buttonText = ref(Array.isArray(selectedItem.value) ? selectedItem.value.join(' ') : '選択してください');
   const buttonText = ref('選択してください');
   watch(selectedItem, () => {
-    buttonText.value = (selectedItem.value[0] === ''|| selectedItem.value[0] === undefined) ? '選択してください' : selectedItem.value.join(' ');
+    console.log(selectedItem.value);
+    buttonText.value = (selectedItem.value === undefined || selectedItem.value[0] === ''|| selectedItem.value[0] === undefined) ? '選択してください' : selectedItem.value.join(' ');
   }, {immediate: true});
 
 

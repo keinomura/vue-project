@@ -1,5 +1,5 @@
 <template>
-            <v-col cols="7">
+            <v-col cols="7"  v-if="buttonDisplay">
             <v-btn @click="dialog = true;"  style="width: auto;">
               <h3>ヒントを選択</h3>
             </v-btn>
@@ -35,19 +35,12 @@
             </template>
 
             <template v-if="elementTitle === '親カテ挿入'">
-              <v-row class="mx-2 my-2
-              ">
+              <v-row>
                 <itemSelector 
-                  v-model:childList="parentCatheterList" 
-                  v-model:selectedItem="selectedParentCatheter"
-                  class="mx-2"></itemSelector>
-                <itemSelector 
-                  v-model:childList="catheterForDiagnosticList" 
-                  v-model:selectedItem="selectedCatheterForDiagnostic"
-                  class="mx-2"></itemSelector>
-                <itemSelector
-                  v-model:childList="guideWireList"
-                  v-model:selectedItem="selectedGuideWire"
+                  v-for="item in ItemsForParentCatheter"
+                  :key="item.id"
+                  v-model:childList="item.list"
+                  v-model:selectedItem="item.selectedItem"
                   class="mx-2"></itemSelector>
               </v-row>
               <v-radio-group v-model="settingPoint" class="my-2 mx-2" inline label="留置位置">
@@ -60,12 +53,12 @@
               <v-row>
                 <itemSelector
                   v-model:childList="protectionDeviceList"
-                  v-model:selectedItem="selectedProtectionDevice"
+                  v-model:selectedItem="firstSelectedItem"
                   class="mx-2"></itemSelector>
                 <itemSelector
-                  v-if="selectedProtectionDevice.includes('SpiderFX') "
-                  v-model:childList="guideWireForFilterList"
-                  v-model:selectedItem="selectedGuideWireForFilter"
+                  v-if="firstSelectedItem.includes('SpiderFX') "
+                  v-model:childList="microGuideWireList"
+                  v-model:selectedItem="secondSelectedItem"
                   class="mx-2"></itemSelector>
               </v-row>
             </template>
@@ -73,21 +66,84 @@
             <template v-if="elementTitle === 'prestent ballooning'">
                 <itemSelector 
                   v-model:childList="ballooningList" 
-                  v-model:selectedItem="selectedBallooning"
+                  v-model:selectedItem="firstSelectedItem"
                   class="mx-2"></itemSelector>
-
             </template>
 
             <template v-if="elementTitle === 'stent留置'">
                 <itemSelector 
-                  v-model:childList="stentForCarotidList" 
+                  v-model:childList="stentForCarotidList"
+                  v-model:selectedItem="firstSelectedItem"
                   class="mx-2"></itemSelector>
             </template>
 
             <template v-if="elementTitle === 'poststent ballooning'">
                 <itemSelector 
-                  v-model:childList="ballooningList" 
+                  v-model:childList="ballooningList"
+                  v-model:selectedItem="firstSelectedItem"
                   class="mx-2"></itemSelector>
+            </template>
+
+            <template v-if="elementTitle === 'DAC挿入'">
+              <v-row></v-row>
+              <v-row>
+                <itemSelector 
+                  v-for="item in ItemsForDAC"
+                  :key="item.id"
+                  v-model:childList="item.list"
+                  v-model:selectedItem="item.selectedItem"
+                  class="mx-2"></itemSelector>
+              </v-row>
+            </template>
+
+            <template v-if="elementTitle === 'バルーン留置'">
+              <v-row></v-row>
+              <v-row>
+                <itemSelector 
+                  v-for="item in ItemsForBalloon"
+                  :key="item.id"
+                  v-model:childList="item.list"
+                  v-model:selectedItem="item.selectedItem"
+                  class="mx-2"></itemSelector>
+              </v-row>
+            </template>
+
+            <template v-if="elementTitle === 'ステントスタンバイ'">
+              <v-row></v-row>
+              <v-row>
+                <itemSelector 
+                  v-for="item in ItemsForStent"
+                  :key="item.id"
+                  v-model:childList="item.list"
+                  v-model:selectedItem="item.selectedItem"
+                  class="mx-2"></itemSelector>
+              </v-row>
+            </template>
+
+            <template v-if="elementTitle.includes('コイル挿入')">
+              <v-row v-for="(coil, index) in coils" :key="coil.id" class="align-center mb-2">
+                <v-col cols="5">
+                  <itemSelector 
+                    v-model:childList="coil.list"
+                    class="mx-2"
+                    v-model:selectedItem="coil.selectedItem"></itemSelector>
+                </v-col>
+                <v-col cols="3">
+                  <v-text-field
+                    label="本数"
+                    type="number"
+                    min="1"
+                    class="mx-2"
+                    v-model="coil.count"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="2">
+                  <v-btn @click="addCoil" class="mx-2">追加</v-btn>
+                </v-col>
+                <v-col cols="2">
+                  <v-btn @click="removeCoil(index)" class="mx-2" v-if="coils.length > 1">削除</v-btn>
+                </v-col>
+              </v-row>
             </template>
 
             </v-card-text>
@@ -107,20 +163,45 @@ import itemSelector from './itemSelector.vue';
 // jsonファイルを読み込む(endovascularSurgeryItems.json)
 import endovascularSurgeryItems from './endovascularSurgeryItems.json';
 
-
+// 親コンポーネントから受け取るprops
 const elementTitle = defineModel('elementTitle');
 const elementText = defineModel('elementText');
 const elementItem = defineModel('elementItem');
-// console.log('elementItem')
-// console.log(elementItem.value)
+
+// ボタンを表示させるelementTitleのリスト
+const buttonDisplay = ref(false);
+const buttonDisplayTitles = 
+  [
+    'シース挿入', '親カテ挿入', 'フィルター挿入', 'prestent ballooning', 'stent留置', 'poststent ballooning',
+    'DAC挿入', 'バルーン留置', 'ステントスタンバイ', 'コイル挿入 フレーミング', 'コイル挿入 フィリング', 'コイル挿入 フィニッシング',
+  ];
+
+watch (elementTitle, (newValue) => {
+  if (buttonDisplayTitles.includes(newValue)) {
+    buttonDisplay.value = true;
+  } else {
+    buttonDisplay.value = false;
+  }
+}, { immediate: true });
+
+
+// ダイアログの表示
 const dialog = ref(false);
 
 const mappingArrayForCreateText = () => {
   return {
   'シース挿入': sheathInsertionText(),
   '親カテ挿入': parentCatheterText.value,
-    'フィルター挿入': filterInsertionText.value,
-
+  'フィルター挿入': filterInsertionText.value,
+  'prestent ballooning': preBalloonText.value,
+  'stent留置': stentForCarotidText.value,
+  'poststent ballooning': postBalloonText.value,
+  'DAC挿入': DACText.value,
+  'バルーン留置': balloonText.value,
+  'ステントスタンバイ': stentText.value,
+  'コイル挿入 フレーミング': getCoilsDescription(),
+  'コイル挿入 フィリング': getCoilsDescription(),
+  'コイル挿入 フィニッシング': getCoilsDescription(),
   }
 }
 function createText () {
@@ -141,69 +222,172 @@ const sheathInsertionText = () => {
   return punctureSide.value + punctureSite.value + ' ' + vesselType.value + 'より、' + sheathLength.value + ' ' + sheathSize.value + 'シースを挿入。';
 }
 
-// 親カテ挿入
-// 親カテのリスト　endovascularSurgeryItemsからguidingCatheter、occulusionBallonCatheterを取り出して一つのリストにする
-const parentCatheterList = ref([]);
-parentCatheterList.value = endovascularSurgeryItems.guidingCatheter.concat(endovascularSurgeryItems.occlusionBallonCatheter);
-const catheterForDiagnosticList = ref(endovascularSurgeryItems.catheterForDiagnostic);
-const guideWireList = ref(endovascularSurgeryItems.guideWire);
 
 //初期値がある場合は、ref()の引数に初期値を渡す
 // 親カテの選択
-const selectedParentCatheter = ref([]);
-const selectedCatheterForDiagnostic = ref([]);
-const selectedGuideWire = ref([]);
+const firstSelectedItem = ref([]);
+const secondSelectedItem = ref([]);
+const thirdSelectedItem = ref([]);
+
+//
+const coilsDescription = ref([]);
 
 watch(elementItem, (newValue) => {
   if (!newValue) {
     return;
   }
-  if (newValue.parentCatheter) {
-    selectedParentCatheter.value = newValue.parentCatheter;
+  if (newValue.firstItem) {
+    firstSelectedItem.value = newValue.firstItem;
   }
-  if (newValue.catheterForDiagnosis) {
-    selectedCatheterForDiagnostic.value = newValue.catheterForDiagnosis;
+  if (newValue.secondItem) {
+    secondSelectedItem.value = newValue.secondItem;
   }
-  if (newValue.guideWire) {
-    selectedGuideWire.value = newValue.guideWire;
+  if (newValue.thirdItem) {
+    thirdSelectedItem.value = newValue.thirdItem;
   }
 }, { immediate: true }); //immediate: trueオプションを使用して、watchが初期化時にも実行されるようにします。
 
+
+// 親カテ
+const parentCatheterList = endovascularSurgeryItems.guidingCatheter.concat(endovascularSurgeryItems.occlusionBallonCatheter);
+const catheterForDiagnosticList = endovascularSurgeryItems.catheterForDiagnostic;
+const guideWireList = endovascularSurgeryItems.guideWire;
 const settingPoint = ref('CCA');
 
+//CAS
+const protectionDeviceList = endovascularSurgeryItems.protectionDevice;
+const ballooningList = endovascularSurgeryItems.PTABalloon;
+const stentForCarotidList = endovascularSurgeryItems.stentForCarotid;
+const microGuideWireList = endovascularSurgeryItems.microGuideWire;
+
+//Coil
+const DACList = endovascularSurgeryItems.DAC;
+const microCatheterList = endovascularSurgeryItems.microCatheter;
+const balloonList = endovascularSurgeryItems.balloon;
+const stentList = endovascularSurgeryItems.stent;
+const coilList = endovascularSurgeryItems.coil;
+
+
+// 親カテ挿入
+const ItemsForParentCatheter = ref([
+  { id: 1, list: parentCatheterList, selectedItem: firstSelectedItem },
+  { id: 2, list: catheterForDiagnosticList, selectedItem: secondSelectedItem },
+  { id: 3, list: guideWireList, selectedItem: thirdSelectedItem }
+]);
 const parentCatheterText = ref('');
-watch([selectedParentCatheter, selectedCatheterForDiagnostic, selectedGuideWire, settingPoint], () => {
-  parentCatheterText.value = selectedParentCatheter.value.join(' ') + ' + ' + selectedCatheterForDiagnostic.value.join(' ') 
-  + selectedGuideWire.value.join(' ') + 'にて' + settingPoint.value + 'まで親カテを挿入。';
-}, { immediate: true  });
-
-// filter挿入
-const protectionDeviceList = ref([]);
-protectionDeviceList.value = endovascularSurgeryItems.protectionDevice;
-const guideWireForFilterList = ref([]);
-guideWireForFilterList.value = endovascularSurgeryItems.microGideWire;
-
-const selectedProtectionDevice = ref([]);
-const selectedGuideWireForFilter = ref([]);
-watch (selectedProtectionDevice, (newValue) => {
-  if (!newValue.includes('SpiderFX')) {
-    selectedGuideWireForFilter.value = [];
-  }
-}, { immediate: true });
-
-const filterInsertionText = ref('');
-watch([selectedProtectionDevice, selectedGuideWireForFilter], () => {
-  filterInsertionText.value = 'lesion crossする際に親カテのバルーンを拡張し総頚動脈遮断。' + selectedProtectionDevice.value.join(' ') + ' ' + selectedGuideWireForFilter.value.join(' ') + 'をICに挿入し展開した。';
+watch([firstSelectedItem, secondSelectedItem, thirdSelectedItem], () => {
+  parentCatheterText.value = firstSelectedItem.value.join(' ') + ' + ' + secondSelectedItem.value.join(' ') + ' + ' + thirdSelectedItem.value.join(' ') + 'にて' + settingPoint.value + 'まで親カテを挿入。';
 }, { immediate: true, deep: true });
 
 
 
+// filter挿入
+watch (firstSelectedItem, (newValue) => {
+  if (elementTitle !== 'フィルター挿入') {
+    return;
+  }
+  if (!newValue.includes('SpiderFX')) {
+    secondSelectedItem.value = [];
+  }
+}, { immediate: true });
+
+const filterInsertionText = ref('');
+watch([firstSelectedItem, secondSelectedItem], () => {
+  filterInsertionText.value = 'lesion crossする際に親カテのバルーンを拡張し総頚動脈遮断。' + firstSelectedItem.value.join(' ') + ' ' + secondSelectedItem.value.join(' ') + 'をICに挿入し展開した。';
+}, { immediate: true, deep: true });
+
 // prestent ballooning
-const ballooningList = ref(endovascularSurgeryItems.PTABalloon);
+const preBalloonText = ref('');
+watch(firstSelectedItem, () => {
+  preBalloonText.value = firstSelectedItem.value.join(' ') + 'を狭窄部に挿入し、prestent ballooningを行った。8atm, 30sec';
+}, { immediate: true });
 
 // stent留置
-const stentForCarotidList = ref(endovascularSurgeryItems.stentForCarotid);
+const stentForCarotidText = ref('');
+watch(firstSelectedItem, () => {
+  stentForCarotidText.value = firstSelectedItem.value.join(' ') + 'を狭窄部に留置した。';
+}, { immediate: true });
 
+// poststent ballooning
+const postBalloonText = ref('');
+watch(firstSelectedItem, () => {
+  postBalloonText.value = firstSelectedItem.value.join(' ') + 'をステント内、狭窄拡張部に挿入し、poststent ballooningを行った。8atm, 30sec';
+}, { immediate: true });
+
+
+// DAC挿入
+const ItemsForDAC = ref([
+  { id: 1, list: DACList, selectedItem: firstSelectedItem },
+  { id: 2, list: microCatheterList, selectedItem: secondSelectedItem },
+  { id: 3, list: microGuideWireList, selectedItem: thirdSelectedItem }
+]);
+
+const DACText = ref('');
+watch([firstSelectedItem, secondSelectedItem, thirdSelectedItem], () => {
+  DACText.value = firstSelectedItem.value.join(' ') + 'を' + secondSelectedItem.value.join(' ') + ' + ' +  thirdSelectedItem.value.join(' ') + 'にてIC topに留置した。';
+}, { immediate: true, deep: true });
+
+// balloon留置
+// idをつけることでリアルタイムに反映できた
+const ItemsForBalloon = ref([
+  { id: 1, list: balloonList, selectedItem: firstSelectedItem },
+  { id: 2, list: microCatheterList, selectedItem: secondSelectedItem },
+  { id: 3, list: microGuideWireList, selectedItem: thirdSelectedItem }
+]);
+
+const balloonText = ref('');
+watch([firstSelectedItem, secondSelectedItem, thirdSelectedItem], () => {
+  balloonText.value = firstSelectedItem.value.join(' ') + 'を' + secondSelectedItem.value.join(' ') + ' + ' + thirdSelectedItem.value.join(' ') + 'にて動脈瘤Neckにかけられるように留置した。';
+}, { immediate: true, deep: true });
+
+// ステントスタンバイ
+const ItemsForStent = ref([
+  { id: 1, list: stentList, selectedItem: firstSelectedItem },
+  { id: 2, list: microCatheterList, selectedItem: secondSelectedItem },
+  { id: 3, list: microGuideWireList, selectedItem: thirdSelectedItem }
+]);
+const stentText = ref('');
+watch([firstSelectedItem, secondSelectedItem, thirdSelectedItem], () => {
+  stentText.value = firstSelectedItem.value.join(' ') + 'を' + secondSelectedItem.value.join(' ') + ' + ' + thirdSelectedItem.value.join(' ') + 'にて動脈瘤Neckに展開できるようにスタンバイした。';
+}, { immediate: true, deep: true });
+
+
+// Coil挿入 共通
+// Dialogからもとのコンポーネントに返す値は elementText に格納する.
+// elementItem には選択したアイテムを格納する.ここではcoilsにする。
+
+const coils = ref([
+  { id: 1, list: coilList, selectedItem: [], count: 1 }
+]);
+
+const addCoil = () => {
+  const newId = coils.value.length + 1;
+  coils.value.push({ id: newId, list: coilList, selectedItem: [], count: 1 });
+};
+
+const removeCoil = (index) => {
+  if (coils.value.length > 1) {
+    coils.value.splice(index, 1);
+  }
+};
+
+watch(coils, (newValue) => {
+  elementItem.value = coils.value;
+}, { immediate: true });
+
+
+//最終的に選択したコイルと、本数を取得する。
+//([{ id: 1, list: coilList, selectedItem: ref([]), count: 1 }, { id: 2, list: coilList, selectedItem: ref([]), count: 1 }]);...
+//これから　すべてのコイル名　本数　を取得する。
+function getCoilsDescription() {
+  let description = '';
+  coils.value.forEach((coil, index) => {
+    if (coil.selectedItem.length > 0) {
+      description += coil.selectedItem.join(' ') + ' ' + coil.count + '本\n';
+    }
+  });
+  return description;
+}
 
 
 </script>

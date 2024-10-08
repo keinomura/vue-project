@@ -399,14 +399,14 @@
       {
         "coilName": "Target 360 XL Standard",
         "coilSizes": [
-          {"coilDiameter": "6mm", "coilLength": "20cm"},
-          {"coilDiameter": "7mm", "coilLength": "20cm"},
-          {"coilDiameter": "8mm", "coilLength": "30cm"},
-          {"coilDiameter": "9mm", "coilLength": "30cm"},
-          {"coilDiameter": "10mm", "coilLength": "40cm"},
-          {"coilDiameter": "12mm", "coilLength": "45cm"},
-          {"coilDiameter": "14mm", "coilLength": "50cm"},
-          {"coilDiameter": "16mm", "coilLength": "50cm"}
+          {"coilDiameter": "6mm", "coilLength": ["20cm"]},
+          {"coilDiameter": "7mm", "coilLength": ["20cm"]},
+          {"coilDiameter": "8mm", "coilLength": ["30cm"]},
+          {"coilDiameter": "9mm", "coilLength": ["30cm"]},
+          {"coilDiameter": "10mm", "coilLength": ["40cm"]},
+          {"coilDiameter": "12mm", "coilLength": ["45cm"]},
+          {"coilDiameter": "14mm", "coilLength": ["50cm"]},
+          {"coilDiameter": "16mm", "coilLength": ["50cm"]}
         ],
         "maker": "ストライカー"
       },
@@ -428,19 +428,19 @@
       {
         "coilName": "Target 3D",
         "coilSizes": [
-          {"coilDiameter": "3mm", "coilLength": "6cm"},
-          {"coilDiameter": "4mm", "coilLength": "8cm"},
-          {"coilDiameter": "5mm", "coilLength": "10cm"},
-          {"coilDiameter": "6mm", "coilLength": "15cm"}
+          {"coilDiameter": "3mm", "coilLength": ["6cm"]},
+          {"coilDiameter": "4mm", "coilLength": ["8cm"]},
+          {"coilDiameter": "5mm", "coilLength": ["10cm"]},
+          {"coilDiameter": "6mm", "coilLength": ["15cm"]}
         ],
         "maker": "ストライカー"
       },
       {
         "coilName": "Target 360 Standard",
         "coilSizes": [
-          {"coilDiameter": "4mm", "coilLength": "10cm"},
-          {"coilDiameter": "5mm", "coilLength": "15cm"},
-          {"coilDiameter": "6mm", "coilLength": "20cm"}
+          {"coilDiameter": "4mm", "coilLength": ["10cm"]},
+          {"coilDiameter": "5mm", "coilLength": ["15cm"]},
+          {"coilDiameter": "6mm", "coilLength": ["20cm"]}
         ],
         "maker": "ストライカー"
       },
@@ -684,7 +684,7 @@
     }
   ],
 
-    "microGideWire":[
+    "microGuideWire":[
       {
         "gideWireName": "CHIKAI X014",
         "gideWireSize": [

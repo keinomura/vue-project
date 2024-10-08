@@ -10,14 +10,14 @@
             <v-btn color="primary" @click="createSummary">作成</v-btn>
           </v-container>
         </v-col>
-      <!-- <v-col cols="12" md="6"  >
+      <v-col cols="12" md="6"  >
         <v-card>
           <v-card-title>{{ title }}</v-card-title>
           <v-card-text>
             <v-textarea v-model="summary" outlined rows="30"></v-textarea>
           </v-card-text>
         </v-card>
-      </v-col> -->
+      </v-col>
     </v-row>
   </v-container>
 </template>

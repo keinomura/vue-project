@@ -159,11 +159,6 @@
     import CraniotomySurgery from './OpenSurgeryViews/CraniotomyViews/CraniotomySurgery.vue';
     import EndovascularSurgery from './EndVascularSurgeryViews/EndvascularSurgeryViews.vue';
 
-    // Import createCSDHSummary from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue'
-    // import { createCSDHSummary } from './OpenSurgeryViews/BurrHoleViews/BurrHoleSurgery.vue';
-
-    // import OpenSurgeryForm from './OpenSurgeryForm.vue';
-
     // variables
     const operationType = ref('open surgery');
     const detailOperationOptions = ref('');

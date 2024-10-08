@@ -84,6 +84,7 @@ import endvascularProcedures from './endovascularSurgeryProcedures.json'
 // models 親コンポーネントの変数と同期させる
 const operationType = defineModel('operationType');
 const AnesthesiaHeadPosition = defineModel('AnesthesiaHeadPosition');
+AnesthesiaHeadPosition.value.anesthesia = '局所麻酔';
 
 // ヘパリン使用量
 const heparinBolusIVDosage = ref('5000');

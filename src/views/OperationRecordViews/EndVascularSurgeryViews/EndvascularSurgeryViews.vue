@@ -125,6 +125,28 @@ const detailInformationOfTreatmentList = {
           {'title': '終了', 'description':'手術終了。'},
         ]
     },
+    'PTA':{
+      'details':
+        [
+          {'title':'シース挿入', 'description':'8Frシースを右大腿動脈に挿入。'},
+          {'title':'親カテ挿入', 'description':'Branchor XS 8Fr  + JB2 6Fr アングル 0.035inch 150cmにてCCAまで親カテを挿入。', 
+            'Items':{'firstItem':['Branchor XS', '8Fr', ''], 'secondItem':['JB2', '6Fr', ''], 'thirdItem':['アングル', '0.035inch', '150cm']}
+          },
+          {'title': '頭頚部DSA ', 'description':'CCA, ICA狭窄部を確認。頭部DSA異常なし。'},
+          {'title': '3D DSA 造影', 'description':'3D DSA造影。CCA､ICAの径を測定。'},
+          {'title': 'フィルター挿入', 'description':'lesion crossする際に親カテのバルーンを拡張し総頚動脈遮断。FilterWire EZ 3.5-5.5mm  をICに挿入し展開した。',
+            'Items':{'firstItem':['FilterWire EZ ', '3.5-5.5mm', ''], 'secondItem':['', '', '']}
+          },
+          {'title': 'CCA造影', 'description':'CCA, ICAに閉塞なし、血栓無し、spasmなし。'},
+          {'title': 'ballooning', 'description':'Rx-Genetiy 3.0mm 40mmを狭窄部に挿入し、ballooningを行った。8atm, 30sec',
+            'Items':{'firstItem':['Rx-Genetiy', '3.0mm', '40mm']}
+          },
+          {'title': 'ballooning後造影', 'description':'狭窄部の拡張を確認した。頭部DSAでの異常なし。'},
+          {'title': '親カテ回収', 'description':'親カテを回収。'},
+          {'title': '止血', 'description':'exosheelを使用して止血。'},
+          {'title': '終了', 'description':'手術終了。'},
+        ]
+    },
     'Coil':{
       'details':
         [

@@ -63,7 +63,7 @@
               </v-row>
             </template>
 
-            <template v-if="elementTitle === 'prestent ballooning'">
+            <template v-if="elementTitle.includes('ballooning')">
                 <itemSelector 
                   v-model:childList="ballooningList" 
                   v-model:selectedItem="firstSelectedItem"
@@ -73,13 +73,6 @@
             <template v-if="elementTitle === 'stent留置'">
                 <itemSelector 
                   v-model:childList="stentForCarotidList"
-                  v-model:selectedItem="firstSelectedItem"
-                  class="mx-2"></itemSelector>
-            </template>
-
-            <template v-if="elementTitle === 'poststent ballooning'">
-                <itemSelector 
-                  v-model:childList="ballooningList"
                   v-model:selectedItem="firstSelectedItem"
                   class="mx-2"></itemSelector>
             </template>
@@ -172,7 +165,7 @@ const elementItem = defineModel('elementItem');
 const buttonDisplay = ref(false);
 const buttonDisplayTitles = 
   [
-    'シース挿入', '親カテ挿入', 'フィルター挿入', 'prestent ballooning', 'stent留置', 'poststent ballooning',
+    'シース挿入', '親カテ挿入', 'フィルター挿入', 'prestent ballooning', 'stent留置', 'poststent ballooning', 'ballooning',
     'DAC挿入', 'バルーン留置', 'ステントスタンバイ', 'コイル挿入 フレーミング', 'コイル挿入 フィリング', 'コイル挿入 フィニッシング',
   ];
 

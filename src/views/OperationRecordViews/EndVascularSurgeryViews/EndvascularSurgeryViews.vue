@@ -161,7 +161,7 @@ const detailInformationOfTreatmentList = {
             'Items':{'firstItem':['Tactics', '4Fr', '150cm'], 'secondItem':['SL-10', '0.014inch', ''], 'thirdItem':['Chikai', '0.014inch', '150cm']}
           },
           {'title': 'バルーン留置', 'description':'Scepter C 4.0mm 20mmをExcelsior SL-10 0.014inch  + Chikai 0.014inch 150cmにて動脈瘤Neckにかけられるように留置した。',
-            'Items':{'firstItem':['Scepter C', '4.0mm', '20mm'], 'secondItem':['SL-10', '0.014inch', ''], 'thirdItem':['Chikai', '0.014inch', '150cm']}
+            'Items':{'firstItem':['Scepter C', '4.0mm', '20mm'], 'secondItem':['Chikai', '0.014inch', '150cm']}
           },
           {'title': 'ステントスタンバイ', 'description': 'LVIS Jr. 2.5mm 13mmをExcelsior SL-10 0.014inch + CHIKAI X014 0.014inch 200cmにて動脈瘤Neckに展開できるようにスタンバイした。',
             'Items':{'firstItem':['LVIS Jr.', '2.5mm', '13mm'], 'secondItem':['SL-10', '0.014inch', ''], 'thirdItem':['Chikai', '0.014inch', '150cm']}
@@ -235,6 +235,48 @@ const detailInformationOfTreatmentList = {
           {'title': 'カテ回収', 'description':'マイクロカテーテル、DAC, 親カテを回収。'},
           {'title': '止血', 'description':'exosheelを使用して止血。'},
           {'title': 'ショートシースに入れ替え', 'description':'抜去せず、8Frショートシースに入れ替えた。'},
+          {'title': '終了', 'description':'手術終了。'},
+        ]
+    },
+    'PTA エリル動注':{
+      'details':
+      [
+          {'title':'シース挿入', 'description':'8Frシースを右大腿動脈に挿入。'},
+          {'title':'親カテ挿入', 'description':'Branchor XS 8Fr  + JB2 6Fr アングル 0.035inch 150cmにてICAまで親カテを挿入。',
+            'Items':{'firstItem':['Branchor XS', '8Fr', ''], 'secondItem':['JB2', '6Fr', ''], 'thirdItem':['アングル', '0.035inch', '150cm']}
+          },
+          {'title': '頭頚部DSA ', 'description':'Spasmを確認。その他頭部DSA異常なし。'},
+          {'title': 'DAC挿入', 'description':'Tactics, SL-10, ChikaiでDACをICに留置した。',
+            'Items':{'firstItem':['Tactics', '4Fr', '150cm'], 'secondItem':['SL-10', '0.014inch', ''], 'thirdItem':['Chikai', '0.014inch', '150cm']}
+          },
+          {'title': 'バルーン留置(PTA)', 'description':'UNRYU XP 4.0mm 20mmをChikai 0.014inch 150cmにて狭窄部にかけられるように留置した。',
+            'Items':{'firstItem':['UNRYU XP', '4.0mm', '20mm'], 'secondItem':['Chikai', '0.014inch', '150cm']}
+          },
+          {'title': 'バルーン拡張', 'description':'バルーン拡張しPTAを行った。'},
+          {'title': 'エリル動注', 'description':'マイクロカテーテルを狭窄部近位に留置し、エリル動注を行った。'},
+          {'title': '確認造影', 'description':'Spasmによる狭窄部が拡張していることを確認した。'},
+          {'title': 'カテ回収', 'description':'マイクロカテーテル、DAC, 親カテを回収。'},
+          {'title': '止血', 'description':'exosheelを使用して止血。'},
+          {'title': '終了', 'description':'手術終了。'},
+        ]
+    }, 
+    'その他':{
+      'details':
+      [
+          {'title':'シース挿入', 'description':'8Frシースを右大腿動脈に挿入。'},
+          {'title':'親カテ挿入', 'description':'Branchor XS 8Fr  + JB2 6Fr アングル 0.035inch 150cmにてICAまで親カテを挿入。',
+            'Items':{'firstItem':['Branchor XS', '8Fr', ''], 'secondItem':['JB2', '6Fr', ''], 'thirdItem':['アングル', '0.035inch', '150cm']}
+          },
+          {'title': '頭頚部DSA ', 'description':'頭部DSA所見:'},
+          {'title': 'DAC挿入', 'description':'Tactics, SL-10, ChikaiでDACをICに留置した。',
+            'Items':{'firstItem':['Tactics', '4Fr', '150cm'], 'secondItem':['SL-10', '0.014inch', ''], 'thirdItem':['Chikai', '0.014inch', '150cm']}
+          },
+          {'title': 'マイクロカテーテルを挿入', 'description':'マイクロカテーテルを挿入した。',
+            'Items':{'firstItem':['SL-10', '0.014inch', ''], 'secondItem':['Chikai', '0.014inch', '150cm']}
+          },
+          {'title': '確認造影', 'description':'Spasmによる狭窄部が拡張していることを確認した。'},
+          {'title': 'カテ回収', 'description':'マイクロカテーテル、DAC, 親カテを回収。'},
+          {'title': '止血', 'description':'exosheelを使用して止血。'},
           {'title': '終了', 'description':'手術終了。'},
         ]
     }

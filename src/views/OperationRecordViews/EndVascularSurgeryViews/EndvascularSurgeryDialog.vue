@@ -89,7 +89,7 @@
               </v-row>
             </template>
 
-            <template v-if="elementTitle === 'バルーン留置'">
+            <template v-if="elementTitle.includes('バルーン留置')">
               <v-row></v-row>
               <v-row>
                 <itemSelector 
@@ -214,7 +214,7 @@ const buttonDisplayTitles =
   [
     'シース挿入', '親カテ挿入', 'フィルター挿入', 'prestent ballooning', 'stent留置', 'poststent ballooning', 'ballooning',
     'DAC挿入', 'バルーン留置', 'FD留置', 'ステントスタンバイ', 'コイル挿入 フレーミング', 'コイル挿入 フィリング', 'コイル挿入 フィニッシング',
-    '診断DSA', '吸引カテーテル挿入', 'ステントリトリーバー留置'
+    '診断DSA', '吸引カテーテル挿入', 'ステントリトリーバー留置', 'バルーン留置(PTA)'
   ];
 
 watch (elementTitle, (newValue) => {
@@ -239,6 +239,7 @@ const mappingArrayForCreateText = () => {
   'poststent ballooning': postBalloonText.value,
   'DAC挿入': DACText.value,
   'バルーン留置': balloonText.value,
+  'バルーン留置(PTA)': balloonText.value,
   'ステントスタンバイ': stentText.value,
   'コイル挿入 フレーミング': getCoilsDescription(),
   'コイル挿入 フィリング': getCoilsDescription(),
@@ -383,13 +384,13 @@ watch([firstSelectedItem, secondSelectedItem, thirdSelectedItem], () => {
 // idをつけることでリアルタイムに反映できた
 const ItemsForBalloon = ref([
   { id: 1, list: balloonList, selectedItem: firstSelectedItem },
-  { id: 2, list: microCatheterList, selectedItem: secondSelectedItem },
   { id: 3, list: microGuideWireList, selectedItem: thirdSelectedItem }
 ]);
 
 const balloonText = ref('');
 watch([firstSelectedItem, secondSelectedItem, thirdSelectedItem], () => {
-  balloonText.value = firstSelectedItem.value.join(' ') + 'を' + secondSelectedItem.value.join(' ') + ' + ' + thirdSelectedItem.value.join(' ') + 'にて動脈瘤Neckにかけられるように留置した。';
+  const position = (elementTitle.value.includes('PTA')) ? '狭窄部' : '動脈瘤Neck';
+  balloonText.value = firstSelectedItem.value.join(' ') + 'を' + secondSelectedItem.value.join(' ') + 'にて' + position + 'にかけられるように留置した。';
 }, { immediate: true, deep: true });
 
 // ステントスタンバイ

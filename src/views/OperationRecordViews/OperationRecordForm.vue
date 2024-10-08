@@ -178,9 +178,8 @@
       'ICS': ['CAS', 'PTA'],
       'Aneurysm': ['Coil', 'FD'],
       'ACI': ['MT'],
-      'For SAH': ['PTA', 'エリル動注'],
-      'AVM': ['TAE', 'TVE', 'combined'],
-      'others': ['Tumor embolization', 'MMA embolization', 'その他']
+      'For Spasm': ['PTA エリル動注'],
+      'others': ['その他']
     })
     const detailOperationForElse = ref('');
     watch (operationType, (newVal) => {
@@ -250,7 +249,7 @@
         componentByOperationType.value = markRaw(ClippingSurgery);
       } else if (newVal === 'Tumor' || newVal === '開頭血腫除去術' || newVal === '減圧開頭' || newVal === 'AVM') {
         componentByOperationType.value = markRaw(CraniotomySurgery);
-      } else if (newVal === 'CAS' || newVal === 'PTA' || newVal === 'Coil' || newVal === 'FD'|| newVal === 'MT') {
+      } else if (['CAS', 'PTA', 'Coil', 'FD', 'MT', 'PTA エリル動注', 'その他'].includes(newVal)) {
         componentByOperationType.value = markRaw(EndovascularSurgery);
       } else {
         componentByOperationType.value = null;

@@ -186,6 +186,36 @@
               </v-row>
             </template>
 
+            <template v-if="elementTitle === '血栓回収'">
+              <v-row>
+                <v-radio-group v-model="thrombectomyPass" class="my-2 mx-2" inline label="回収回数">
+                  <v-radio v-for="pass in ['1 pass', '2 pass', '3 pass', '4 pass', 'more']" :label="pass" :value="pass" inline></v-radio>
+                </v-radio-group>
+                <v-text-field
+                  v-if="thrombectomyPass === 'more'"
+                  label="回数"
+                  type="number"
+                  min="5"
+                  class="mx-2"
+                  v-model="thrombectomyPassCount"
+                ></v-text-field>
+                <!-- TICIスコア入力する -->
+                <v-radio-group v-model="ticiScore" class="my-2 mx-2" inline label="TICIスコア">
+                  <v-radio
+                    v-for="tici in ticiScores"
+                    :key="tici.value"
+                    :label="tici.value"
+                    :value="tici.value"
+                    inline
+                  >
+                    <v-tooltip
+                        activator="parent"
+                        bottom>{{ tici.description }}</v-tooltip>
+                  </v-radio>
+                </v-radio-group>
+
+              </v-row>
+            </template>
             </v-card-text>
 
             <v-card-actions>
@@ -214,7 +244,7 @@ const buttonDisplayTitles =
   [
     'シース挿入', '親カテ挿入', 'フィルター挿入', 'prestent ballooning', 'stent留置', 'poststent ballooning', 'ballooning',
     'DAC挿入', 'バルーン留置', 'FD留置', 'ステントスタンバイ', 'コイル挿入 フレーミング', 'コイル挿入 フィリング', 'コイル挿入 フィニッシング',
-    '診断DSA', '吸引カテーテル挿入', 'ステントリトリーバー留置', 'バルーン留置(PTA)'
+    '診断DSA', '吸引カテーテル挿入', 'ステントリトリーバー留置', '血栓回収', 'バルーン留置(PTA)'
   ];
 
 watch (elementTitle, (newValue) => {
@@ -247,7 +277,8 @@ const mappingArrayForCreateText = () => {
   'FD留置': FDText.value,
   '診断DSA': mTDiagnosisText.value,
   '吸引カテーテル挿入': suctionCatheterText.value,
-  'ステントリトリーバー留置': stentRetrieverText.value
+  'ステントリトリーバー留置': stentRetrieverText.value,
+  '血栓回収': AISText.value
   }
 }
 function createText () {
@@ -484,4 +515,27 @@ const stentRetrieverText = ref('');
 watch(firstSelectedItem, () => {
   stentRetrieverText.value = firstSelectedItem.value.join(' ') + 'を閉塞部位に展開した。';
 }, { immediate: true });
+
+// 血栓回収
+const thrombectomyPass = ref('');
+const thrombectomyPassCount = ref(1); // 'more'の場合の回数を保持する変数
+const ticiScore = ref('');
+
+const ticiScores = [
+  { value: '0', description: 'Grade 0 灌流なし' },
+  { value: '1', description: 'Grade 1 再開通あるも抹消灌流なし' },
+  { value: '2a', description: 'Grade 2a 血管支配領域の半分以下の灌流' },
+  { value: '2b', description: 'Grade 2b 血管支配領域の半分以上の灌流' },
+  { value: '3', description: 'Grade 3 抹消までの完全な灌流' }
+];
+
+const AISText = ref('');
+watch([thrombectomyPass, thrombectomyPassCount, ticiScore], () => {
+  if (thrombectomyPass.value === 'more') {
+    AISText.value = '血栓回収を' + thrombectomyPassCount.value + '回行い、TICIスコアは' + ticiScore.value + '。';
+  } else {
+    AISText.value = '血栓回収を' + thrombectomyPass.value + '行い、TICIスコアは' + ticiScore.value + '。';
+  }
+}, { immediate: true });
+
 </script>

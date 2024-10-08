@@ -4,7 +4,7 @@
     <v-textarea v-model="preoperativeInformation" label="術前情報" outlined></v-textarea>
     <v-row>
       <v-radio-group v-model="operationType" label="手術種類" inline>
-        <v-radio v-for="operationType in ['open surgery', 'endovascular surgery', 'combined surgery']" :key="operationType" :label="operationType" :value="operationType"></v-radio>
+        <v-radio v-for="operationType in ['open surgery', 'endovascular surgery']" :key="operationType" :label="operationType" :value="operationType"></v-radio>
       </v-radio-group>
     </v-row>
 
@@ -177,9 +177,9 @@
     const detailEndovascularOperationOptions = ref({
       'ICS': ['CAS', 'PTA'],
       'Aneurysm': ['Coil', 'FD'],
-      'ACI': ['MT'],
+      'AIS': ['MT'],
       'For Spasm': ['PTA エリル動注'],
-      'others': ['その他']
+      'others': ['その他 血管内手術']
     })
     const detailOperationForElse = ref('');
     watch (operationType, (newVal) => {
@@ -249,7 +249,7 @@
         componentByOperationType.value = markRaw(ClippingSurgery);
       } else if (newVal === 'Tumor' || newVal === '開頭血腫除去術' || newVal === '減圧開頭' || newVal === 'AVM') {
         componentByOperationType.value = markRaw(CraniotomySurgery);
-      } else if (['CAS', 'PTA', 'Coil', 'FD', 'MT', 'PTA エリル動注', 'その他'].includes(newVal)) {
+      } else if (['CAS', 'PTA', 'Coil', 'FD', 'MT', 'PTA エリル動注', 'その他 血管内手術'].includes(newVal)) {
         componentByOperationType.value = markRaw(EndovascularSurgery);
       } else {
         componentByOperationType.value = null;

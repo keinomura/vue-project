@@ -139,6 +139,53 @@
               </v-row>
             </template>
 
+            <template v-if="elementTitle === 'FD留置'">
+              <v-row>
+                <itemSelector 
+                  v-for="item in ItemsForFD"
+                  :key="item.id"
+                  v-model:childList="item.list"
+                  v-model:selectedItem="item.selectedItem"
+                  class="mx-2"></itemSelector>
+              </v-row>
+            </template>
+
+            <template v-if="elementTitle === '診断DSA'">
+              <v-row>
+                <itemSelector 
+                  v-for="item in ItemsForDSA"
+                  :key="item.id"
+                  v-model:childList="item.list"
+                  v-model:selectedItem="item.selectedItem"
+                  class="mx-2"></itemSelector>
+              </v-row>
+              <v-radio-group v-model="occlusionSite" class="my-2 mx-2" inline label="閉塞血管">
+                <v-radio v-for="occlusionSite in ['頚部ICA', '頭蓋内ICA', 'MCA:M1', 'MCA:M2', 'MCA:M3', 'ACA:A1', 'ACA:A2', 'ACA:A3', 'VA', 'BA']" :label="occlusionSite" :value="occlusionSite" inline></v-radio>
+              </v-radio-group>
+            </template>
+
+            <template v-if="elementTitle === '吸引カテーテル挿入'">
+              <v-row>
+                <itemSelector 
+                  v-for="item in ItemsForSuctionCatheter"
+                  :key="item.id"
+                  v-model:childList="item.list"
+                  v-model:selectedItem="item.selectedItem"
+                  class="mx-2"></itemSelector>
+              </v-row>
+            </template>
+
+            <template v-if="elementTitle === 'ステントリトリーバー留置'">
+              <v-row>
+                <itemSelector 
+                  v-for="item in ItemsForStentRetriever"
+                  :key="item.id"
+                  v-model:childList="item.list"
+                  v-model:selectedItem="item.selectedItem"
+                  class="mx-2"></itemSelector>
+              </v-row>
+            </template>
+
             </v-card-text>
 
             <v-card-actions>
@@ -166,7 +213,8 @@ const buttonDisplay = ref(false);
 const buttonDisplayTitles = 
   [
     'シース挿入', '親カテ挿入', 'フィルター挿入', 'prestent ballooning', 'stent留置', 'poststent ballooning', 'ballooning',
-    'DAC挿入', 'バルーン留置', 'ステントスタンバイ', 'コイル挿入 フレーミング', 'コイル挿入 フィリング', 'コイル挿入 フィニッシング',
+    'DAC挿入', 'バルーン留置', 'FD留置', 'ステントスタンバイ', 'コイル挿入 フレーミング', 'コイル挿入 フィリング', 'コイル挿入 フィニッシング',
+    '診断DSA', '吸引カテーテル挿入', 'ステントリトリーバー留置'
   ];
 
 watch (elementTitle, (newValue) => {
@@ -195,6 +243,10 @@ const mappingArrayForCreateText = () => {
   'コイル挿入 フレーミング': getCoilsDescription(),
   'コイル挿入 フィリング': getCoilsDescription(),
   'コイル挿入 フィニッシング': getCoilsDescription(),
+  'FD留置': FDText.value,
+  '診断DSA': mTDiagnosisText.value,
+  '吸引カテーテル挿入': suctionCatheterText.value,
+  'ステントリトリーバー留置': stentRetrieverText.value
   }
 }
 function createText () {
@@ -259,6 +311,13 @@ const microCatheterList = endovascularSurgeryItems.microCatheter;
 const balloonList = endovascularSurgeryItems.balloon;
 const stentList = endovascularSurgeryItems.stent;
 const coilList = endovascularSurgeryItems.coil;
+
+// FD
+const FDList = endovascularSurgeryItems.flowDiverter;
+
+// MT
+const suctionCatheterList = endovascularSurgeryItems.suctionCatheter;
+const stentRetrieverList = endovascularSurgeryItems.stentRetriever;
 
 
 // 親カテ挿入
@@ -382,5 +441,46 @@ function getCoilsDescription() {
   return description;
 }
 
+// FD留置
+const ItemsForFD = ref([
+  { id: 1, list: FDList, selectedItem: firstSelectedItem },
+  { id: 2, list: microCatheterList, selectedItem: secondSelectedItem },
+]);
+const FDText = ref('');
+watch([firstSelectedItem, secondSelectedItem], () => {
+  FDText.value = firstSelectedItem.value.join(' ') + 'を' + secondSelectedItem.value.join(' ') + 'にて展開、留置した。';
+}, { immediate: true, deep: true });
 
+// 診断DSA
+const ItemsForDSA = ref([
+  { id: 1, list: catheterForDiagnosticList, selectedItem: firstSelectedItem },
+  { id: 2, list: guideWireList, selectedItem: secondSelectedItem },
+]);
+const occlusionSite = ref('');
+
+const mTDiagnosisText = ref('');
+watch([firstSelectedItem, secondSelectedItem], () => {
+  mTDiagnosisText.value = firstSelectedItem.value.join(' ') + ' + ' + secondSelectedItem.value.join(' ') +  'にて診断DSAを行った。閉塞血管は' + occlusionSite.value + '。';
+}, { immediate: true, deep: true });
+
+// 吸引カテーテル挿入
+const ItemsForSuctionCatheter = ref([
+  { id: 1, list: suctionCatheterList, selectedItem: firstSelectedItem },
+  { id: 2, list: microCatheterList, selectedItem: secondSelectedItem },
+  { id: 3, list: microGuideWireList, selectedItem: thirdSelectedItem },
+]);
+const suctionCatheterText = ref('');
+watch([firstSelectedItem, secondSelectedItem], () => {
+  suctionCatheterText.value = firstSelectedItem.value.join(' ') + 'を' + secondSelectedItem.value.join(' ') + ' + ' + thirdSelectedItem.value.join(' ') + 'にて閉塞部位近傍まで進めた。';
+}, { immediate: true, deep: true });
+
+// ステントリトリーバー留置
+const ItemsForStentRetriever = ref([
+  { id: 1, list: stentRetrieverList, selectedItem: firstSelectedItem },
+]);
+
+const stentRetrieverText = ref('');
+watch(firstSelectedItem, () => {
+  stentRetrieverText.value = firstSelectedItem.value.join(' ') + 'を閉塞部位に展開した。';
+}, { immediate: true });
 </script>

@@ -179,6 +179,64 @@ const detailInformationOfTreatmentList = {
           {'title': '止血', 'description':'exosheelを使用して止血。'},
           {'title': '終了', 'description':'手術終了。'},
         ]
+    },
+    'FD':{
+      'details':
+        [
+          {'title':'シース挿入', 'description':'8Frシースを右大腿動脈に挿入。'},
+          {'title':'親カテ挿入', 'description':'Branchor XS 8Fr  + JB2 6Fr アングル 0.035inch 150cmにてICAまで親カテを挿入。',
+            'Items':{'firstItem':['Branchor XS', '8Fr', ''], 'secondItem':['JB2', '6Fr', ''], 'thirdItem':['アングル', '0.035inch', '150cm']}
+          },
+          {'title': '頭頚部DSA ', 'description':'動脈瘤を確認。その他頭部DSA異常なし。'},
+          {'title': '3D DSA 造影', 'description':'3D DSA造影。動脈瘤の形状、径を測定した。working angleでroad map撮影した。'},
+          {'title': 'road map造影', 'description':'working angleでroad map撮影した。'},
+          {'title': 'DAC挿入', 'description':'SOFIA SELECT 6Fr 125cmをHeadway Plus0.027inch  + Synchro SELECT Standard 0.014inch 215cmにてIC、動脈瘤遠位部に留置した。',
+            'Items':{'firstItem':['SOFIA SELECT', '6Fr', '125cm'], 'secondItem':['Headway Plus', '0.027inch', ''], 'thirdItem':['Synchro SELECT Standard', '0.014inch', '215cm']}
+          },
+          {'title': 'マイクロカテーテルをFD留置部先端まで挿入', 'description':'動脈瘤内にマイクロカテーテルを挿入した。',
+            'Items':{'firstItem':['Headway Plus', '0.027inch', ''], 'secondItem':['Synchro SELECT Standard', '0.014inch', '215cm']}
+          },
+          {'title': 'FD留置', 'description':'ステント展開した。',
+            'Items':{'firstItem':['FRED', '4.5mm', '20mm']}
+          },
+          {'title': 'ステント留置後造影', 'description':'FDが動脈瘤を十分にカバーしていることを確認。頭部DSAでの異常なし。'},
+          {'title': 'カテ回収', 'description':'マイクロカテーテル、DAC, 親カテを回収。'},
+          {'title': '止血', 'description':'exosheelを使用して止血。'},
+          {'title': '終了', 'description':'手術終了。'},
+        ]
+    },
+    'MT':{
+      'details':
+        [
+          {'title':'診断用4Frシース挿入', 'description':'4Frシースを右大腿動脈に挿入。'},
+          {'title':'診断DSA', 'description':'JB2 4Fr アングル 0.035inch 150cmにて閉塞血管、閉塞部位を確認。', 
+            'Items':{'firstItem':['JB N-18', '4Fr', ''], 'secondItem':['アングル', '0.035inch', '150cm']}
+          },
+          {'title':'シース入れ替え', 'description':'8Frシースを右大腿動脈に入れ替え挿入。'},
+          {'title':'親カテ挿入', 'description':'Branchor XS 8Fr  + JB2 4Fr アングル 0.035inch 150cmにてICAまで親カテを挿入。',
+            'Items':{'firstItem':['Branchor XS', '8Fr', ''], 'secondItem':['JB2', '4Fr', ''], 'thirdItem':['アングル', '0.035inch', '150cm']}
+          },
+          {'title': '吸引カテーテル挿入', 'description':'SOFIA SELECT 6Fr 125cmをHeadway Plus0.027inch  + Synchro SELECT Standard 0.014inch 215cmにて閉塞部位近傍まで進めた。',
+            'Items':{'firstItem':['REACT', '6Fr', '125cm'], 'secondItem':['Phenom', '0.027inch', ''], 'thirdItem':['Synchro SELECT Standard', '0.014inch', '215cm']}
+          },
+          {'title': '血栓超えてマイクロ留置', 'description':'血栓を超えてステント展開位置までマイクロカテーテルを留置した。',
+            'Items':{'firstItem':['Phenom', '0.027inch', ''], 'secondItem':['Synchro SELECT Standard', '0.014inch', '215cm']}
+          },
+          {'title': 'マイクロカテーテル造影', 'description':'末梢が造影され、カテーテルが血栓位置を超えていることを確認した。'},
+          {'title': '吸引カテーテルを血栓まで', 'description':'吸引カテーテルを進め、血栓吸引ができる位置に留置した。'},
+          {'title': 'ステントリトリーバー留置', 'description':'Solitaire X 4mm 40mmを閉塞部位に展開した。',
+            'Items':{'firstItem':['Solitaire X', '4mm', '40mm']}
+          },
+          {'title': '親カテでIC遮断', 'description':'親カテのバルーンを充填させ、ICA遮断した。'},
+          {'title': '吸引開始', 'description':'吸引カテーテルでの吸引開始した。'},
+          {'title': '血栓回収', 'description':'血栓回収した。'},
+          {'title': 'IC遮断解除', 'description':'ICA遮断解除した。'},
+          {'title': 'DSA', 'description':'血栓回収を確認した。'},
+          {'title': 'カテ回収', 'description':'マイクロカテーテル、DAC, 親カテを回収。'},
+          {'title': '止血', 'description':'exosheelを使用して止血。'},
+          {'title': 'ショートシースに入れ替え', 'description':'抜去せず、8Frショートシースに入れ替えた。'},
+          {'title': '終了', 'description':'手術終了。'},
+        ]
     }
   };
   // const detailInformationOfTreatment = ref(detailInformationOfTreatmentList['Coil']['details']);

@@ -250,7 +250,7 @@
         componentByOperationType.value = markRaw(ClippingSurgery);
       } else if (newVal === 'Tumor' || newVal === '開頭血腫除去術' || newVal === '減圧開頭' || newVal === 'AVM') {
         componentByOperationType.value = markRaw(CraniotomySurgery);
-      } else if (newVal === 'CAS' || newVal === 'PTA' || newVal === 'Coil' || newVal === 'FD') {
+      } else if (newVal === 'CAS' || newVal === 'PTA' || newVal === 'Coil' || newVal === 'FD'|| newVal === 'MT') {
         componentByOperationType.value = markRaw(EndovascularSurgery);
       } else {
         componentByOperationType.value = null;

@@ -1,7 +1,7 @@
 <template>
 
 
-      <div class="text-center">{{ selectedItem }}
+      <div class="text-center">
     <v-btn color="primary">
       {{ buttonText }}
       <v-menu activator="parent">

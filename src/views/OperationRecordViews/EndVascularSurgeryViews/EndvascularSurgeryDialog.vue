@@ -213,8 +213,35 @@
                         bottom>{{ tici.description }}</v-tooltip>
                   </v-radio>
                 </v-radio-group>
+                </v-row>
+                <v-row>
+                  <v-btn @click="dialogReperfusion = true" style="background-color: bisque;"><h2>再灌流時間 {{ reperfusionTime }}</h2></v-btn>
+                </v-row>
+                <v-dialog v-model="dialogReperfusion" width="auto">
+                <v-card
+                  max-width="400"
+                  prepend-icon="mdi-update"
+                  title="再開通時間入力"
+                  background-color="antiquewhite"
+                >
+                //tre
+                  <v-col>
+                    <v-time-picker
+                      format="24hr"
+                      v-model="reperfusionTime"
+                      style="background-color: antiquewhite;"
+                    ></v-time-picker>
+                  </v-col>
+                    <template v-slot:actions>
+                      <v-btn
+                        class="ms-auto"
+                        text="Ok"
+                        @click="dialogReperfusion = false"
+                      ></v-btn>
+                    </template>
+                </v-card>
+              </v-dialog>
 
-              </v-row>
             </template>
             </v-card-text>
 
@@ -232,11 +259,14 @@ import { ref,watch } from 'vue';
 import itemSelector from './itemSelector.vue';
 // jsonファイルを読み込む(endovascularSurgeryItems.json)
 import endovascularSurgeryItems from './endovascularSurgeryItems.json';
+import { VTimePicker } from 'vuetify/labs/VTimePicker'
+
 
 // 親コンポーネントから受け取るprops
 const elementTitle = defineModel('elementTitle');
 const elementText = defineModel('elementText');
 const elementItem = defineModel('elementItem');
+const reperfusionTime = defineModel('reperfusionTime');
 
 // ボタンを表示させるelementTitleのリスト
 const buttonDisplay = ref(false);
@@ -520,6 +550,8 @@ watch(firstSelectedItem, () => {
 const thrombectomyPass = ref('');
 const thrombectomyPassCount = ref(1); // 'more'の場合の回数を保持する変数
 const ticiScore = ref('');
+// 血栓回収の開始時間
+const dialogReperfusion = ref(false);
 
 const ticiScores = [
   { value: '0', description: 'Grade 0 灌流なし' },
@@ -530,12 +562,9 @@ const ticiScores = [
 ];
 
 const AISText = ref('');
-watch([thrombectomyPass, thrombectomyPassCount, ticiScore], () => {
-  if (thrombectomyPass.value === 'more') {
-    AISText.value = '血栓回収を' + thrombectomyPassCount.value + '回行い、TICIスコアは' + ticiScore.value + '。';
-  } else {
-    AISText.value = '血栓回収を' + thrombectomyPass.value + '行い、TICIスコアは' + ticiScore.value + '。';
-  }
+watch([thrombectomyPass, thrombectomyPassCount, ticiScore, reperfusionTime], () => {
+  const passTimes = (thrombectomyPass.value === 'more') ? thrombectomyPassCount.value + '回' : thrombectomyPass.value;
+  AISText.value = '血栓回収を' + passTimes + 'で行い、再開通時間は' + reperfusionTime.value +'、TICIスコアは' + ticiScore.value + 'だった。';
 }, { immediate: true });
 
 </script>

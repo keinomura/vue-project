@@ -18,11 +18,11 @@
       <v-textarea v-model="detailOperationForElse" label="手術詳細" rows="10" outlined></v-textarea>
     </v-card>
 
-    <OperationSelectCard v-if="operationType === 'combined surgery'"
+    <!-- <OperationSelectCard v-if="operationType === 'combined surgery'"
       v-model:detailOperationOptions="detailEndovascularOperationOptions"
       v-model:typeOfOperation="typeOfOperation2"
       v-model:typeOfOperationText="typeOfOperation2Text"
-    />
+    /> -->
 
     <component :is="componentByOperationType" 
       v-model:operationType="typeOfOperationForSummary"
@@ -149,6 +149,9 @@
 
   <script setup>
     import { ref, defineExpose, watch, shallowRef, markRaw } from 'vue';
+    import dayjs from 'dayjs';
+    // dayjs().format();
+
     import OperationSelectCard from './OperationSelectCard.vue';
     import TimeCalculation from './OpeTimeInput.vue';
 
@@ -158,6 +161,9 @@
     import ClippingSurgery from './OpenSurgeryViews/CraniotomyViews/ClippingSurgery.vue';
     import CraniotomySurgery from './OpenSurgeryViews/CraniotomyViews/CraniotomySurgery.vue';
     import EndovascularSurgery from './EndVascularSurgeryViews/EndvascularSurgeryViews.vue';
+
+    //define props
+    const childOfOperationRecord = ref(null);
 
     // variables
     const operationType = ref('open surgery');
@@ -252,7 +258,7 @@
     }, { immediate: true });
 
 
-    const childOfOperationRecoord = ref(null);
+    // const childOfOperationRecord = ref(null);
 
     function createSummary() {
 
@@ -264,11 +270,43 @@
         '頭部側屈': (headLateralVending.value !== 'なし')? headLateralVending.value + headLateralVendingText.value +'°': '',
         '頭部回旋': (headRotation.value !== 'なし')? headRotation.value + headRotationText.value +'°': '',
       };
-      const operationTimes = {
+
+
+      const operationTimes = (typeOfOperation1.value === 'MT')? 
+      {
+        '手術開始時間': operationStartTime.value,
+        '再灌流時間': getReperfusionTime(),
+        '手術終了時間': operationEndTime.value,
+        '手術時間': calculateOperationDuration(operationStartTime.value, operationEndTime.value),
+        'puncture to reperfusion':calculateOperationDuration(operationStartTime.value, getReperfusionTime()),
+      }:
+      {
         '手術開始時間': operationStartTime.value,
         '手術終了時間': operationEndTime.value,
-        '手術時間': operationTime.value,
+        '手術時間': calculateOperationDuration(operationStartTime.value, operationEndTime.value),
       }
+
+
+      function calculateOperationDuration (startTime, endTime){
+        const today = dayjs().format('YYYY-MM-DD');
+        const start = dayjs(`${today}T${startTime}`);
+        let end = dayjs(`${today}T${endTime}`);
+
+        // 終了時間が開始時間より前の場合、終了時間の日付を1日増やす
+        if (end.isBefore(start)) {
+          end = end.add(1, 'day');
+        }
+
+        const duration = end.diff(start, 'minute'); // 分単位で差を計算
+        //durationをhh:mm形式に変換
+        const hour = Math.floor(duration / 60);
+        //minuteはmm形式に変換01, 02, 03
+        const minute = ('0' + duration % 60).slice(-2);
+       
+        return `${hour}:${minute}`;
+      };
+
+
       const anesthesiaItems = (anesthesia.value === 'その他')? anesthesiaText.value: anesthesia.value
       
 
@@ -279,15 +317,34 @@
         .filter(([key, value]) => value && value.length !== 0 && value !== '\r\n')
         .map(([key, value]) => `${key}: ${value}`)
         .join(', ');
-        return text;
+        return '{' + text + '}' + '\r\n';
       }
+
+      function additionalInformation (operationPositionItems, operationTimes) {
+
+        return (operationType.value === 'open surgery') ? 
+        summaryText(operationPositionItems) + summaryText(operationTimes) + '\r\n':
+        summaryText(operationTimes) + '\r\n'
+      }
+
+
       return  preOpeInfo 
       + '麻酔:' + anesthesiaItems
       + '\n'
-      + '{' + summaryText(operationPositionItems) + '}' + '\r\n' 
-      + '{' + summaryText(operationTimes) + '}' + '\r\n\r\n'
+      // + summaryText(operationPositionItems)
+      // + summaryText(operationTimes) + '\r\n'
+      + additionalInformation(operationPositionItems, operationTimes)
       + detailSummary;
     }
+
+    //MTの場合。
+    function getReperfusionTime() {
+      console.log('operationrecordformからEndovascularsurgeryviewsのgetReperfusionTime()呼び出し');
+      console.log(typeOfOperation1.value);
+      return childOfOperationRecord.value.getReperfusionTime();
+    }
+
+
 
     function textReplaced(title, element) {
       const replacedElement = (element)? element.replace(/\r?\n|\t/g, " "):'';

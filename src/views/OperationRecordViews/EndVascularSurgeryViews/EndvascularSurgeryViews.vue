@@ -51,10 +51,19 @@
             </v-row>
             <v-row >
               <endvascularSurgeryDialog 
+                v-if="element.title === '血栓回収'"
                 v-model:elementTitle="element.title"
                 v-model:elementText="element.description"
                 v-model:elementItem="element.Items"
-                ></endvascularSurgeryDialog>
+                v-model:reperfusionTime="reperfusionTimeV"
+              ></endvascularSurgeryDialog>
+              
+              <endvascularSurgeryDialog 
+                v-else
+                v-model:elementTitle="element.title"
+                v-model:elementText="element.description"
+                v-model:elementItem="element.Items"
+              ></endvascularSurgeryDialog>
             </v-row>
             <v-row >
               <v-textarea v-model="element.description" label="部位" outlined color="grey darken-1"></v-textarea>
@@ -85,6 +94,8 @@ import endvascularProcedures from './endovascularSurgeryProcedures.json'
 const operationType = defineModel('operationType');
 const AnesthesiaHeadPosition = defineModel('AnesthesiaHeadPosition');
 AnesthesiaHeadPosition.value.anesthesia = '局所麻酔';
+// const childOfOperationRecord = defineModel('childOfOperationRecord');
+
 
 // ヘパリン使用量
 const heparinBolusIVDosage = ref('5000');
@@ -92,7 +103,8 @@ const preACT = ref('');
 const postACT = ref('');
 const additionalHeparin = ref('');
 
-
+// 血栓回収時間
+const reperfusionTimeV = ref('13:30');
 
 
 const drag = ref(false);
@@ -339,4 +351,30 @@ const detailInformationOfTreatmentList = endvascularProcedures;
     detailInformationOfTreatment.value.push(newDetail);
   }
 };
+
+function createRecordForEachOperation() {
+  console.log(detailInformationOfTreatment.value);
+ // keyとdescriptionを取得して、それぞれの項目を行にする。改行でつなげる。
+  let record = '';
+  detailInformationOfTreatment.value.forEach((element) => {
+    // 先頭に番号をつける
+    record += (detailInformationOfTreatment.value.indexOf(element) + 1) + '. ';
+    record +=  element.description + '\n';
+  });
+  return record;
+}
+
+function getReperfusionTime() {
+  console.log('endvascularsurgeryviewでreperfusionTimeの値を取得する');
+  //detailInformationOfTreatment.valueの中から血栓回収の項目を取得して、reperfusionTimeを返す
+  const element = detailInformationOfTreatment.value.find(element => element.title === '血栓回収');
+  console.log('this is element', element);
+  console.log('ref time', reperfusionTimeV.value);
+  console.log(detailInformationOfTreatment.value);
+  return reperfusionTimeV.value;
+}
+defineExpose({
+  createRecordForEachOperation,
+  getReperfusionTime
+});
 </script>

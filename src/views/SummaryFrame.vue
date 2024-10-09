@@ -55,11 +55,11 @@
 
 
     function createSummary() {
+      console.log('summaryframeからoperationrecordFormのcreateSummary()呼び出し')
       summary.value = child.value.createSummary();
-
     }
 
-    //definee
+    //define
     defineExpose({
       createSummary,
     });

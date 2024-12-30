@@ -19,7 +19,8 @@
       </v-row>
         <!-- 疾患によって切り換えるcomponent -->
       <v-col cols="12">
-        <component :is="selectedDiseaseComponent()" ref="child" :disNameSelected="chooseDisName"></component>
+        <!-- <component :is="selectedDiseaseComponent()" ref="child" :disNameSelected="chooseDisName"></component> -->
+        <component :is="selectedDiseaseComponent()" ref="child" v-model:disNameSelected="chooseDisName"></component>
       </v-col>
       <v-row>
         <v-col cols="12" md="8">
@@ -33,28 +34,24 @@
       <v-row>
         <v-col cols="6">
           <v-radio-group v-model="inHospitalOnset" label="院内発症" inline>
-            <v-radio label="あり" value="あり"></v-radio>
-            <v-radio label="なし" value="なし"></v-radio>
+            <v-radio v-for="ans in ['あり', 'なし']" :key="ans" :label="ans" :value="ans"></v-radio>
           </v-radio-group>
         </v-col>
         <v-col cols="6">
           <v-radio-group v-model="QQ" label="QQ" inline>
-            <v-radio label="あり" value="あり"></v-radio>
-            <v-radio label="なし" value="なし"></v-radio>
+            <v-radio v-for="ans in ['あり', 'なし']" :key="ans" :label="ans" :value="ans"></v-radio>
           </v-radio-group>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="6">
           <v-radio-group v-model="admissionType" label="予定入院/緊急入院" inline>
-            <v-radio label="予定入院" value="予定入院"></v-radio>
-            <v-radio label="緊急入院" value="緊急入院"></v-radio>
+            <v-radio v-for="ans in ['予定入院', '緊急入院']" :key="ans" :label="ans" :value="ans"></v-radio>
           </v-radio-group>
         </v-col>
         <v-col cols="6">
           <v-radio-group v-model="otherHP" label="他院から紹介" inline>
-            <v-radio label="あり" value="あり"></v-radio>
-            <v-radio label="なし" value="なし"></v-radio>
+            <v-radio v-for="ans in ['あり', 'なし']" :key="ans" :label="ans" :value="ans"></v-radio>
           </v-radio-group>
         </v-col>
       </v-row>
@@ -84,27 +81,15 @@
         <v-col cols="12">
           <v-radio-group v-model="E"  inline>
             E
-            <v-radio label="4" value="4"></v-radio>
-            <v-radio label="3" value="3"></v-radio>
-            <v-radio label="2" value="2"></v-radio>
-            <v-radio label="1" value="1"></v-radio>
+            <v-radio v-for="i in 4" :key="i" :label="i" :value="i"></v-radio>
           </v-radio-group>
           <v-radio-group v-model="V"  inline>
             V
-            <v-radio label="5" value="5"></v-radio>
-            <v-radio label="4" value="4"></v-radio>
-            <v-radio label="3" value="3"></v-radio>
-            <v-radio label="2" value="2"></v-radio>
-            <v-radio label="1" value="1"></v-radio>
+            <v-radio v-for="i in 5" :key="i" :label="i" :value="i"></v-radio>
           </v-radio-group>
           <v-radio-group v-model="M"  inline>
             M
-            <v-radio label="6" value="6"></v-radio>
-            <v-radio label="5" value="5"></v-radio>
-            <v-radio label="4" value="4"></v-radio>
-            <v-radio label="3" value="3"></v-radio>
-            <v-radio label="2" value="2"></v-radio>
-            <v-radio label="1" value="1"></v-radio>
+            <v-radio v-for="i in 6" :key="i" :label="i" :value="i"></v-radio>
           </v-radio-group>
           <v-textarea v-model="exam" label="身体所見" outlined></v-textarea>
         </v-col>
@@ -117,7 +102,6 @@
                       label="発症前 mRS" outlined>
           </v-select>
         </v-col>
-
       </v-row>
     </v-container>
 </template>
@@ -178,31 +162,22 @@
     ]);
 
     function selectedDiseaseComponent() {
-      if (selectedDisease.value === 'デフォルト'){
-        return null;
-       } else {
-        return SelectionSummaryType;
-       }
+      return (selectedDisease.value === 'デフォルト') ? null : SelectionSummaryType; 
     };
 
-    function chooseDisNameF() {
-      const diseaseMapping = {
-        'デフォルト': null,
-        '三叉神経痛': 'TN',
-        '顔面痙攣': 'HFS',
-        '脳梗塞': 'CI',
-        '脳出血': 'ICH',
-        'ICS': 'ICS',
-        '動脈瘤': 'Aneurysm',
-        '慢性硬膜下血腫': 'CSDH',
-        '経過観察': 'observation',
-      };
-      chooseDisName.value = diseaseMapping[selectedDisease.value] || null;
-      return chooseDisName.value;
+    const diseaseMapping = {
+      'デフォルト': null,
+      '三叉神経痛': 'TN',
+      '顔面痙攣': 'HFS',
+      '脳梗塞': 'CI',
+      '脳出血': 'ICH',
+      'ICS': 'ICS',
+      '動脈瘤': 'Aneurysm',
+      '慢性硬膜下血腫': 'CSDH',
+      '経過観察': 'observation',
     };
 
     function createSummary() {
-      console.log(chooseDisName.value);
       const detailedDiseaseSummary = (chooseDisName.value === null) ? '':'{' + child.value.getSummaryTextFromGrandChild() + '}';
 
       const riskFactorsText = (riskFactors.value.length === 0)? '':riskFactors.value.join(',') + ' ';
@@ -210,7 +185,8 @@
       const presentHistoryText = textReplaced("【現病歴】", presentHistory.value);
       const pastHistoryText = textReplaced("【既往歴,家族歴】" + riskFactorsText + pastHistory.value);
       const exm = textReplaced("【入院時現症】", exam.value);
-      const QQt = "\rQQ" + QQ.value;
+      const inHospitalOnsetText = "\r院内発症:" + inHospitalOnset.value;
+      const QQt = "QQ" + QQ.value;
       const otHP = "他院からの紹介:" + otherHP.value + " " + referralHospital.value;
       const GCSgt = "\rGCS:" + GCS("GCS");
       const GCSjt = GCS("JCS");
@@ -219,10 +195,8 @@
       summary.value = chiefComplainText + presentHistoryText + pastHistoryText + exm + '\r'
       +  detailedDiseaseSummary + '\r'
       + "\r---------入院データ----------"
-      + [QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',') ;
+      + [inHospitalOnsetText, QQt,admissionRoute.value,admissionType.value,otHP,GCSgt,GCSjt,premRSText].join(',') ;
 
-
-      console.log(summary.value)
       return summary.value;
     }
 
@@ -255,8 +229,10 @@
     }
 
     watch(selectedDisease, () => {
-      chooseDisNameF();
-    });
+      chooseDisName.value = diseaseMapping[selectedDisease.value] || null;
+      console.log('selectedDisease is', selectedDisease.value);
+      console.log('chooseDisName is', chooseDisName.value);
+    }, { immediate: true });
       // "defineExpose"を使用して、外部から参照できるプロパティを定義する
     defineExpose({
       createSummary,

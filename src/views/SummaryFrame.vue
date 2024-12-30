@@ -1,15 +1,15 @@
 <template>
   <v-container fluid>
     <v-row>
+      <!-- 情報入力画面 -->
       <v-col cols="12" md="6">
         <h2 class="mb-4">{{ title }}</h2>
-
-          <component :is="calledComponent" ref="child"></component>
-
-          <v-container class="d-flex justify-center pa-2">
-            <v-btn color="primary" @click="createSummary">作成</v-btn>
-          </v-container>
-        </v-col>
+        <component :is="calledComponent" ref="child"></component>
+        <v-container class="d-flex justify-center pa-2">
+          <v-btn color="primary" @click="createSummary">作成</v-btn>
+        </v-container>
+      </v-col>
+      <!-- サマリ表示画面 -->
       <v-col cols="12" md="6"  >
         <v-card>
           <v-card-title>{{ title }}</v-card-title>
@@ -26,7 +26,6 @@
     import { ref, shallowRef, defineProps, watch, markRaw } from 'vue';
     import summaryAtEView from './SummaryAtEViews/SummaryAtEForm.vue';
     import summaryAtDView from './SummaryAtDViews/SummaryAtDForm.vue';
-
     import operationRecordView from './OperationRecordViews/OperationRecordForm.vue';
   // Props
   const props = defineProps({
@@ -52,7 +51,6 @@
   },
   { immediate: true }
 );
-
 
     function createSummary() {
       console.log('summaryframeからoperationrecordFormのcreateSummary()呼び出し')

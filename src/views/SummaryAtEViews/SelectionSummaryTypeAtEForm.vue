@@ -2,7 +2,7 @@
   <component
     :is="currentFormComponent"
     ref="formChild"
-    :diseaseName="disNameSelected"
+    v-model:diseaseName="disNameSelected"
   />
 </template>
 
@@ -12,23 +12,20 @@
   import StrokeAtEForm from './StrokeViews/StrokeForm.vue'
   import AsymptomAtEForm from './AsymptomForm/AsymptomaticForm.vue'
 
-  // Props: 読み込み時に配列で定義する
-  const props = defineProps({
-    disNameSelected: String,
-  });
+  // new props
+  const disNameSelected = defineModel('disNameSelected')
 
   // 親コンポーネントから子コンポーネントのメソッドを呼び出す
   const formChild = shallowRef(null);
 
-  //　親コンポーネントからみて孫コンポーネントのメソッドを呼び出す
   const getSummaryTextFromGrandChild = () => {
-    if (props.disNameSelected === 'デフォルト') {
+    if (disNameSelected.value === 'デフォルト') {
       return '';
-    } else if (props.disNameSelected === 'TN' || props.disNameSelected === 'HFS') {
+    } else if (disNameSelected.value === 'TN' || disNameSelected.value === 'HFS') {
       return formChild.value.getSummaryOfMVD();
-    } else if (props.disNameSelected === 'CI' || props.disNameSelected === 'ICH') {
+    } else if (disNameSelected.value === 'CI' || disNameSelected.value === 'ICH') {
       return formChild.value.getSummaryOfStroke();
-    } else if (props.disNameSelected === 'ICS' || props.disNameSelected === 'Aneurysm') {
+    } else if (disNameSelected.value === 'ICS' || disNameSelected.value === 'Aneurysm') {
       return formChild.value.getSummaryOfAsymptoms();
     } else {
       return formChild.value.getSummaryOfOthers();
@@ -42,18 +39,17 @@
   // diseaseNameSelected の値に基づいてコンポーネントを切り替える
   const currentFormComponent = shallowRef(null);
 
-  watch(() => props.disNameSelected, (newVal) => {
-    if (newVal === 'TN' || newVal === 'HFS') {
+  watch(() => disNameSelected, (newVal) => {
+    if (newVal.value === 'TN' || newVal.value === 'HFS') {
       currentFormComponent.value = markRaw(MVDAtEForm);
-    } else if (newVal === 'CI' || newVal === 'ICH') {
+    } else if (newVal.value === 'CI' || newVal.value === 'ICH') {
       currentFormComponent.value = markRaw(StrokeAtEForm);
-    } else if (newVal === 'ICS' || newVal === 'Aneurysm') {
+    } else if (newVal.value === 'ICS' || newVal.value === 'Aneurysm') {
       currentFormComponent.value = markRaw(AsymptomAtEForm);
     } else {
       currentFormComponent.value = null;
     }
-  }, { immediate: true });
-
+  }, { immediate: true, deep: true });
 
 </script>
 

@@ -1,14 +1,12 @@
 <template>
     <div style="background-color: greenyellow">
       <v-radio-group v-model="lesionSide" label="病側" inline>
-        <v-radio label="左" value="左"></v-radio>
-        <v-radio label="右" value="右"></v-radio>
+        <v-radio v-for="side in ['左', '右']" :key="side" :label="side" :value="side"></v-radio>
       </v-radio-group>
   
       <v-select
         v-if="diseaseName === 'TN'"
         v-model="painArea"
-
         :items="painAreasOption"
         label="痛みの領域"
         multiple
@@ -26,8 +24,7 @@
   
       <v-row>
         <v-radio-group v-model="operation" label="今回手術" inline>
-          <v-radio label="あり" value="あり"></v-radio>
-          <v-radio label="なし" value="なし"></v-radio>
+          <v-radio v-for="ans in ['あり', 'なし']" :key="ans" :label="ans" :value="ans"></v-radio>
         </v-radio-group>
       </v-row>
   
@@ -43,14 +40,13 @@
   
       <v-row cols="12" v-if="operation === 'あり'">
         <v-radio-group v-model="recurrence" label="今回手術は" inline>
-          <v-radio label="初発" value="初発"></v-radio>
-          <v-radio label="再発" value="再発"></v-radio>
+          <v-radio v-for="ans in ['初発', '再発']" :key="ans" :label="ans" :value="ans"></v-radio>
         </v-radio-group>
       </v-row>
   
       <v-row v-if="recurrence === '再発'"> 
         <v-col cols="12">
-          <span>発症前回手術から</span>{{ periodFromLastSurgery }} // TODO: 表示されないエラー
+          <span>発症前回手術から</span>{{ periodFromLastSurgery }}
         </v-col>
         <v-col cols="8">
           <v-row v-for="(surgery, index) in previousSurgeries" :key="index">
@@ -113,10 +109,8 @@
   <script setup>
   import { ref, watch } from 'vue';
   
-  // Props
-  const props = defineProps({
-    diseaseName: String,
-  });
+//new
+  const diseaseName = defineModel('diseaseName');
   
   const lesionSide = ref('左');
   const painArea = ref([]);
@@ -129,7 +123,7 @@
   const previousSurgeries = ref(recurrence.value === '再発' ? [{ year: '', month: '' }] : []);
   const scheduledSurgeryDate = ref([]);
   const periodFromLastSurgery = ref('');
-  const dentalTreatmentHistory = ref('');
+  const dentalTreatmentHistory = ref('あり');
   const preSurgeryMedications = ref([]);
   const additionalNotes = ref('');
   const botoxTreatment = ref('');
@@ -137,36 +131,38 @@
   const botoxMonth = ref(null);
 
   const medications = ref([])
-  watch(() => props.medications, (newVal) => {
-    if(props.diseaseName === 'TN'){
+
+  watch(() => diseaseName.value, (newVal) => {
+    if(diseaseName.value === 'TN'){
       medications.value = ['テグレトール（カルバマゼピン）', 'ビムパット（ラコサミド）', 'パキシル', 'ロキソニン', 'ガバペン', 'アレビアチン'];
     } 
-    else if (props.diseaseName === 'HFS'){
+    else if (diseaseName.value === 'HFS'){
       medications.value = ['リボトリール', 'ビムパット', 'テグレトール', 'セルシン'];
     }
   }, { immediate: true });
 
-  
+
+
   const years = ref(Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i));
   const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
   
+  // 前回手術の追加・削除
   const addSurgery = () => {
     previousSurgeries.value.push({ year: '', month: '' });
   };
-  
   const removeSurgery = (index) => {
     previousSurgeries.value.splice(index, 1);
   };
 
-
+  //術前薬剤の追加・削除
   const addMedication = () => {
     preSurgeryMedications.value.push({ name: '', dosage: '' });
   };
-  
   const removeMedication = (index) => {
     preSurgeryMedications.value.splice(index, 1);
   };
   
+  // 日付計算
   const calculatePeriodBetweenDates = (date1, date2) => {
     const diffTime = Math.abs(date2 - date1);
     const diffYears = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365));
@@ -285,14 +281,14 @@
     }
   });
 
-  watch(onsetYear, calculatePeriodFromOnsetToSurgery);
-  watch(onsetMonth, calculatePeriodFromOnsetToSurgery);
+  watch([() => onsetYear.value, () => onsetMonth.value], calculatePeriodFromOnsetToSurgery);
+
   watch(scheduledSurgeryDate, () => {
     calculatePeriodFromOnsetToSurgery();
     if (previousSurgeries.value.length !== 0){
       calculatePeriodFromLastSurgery();
     }
-  });
+  }, {immediate: true, deep: true});
   
   watch(recurrence, (newVal) => {
     if (newVal === '初発') {
@@ -308,7 +304,6 @@
       botoxMonth.value = null;
     }
   });
-
   </script>
 
   <style scoped>

@@ -72,10 +72,10 @@
           "stentName": "PPRECISE PRO RX",
           "stentSize": [
             {"stentDiameter": "6mm", "stentLength": ["20mm", "30mm"]},
-            {"stentDiameter": "7mm", "stentLength": ["20mm", "30mm"]},
-            {"stentDiameter": "8mm", "stentLength": ["20mm", "30mm"]},
-            {"stentDiameter": "9mm", "stentLength": ["20mm", "30mm"]},
-            {"stentDiameter": "10mm", "stentLength": ["20mm", "30mm"]}
+            {"stentDiameter": "7mm", "stentLength": ["30mm", "40mm"]},
+            {"stentDiameter": "8mm", "stentLength": ["30mm", "40mm"]},
+            {"stentDiameter": "9mm", "stentLength": ["30mm", "40mm"]},
+            {"stentDiameter": "10mm", "stentLength": ["30mm", "40mm"]}
           ],
           "maker": "カネカ"},
         {
